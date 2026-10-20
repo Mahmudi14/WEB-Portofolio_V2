@@ -210,71 +210,86 @@
   .porto-admin *, .porto-admin *::before, .porto-admin *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
-/* =========================================
+/* ==========================================
    PREMIUM CONTENT EDITOR
-   PORTOFOLIO V2 ADMIN
-========================================= */
+   PROFILE, HERO, ABOUT
+========================================== */
+
+/* MAIN EDITOR LAYOUT */
 
 .porto-admin .pa-editor-split {
     display: grid;
-    grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.9fr);
-    gap: 22px;
+    grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(320px, .9fr);
     align-items: start;
+    gap: 24px;
 }
 
-/* Main form card */
-
-.porto-admin .pa-editor-card {
+.porto-admin .pa-editor-card,
+.porto-admin .pa-editor-preview {
     min-width: 0;
     overflow: hidden;
-    background: #222121;
-    border: 1px solid rgba(255,255,255,.085);
     border-radius: 20px;
+    border: 1px solid var(--pa-line);
+    background: #222121;
 }
 
-.porto-admin .pa-editor-card__heading {
-    padding: 29px 30px 26px;
-    border-bottom: 1px solid rgba(255,255,255,.075);
+/* CONTENT GROUPS */
+
+.porto-admin .pa-editor-group + .pa-editor-group {
+    border-top: 1px solid rgba(255,255,255,.09);
+}
+
+.porto-admin .pa-editor-group__header {
+    padding: 30px 32px 22px;
 }
 
 .porto-admin .pa-editor-kicker {
     display: inline-flex;
     align-items: center;
     gap: 9px;
+
+    color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .16em;
-    color: #f2a06e;
+    line-height: 1.5;
 }
 
-.porto-admin .pa-editor-card__heading h2 {
-    margin: 14px 0 7px;
-    color: #f6f2ee;
-    font-family: 'Space Grotesk', Inter, sans-serif;
-    font-size: 23px;
+.porto-admin .pa-editor-group__header h2 {
+    margin: 12px 0 7px;
+
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: clamp(21px, 1.65vw, 25px);
     font-weight: 650;
-    letter-spacing: -.045em;
+    letter-spacing: -.04em;
+    line-height: 1.25;
 }
 
-.porto-admin .pa-editor-card__heading p {
-    max-width: 560px;
+.porto-admin .pa-editor-group__header p {
+    max-width: 580px;
     margin: 0;
-    color: #aaa29c;
-    font-size: 12px;
-    line-height: 1.8;
+
+    color: var(--pa-muted);
+    font-size: 13px;
+    line-height: 1.75;
 }
 
-/* Fields */
-
-.porto-admin .pa-editor-fields {
+.porto-admin .pa-editor-group__body {
     display: grid;
     gap: 23px;
-    padding: 30px;
+    padding: 4px 32px 32px;
 }
+
+/* FORM FIELDS */
 
 .porto-admin .pa-editor-two {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
     gap: 17px;
 }
 
@@ -285,119 +300,257 @@
 .porto-admin .pa-editor-label {
     display: block;
     margin-bottom: 9px;
-    color: #e6dfda;
-    font-size: 12px;
-    font-weight: 650;
+
+    color: #f0e8e2;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .porto-admin .pa-editor-input,
 .porto-admin .pa-editor-textarea {
     display: block;
     width: 100%;
-    padding: 13px 15px;
-    border: 1px solid #46403d;
+
+    border: 1px solid #47413e;
     border-radius: 11px;
+    padding: 13px 15px;
+
     background: #191919;
-    color: #f6f2ee;
+    color: var(--pa-text);
+
     font-family: inherit;
-    font-size: 13px;
-    transition: border-color .2s, box-shadow .2s;
+    font-size: 14px;
+    line-height: 1.6;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease;
 }
 
 .porto-admin .pa-editor-input::placeholder,
 .porto-admin .pa-editor-textarea::placeholder {
-    color: #79726e;
+    color: #897d76;
 }
 
 .porto-admin .pa-editor-input:focus,
 .porto-admin .pa-editor-textarea:focus {
     outline: none;
-    border-color: #df6a27;
-    box-shadow: 0 0 0 3px rgba(223,106,39,.12);
+    border-color: var(--pa-accent);
+    box-shadow:
+        0 0 0 3px rgba(223,106,39,.13);
+}
+
+.porto-admin .pa-editor-input[aria-invalid='true'],
+.porto-admin .pa-editor-textarea[aria-invalid='true'] {
+    border-color: #e38b85;
 }
 
 .porto-admin .pa-editor-textarea {
-    min-height: 145px;
+    min-height: 170px;
     resize: vertical;
-    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+.porto-admin .pa-editor-textarea--long {
+    min-height: 310px;
+}
+
+.porto-admin .pa-editor-hint,
+.porto-admin .pa-editor-error {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.65;
 }
 
 .porto-admin .pa-editor-hint {
-    margin: 8px 0 0;
-    color: #8d847e;
-    font-size: 11px;
+    color: #aca099;
 }
 
 .porto-admin .pa-editor-error {
-    margin: 8px 0 0;
-    color: #fb8b8b;
-    font-size: 11px;
+    color: #ffa39d;
 }
 
 .porto-admin .pa-editor-count {
     margin-top: 8px;
-    text-align: right;
-    color: #918780;
+
+    color: #9e928a;
     font-size: 11px;
+    text-align: right;
 }
 
-/* Upload field */
+/* CURRENT PROFILE PHOTO */
+
+.porto-admin .pa-editor-current-photo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    margin-bottom: 13px;
+    border: 1px solid var(--pa-line);
+    border-radius: 12px;
+    padding: 12px 14px;
+
+    background: #1b1a1a;
+}
+
+.porto-admin .pa-editor-current-photo__avatar {
+    display: grid;
+    place-items: center;
+
+    width: 66px;
+    height: 66px;
+    flex: 0 0 66px;
+    overflow: hidden;
+
+    border: 1px solid rgba(223,106,39,.35);
+    border-radius: 50%;
+
+    background: #392a23;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-editor-current-photo__avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.porto-admin .pa-editor-current-photo > div:last-child {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.porto-admin .pa-editor-current-photo strong {
+    color: var(--pa-text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-editor-current-photo span {
+    color: #a99d96;
+    font-size: 12px;
+}
+
+/* IMAGE UPLOAD */
+
+.porto-admin .pa-editor-upload-wrap {
+    position: relative;
+}
 
 .porto-admin .pa-editor-upload {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 17px;
-    border: 1px dashed #665044;
+
+    min-height: 84px;
+    border: 1px dashed #79513a;
     border-radius: 12px;
-    background: #27211e;
+    padding: 16px;
+
+    background: #2b231e;
     cursor: pointer;
-    transition: border-color .2s, background .2s;
+
+    transition:
+        border-color .18s ease,
+        background .18s ease;
 }
 
-.porto-admin .pa-editor-upload:hover {
-    border-color: #df6a27;
-    background: #30251f;
+.porto-admin .pa-editor-upload:hover,
+.porto-admin .pa-editor-upload:has(
+    + .pa-editor-file-input:focus-visible
+) {
+    border-color: var(--pa-accent);
+    background: #33271f;
+}
+
+.porto-admin .pa-editor-upload:has(
+    + .pa-editor-file-input:focus-visible
+) {
+    outline: 2px solid var(--pa-accent-light);
+    outline-offset: 3px;
 }
 
 .porto-admin .pa-editor-upload__icon {
     display: grid;
     place-items: center;
-    width: 49px;
-    height: 49px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    background: #3e2d23;
-    color: #f2a06e;
+
+    width: 47px;
+    height: 47px;
+    flex: 0 0 47px;
+
+    border-radius: 11px;
+    background: #412e22;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-editor-upload__content {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
 }
 
 .porto-admin .pa-editor-upload strong {
     display: block;
-    max-width: 300px;
+
+    color: var(--pa-text);
+    font-size: 13px;
+    font-weight: 650;
     overflow-wrap: anywhere;
-    color: #f6f2ee;
-    font-size: 12px;
 }
 
 .porto-admin .pa-editor-upload small {
-    display: block;
-    margin-top: 5px;
-    color: #a89d95;
-    font-size: 11px;
+    color: #b0a49c;
+    font-size: 12px;
 }
 
 .porto-admin .pa-editor-file-input {
     position: absolute;
     width: 1px;
     height: 1px;
+    padding: 0;
     opacity: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
 }
 
-.porto-admin .pa-editor-upload:focus-within {
-    outline: 2px solid #f2a06e;
+/* LOGO PREVIEW */
+
+.porto-admin .pa-editor-logo-stage {
+    display: grid;
+    place-items: center;
+
+    min-height: 168px;
+    margin-bottom: 13px;
+    border: 1px solid var(--pa-line);
+    border-radius: 13px;
+    padding: 19px;
+
+    background: #191919;
 }
 
-/* Save actions */
+.porto-admin .pa-editor-logo-stage img {
+    display: block;
+
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 138px;
+    object-fit: contain;
+}
+
+.porto-admin .pa-editor-logo-empty {
+    display: grid;
+    justify-items: center;
+    gap: 11px;
+
+    color: #a39790;
+    font-size: 12px;
+}
+
+/* SAVE ACTIONS */
 
 .porto-admin .pa-editor-actions {
     display: flex;
@@ -405,61 +558,89 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 15px;
-    padding: 21px 30px;
-    border-top: 1px solid rgba(255,255,255,.075);
-    background: rgba(255,255,255,.015);
+
+    border-top: 1px solid var(--pa-line);
+    padding: 21px 32px;
+
+    background: #252322;
 }
 
 .porto-admin .pa-editor-save-note {
-    color: #9b918a;
-    font-size: 11px;
+    color: #ada099;
+    font-size: 12px;
+    line-height: 1.6;
 }
 
-.porto-admin .pa-editor-actions button:disabled {
+.porto-admin .pa-editor-actions .pa-button:disabled {
     opacity: .5;
     cursor: not-allowed;
     transform: none;
 }
 
-/* Preview panel */
+/* SUCCESS MESSAGE */
+
+.porto-admin .pa-editor-success {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    margin-bottom: 20px;
+    border: 1px solid rgba(75,172,109,.28);
+    border-radius: 12px;
+    padding: 14px 17px;
+
+    background: rgba(75,172,109,.08);
+    color: #a4e6b8;
+    font-size: 13px;
+}
+
+/* RIGHT PREVIEW CARD */
 
 .porto-admin .pa-editor-preview {
-    min-width: 0;
-    overflow: hidden;
     position: sticky;
-    top: 105px;
-    border: 1px solid rgba(223,106,39,.20);
-    border-radius: 20px;
+    top: 103px;
+
+    border-color: rgba(223,106,39,.22);
+
     background:
-        radial-gradient(circle at 80% 10%,
-            rgba(223,106,39,.10), transparent 50%),
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(223,106,39,.10),
+            transparent 55%
+        ),
         #22201e;
 }
 
 .porto-admin .pa-editor-preview__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 24px;
-    border-bottom: 1px solid rgba(255,255,255,.075);
+    justify-content: space-between;
+    gap: 12px;
+
+    border-bottom: 1px solid var(--pa-line);
+    padding: 23px 25px;
 }
 
 .porto-admin .pa-editor-preview__dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #df6a27;
-    box-shadow: 0 0 15px rgba(223,106,39,.6);
+
+    background: var(--pa-accent);
+    box-shadow:
+        0 0 16px rgba(223,106,39,.5);
 }
 
 .porto-admin .pa-editor-preview__footer {
     display: flex;
     align-items: flex-start;
     gap: 9px;
-    padding: 18px 24px;
-    border-top: 1px solid rgba(255,255,255,.075);
-    color: #968a82;
-    font-size: 11px;
+
+    border-top: 1px solid var(--pa-line);
+    padding: 17px 25px;
+
+    color: #a69a92;
+    font-size: 12px;
     line-height: 1.6;
 }
 
@@ -467,24 +648,27 @@
     flex-shrink: 0;
 }
 
-/* Profile preview */
+/* PROFILE PREVIEW */
 
 .porto-admin .pa-profile-preview {
-    padding: 35px 24px 28px;
+    padding: 30px 26px;
     text-align: center;
 }
 
 .porto-admin .pa-profile-avatar {
     display: grid;
     place-items: center;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 20px;
+
+    width: 98px;
+    height: 98px;
     overflow: hidden;
-    border: 3px solid rgba(223,106,39,.30);
+    margin: 0 auto 20px;
+
+    border: 2px solid rgba(223,106,39,.39);
     border-radius: 50%;
-    background: #3a2a23;
-    color: #f2a06e;
+
+    background: #3a2b24;
+    color: var(--pa-accent-light);
 }
 
 .porto-admin .pa-profile-avatar img {
@@ -494,60 +678,81 @@
 }
 
 .porto-admin .pa-profile-preview__eyebrow {
+    color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .16em;
-    color: #df6a27;
 }
 
 .porto-admin .pa-profile-preview h3 {
     margin: 10px 0 5px;
-    color: #f6f2ee;
-    font: 650 25px 'Space Grotesk', Inter, sans-serif;
+
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 26px;
+    font-weight: 650;
+    letter-spacing: -.035em;
     overflow-wrap: anywhere;
 }
 
 .porto-admin .pa-profile-preview > p {
-    color: #aaa29c;
-    font-size: 12px;
+    margin: 0;
+
+    color: #b9afa8;
+    font-size: 13px;
 }
 
 .porto-admin .pa-profile-preview__details {
     display: grid;
-    gap: 15px;
-    margin-top: 27px;
-    padding-top: 22px;
-    border-top: 1px solid rgba(255,255,255,.075);
+    gap: 18px;
+
+    margin-top: 28px;
+    border-top: 1px solid var(--pa-line);
+    padding-top: 24px;
+
     text-align: left;
 }
 
-.porto-admin .pa-profile-preview__details div {
+.porto-admin .pa-profile-preview__details > div {
     display: grid;
-    gap: 4px;
+    gap: 5px;
+    min-width: 0;
 }
 
 .porto-admin .pa-profile-preview__details span {
-    color: #8d847d;
-    font-size: 10px;
+    color: #a1968f;
+    font-size: 11px;
 }
 
 .porto-admin .pa-profile-preview__details strong {
-    color: #e8dfd8;
-    font-size: 12px;
+    color: #eee6df;
+    font-size: 13px;
     font-weight: 500;
     overflow-wrap: anywhere;
 }
 
-/* Hero & About previews */
+.porto-admin .pa-profile-logo-preview {
+    display: block;
+
+    width: 100px;
+    height: 65px;
+    margin-top: 4px;
+
+    object-fit: contain;
+    object-position: left center;
+}
+
+/* HERO & ABOUT PREVIEW */
 
 .porto-admin .pa-hero-preview,
 .porto-admin .pa-about-preview {
-    padding: 35px 27px;
+    padding: 33px 28px;
 }
 
 .porto-admin .pa-hero-preview > span,
 .porto-admin .pa-about-preview > span {
-    color: #f2a06e;
+    color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .15em;
@@ -555,20 +760,25 @@
 
 .porto-admin .pa-hero-preview h3,
 .porto-admin .pa-about-preview h3 {
-    margin: 19px 0 13px;
-    color: #f6f2ee;
-    font: 650 clamp(22px,2.3vw,29px)
+    margin: 18px 0 14px;
+
+    color: var(--pa-text);
+    font-family:
         'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.045em;
+    font-size: clamp(23px, 2.3vw, 29px);
+    font-weight: 650;
+    letter-spacing: -.04em;
     line-height: 1.3;
     overflow-wrap: anywhere;
 }
 
 .porto-admin .pa-hero-preview p,
 .porto-admin .pa-about-preview p {
-    color: #b8afa8;
-    font-size: 12px;
-    line-height: 1.9;
+    margin: 0;
+
+    color: #c0b5ad;
+    font-size: 13px;
+    line-height: 1.85;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
@@ -581,38 +791,46 @@
 }
 
 .porto-admin .pa-hero-preview__buttons span {
+    border-radius: 9px;
     padding: 10px 13px;
-    border-radius: 8px;
-    background: #df6a27;
+
+    background: var(--pa-accent);
     color: #1d1d1d;
-    font-size: 10px;
+
+    font-size: 11px;
     font-weight: 700;
 }
 
 .porto-admin .pa-hero-preview__buttons span + span {
-    border: 1px solid #625149;
+    border: 1px solid #645148;
     background: transparent;
-    color: #f6f2ee;
+    color: var(--pa-text);
 }
 
-/* Success message */
+/* EXISTING BRAND COMPONENTS */
 
-.porto-admin .pa-editor-success {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    margin-bottom: 20px;
-    padding: 15px 18px;
-    border: 1px solid rgba(74,171,107,.25);
-    border-radius: 12px;
-    background: rgba(74,171,107,.08);
-    color: #9bddaf;
-    font-size: 12px;
+.porto-admin .pa-brand__logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: inherit;
 }
 
-/* Responsive */
+.porto-admin .pa-art__center {
+    padding-right: 0;
+}
 
-@media (max-width: 1150px) {
+.porto-admin .pa-dashboard-logo {
+    width: 85px;
+    height: 85px;
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1270px) {
     .porto-admin .pa-editor-split {
         grid-template-columns: 1fr;
     }
@@ -623,48 +841,3581 @@
 }
 
 @media (max-width: 650px) {
-    .porto-admin .pa-editor-card__heading,
-    .porto-admin .pa-editor-fields {
-        padding: 22px;
+    .porto-admin .pa-editor-split {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-editor-group__header {
+        padding: 23px 21px 20px;
+    }
+
+    .porto-admin .pa-editor-group__body {
+        padding: 2px 21px 26px;
     }
 
     .porto-admin .pa-editor-two {
         grid-template-columns: 1fr;
+        gap: 23px;
     }
 
     .porto-admin .pa-editor-actions {
-        padding: 20px 22px;
+        padding: 19px 21px;
     }
 
-    .porto-admin .pa-editor-actions button {
+    .porto-admin .pa-editor-actions .pa-button {
         width: 100%;
     }
+
+    .porto-admin .pa-editor-preview__header {
+        padding: 19px 21px;
+    }
+
+    .porto-admin .pa-profile-preview,
+    .porto-admin .pa-hero-preview,
+    .porto-admin .pa-about-preview {
+        padding: 25px 21px;
+    }
 }
 
-/* Branding Website */
 
-.porto-admin .pa-editor-brand-preview {
+/* ==========================================
+   SOCIAL LINKS ADMIN
+========================================== */
+
+.porto-admin .pa-social-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(310px, .85fr)
+        minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+}
+
+/* PANELS */
+
+.porto-admin .pa-social-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-social-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-social-panel__header {
+    padding: 28px 28px 23px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-social-panel__header h2 {
+    margin: 12px 0 7px;
+    color: var(--pa-text);
+    font-family: 'Space Grotesk', Inter, sans-serif;
+    font-size: 23px;
+    font-weight: 650;
+    letter-spacing: -.04em;
+    line-height: 1.3;
+}
+
+.porto-admin .pa-social-panel__header p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* FORM */
+
+.porto-admin .pa-social-form {
+    display: grid;
+    gap: 22px;
+    padding: 26px 28px;
+}
+
+.porto-admin .pa-social-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 19px 28px;
+    border-top: 1px solid var(--pa-line);
+    background: #252322;
+}
+
+/* LIST HEADER */
+
+.porto-admin .pa-social-list__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.porto-admin .pa-social-count {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding-inline: 9px;
+    flex-shrink: 0;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: var(--pa-accent-light);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* REGISTERED LINKS */
+
+.porto-admin .pa-social-list__items {
+    display: grid;
+    gap: 12px;
+    padding: 20px;
+}
+
+.porto-admin .pa-social-item {
+    min-width: 0;
+    border: 1px solid rgba(255,255,255,.085);
+    border-radius: 14px;
+    background: #1c1b1b;
+    transition: border-color .18s ease;
+}
+
+.porto-admin .pa-social-item:hover {
+    border-color: rgba(223,106,39,.28);
+}
+
+.porto-admin .pa-social-item__display {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+}
+
+.porto-admin .pa-social-item__icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    border: 1px solid rgba(223,106,39,.2);
+    border-radius: 11px;
+    background: #36281f;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-social-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.porto-admin .pa-social-item__meta {
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-height: 150px;
-    margin-bottom: 14px;
-    padding: 20px;
-
-    background: #191919;
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 14px;
+    flex-wrap: wrap;
+    gap: 9px;
 }
 
-.porto-admin .pa-editor-brand-preview img {
+.porto-admin .pa-social-item__platform {
+    color: var(--pa-accent-light);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .07em;
+}
+
+.porto-admin .pa-social-item__order {
+    color: #948880;
+    font-size: 10px;
+}
+
+.porto-admin .pa-social-item__content h3 {
+    margin: 7px 0 6px;
+    color: var(--pa-text);
+    font-family: 'Space Grotesk', Inter, sans-serif;
+    font-size: 15px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-social-item__url {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    color: var(--pa-accent-light) !important;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.porto-admin .pa-social-item__url span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-social-item__url svg {
+    flex-shrink: 0;
+}
+
+.porto-admin .pa-social-item__url:hover {
+    text-decoration: underline;
+}
+
+/* ITEM ACTIONS */
+
+.porto-admin .pa-social-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    flex-shrink: 0;
+}
+
+.porto-admin .pa-social-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 8px 10px;
+    border: 1px solid #554941;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background .18s ease;
+}
+
+.porto-admin .pa-social-action:hover {
+    background: #332a25;
+}
+
+.porto-admin .pa-social-action--delete {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-social-action--delete:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.porto-admin .pa-social-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* EDIT MODE */
+
+.porto-admin .pa-social-edit__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 22px 22px 0;
+}
+
+.porto-admin .pa-social-edit__header h3 {
+    margin: 9px 0 0;
+    color: var(--pa-text);
+    font-family: 'Space Grotesk', Inter, sans-serif;
+    font-size: 18px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-social-close {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #2b2928;
+    color: #bbb0a8;
+}
+
+.porto-admin .pa-social-close:hover {
+    color: white;
+    background: #39302b;
+}
+
+.porto-admin .pa-social-edit .pa-social-form {
+    padding: 22px;
+}
+
+.porto-admin .pa-social-edit__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 17px 22px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-social-action--cancel {
+    padding-inline: 17px;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-social-empty {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 56px 25px;
+    text-align: center;
+}
+
+.porto-admin .pa-social-empty__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(223,106,39,.2);
+    border-radius: 18px;
+    background: #332820;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-social-empty h3 {
+    margin: 0;
+    color: var(--pa-text);
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-social-empty p {
+    max-width: 270px;
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-social-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-social-create {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-social-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-social-panel__header {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-social-form {
+        padding: 22px 21px;
+    }
+
+    .porto-admin .pa-social-form__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin .pa-social-form__actions .pa-button {
+        width: 100%;
+    }
+
+    .porto-admin .pa-social-list__items {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-social-item__display {
+        flex-wrap: wrap;
+        padding: 15px;
+    }
+
+    .porto-admin .pa-social-item__actions {
+        width: 100%;
+        padding-top: 7px;
+    }
+
+    .porto-admin .pa-social-item__actions button {
+        flex: 1;
+    }
+
+    .porto-admin .pa-social-edit__actions .pa-button {
+        flex: 1;
+    }
+}
+
+/* ==========================================
+   ADMIN — KEAHLIAN & MINAT
+========================================== */
+
+.porto-admin .pa-skill-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(300px, .84fr)
+        minmax(0, 1.16fr);
+    gap: 22px;
+    align-items: start;
+}
+
+/* PANELS */
+
+.porto-admin .pa-skill-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-skill-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-skill-panel__header {
+    padding: 28px 28px 23px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-skill-panel__header h2 {
+    margin: 12px 0 7px;
+    color: var(--pa-text);
+    font: 650 23px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.04em;
+}
+
+.porto-admin .pa-skill-panel__header p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+.porto-admin .pa-skill-form {
+    display: grid;
+    gap: 21px;
+    padding: 26px 28px;
+}
+
+.porto-admin .pa-skill-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--pa-line);
+    padding: 19px 28px;
+    background: #252322;
+}
+
+/* LIST HEADER */
+
+.porto-admin .pa-skill-list__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.porto-admin .pa-skill-total {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: var(--pa-accent-light);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* CATEGORY CARDS */
+
+.porto-admin .pa-skill-list__body {
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+}
+
+.porto-admin .pa-skill-category {
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.085);
+    border-radius: 15px;
+    background: #1d1c1b;
+}
+
+.porto-admin .pa-skill-category__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 21px;
+}
+
+.porto-admin .pa-skill-category__main {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.porto-admin .pa-skill-category__eyebrow {
+    color: var(--pa-accent-light);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+}
+
+.porto-admin .pa-skill-category__main h3 {
+    margin: 9px 0 7px;
+    color: var(--pa-text);
+    font: 650 19px/1.35
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-skill-category__main p {
+    margin: 0 0 12px;
+    color: #bcb0a8;
+    font-size: 12px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-skill-category__count {
+    display: inline-flex;
+    border: 1px solid rgba(223,106,39,.2);
+    border-radius: 8px;
+    padding: 5px 9px;
+    background: #31271f;
+    color: #edaa80;
+    font-size: 11px;
+}
+
+/* ACTION BUTTONS */
+
+.porto-admin .pa-skill-category__actions,
+.porto-admin .pa-skill-inline-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.porto-admin .pa-skill-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    border: 1px solid #554940;
+    border-radius: 9px;
+    padding: 8px 11px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background .18s ease;
+}
+
+.porto-admin .pa-skill-action:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-skill-action:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+.porto-admin .pa-skill-action--danger {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-skill-action--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+/* SKILL ITEMS */
+
+.porto-admin .pa-skill-category__items {
+    border-top: 1px solid var(--pa-line);
+    padding: 20px 21px 21px;
+}
+
+.porto-admin .pa-skill-category__items-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 13px;
+}
+
+.porto-admin .pa-skill-category__items-title h4 {
+    margin: 0;
+    color: #f6f2ee;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-skill-category__items-title span,
+.porto-admin .pa-skill-items-empty {
+    color: #988d86;
+    font-size: 11px;
+}
+
+.porto-admin .pa-skill-items-empty {
+    margin: 0 0 14px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-skill-items-list {
+    display: grid;
+    gap: 9px;
+    margin-bottom: 15px;
+}
+
+.porto-admin .pa-skill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 10px;
+    padding: 12px;
+    background: #272423;
+}
+
+.porto-admin .pa-skill-item__info {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+
+.porto-admin .pa-skill-item__info strong {
+    color: #f6f2ee;
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-skill-item__info span {
+    color: #a99e96;
+    font-size: 11px;
+}
+
+/* ADD & EDIT SKILL */
+
+.porto-admin .pa-skill-item-create,
+.porto-admin .pa-skill-item-edit {
+    border: 1px dashed #645143;
+    border-radius: 12px;
+    padding: 15px;
+    background: #292320;
+}
+
+.porto-admin .pa-skill-item-edit {
+    border-style: solid;
+    border-color: rgba(223,106,39,.4);
+}
+
+.porto-admin .pa-skill-item-create__fields,
+.porto-admin .pa-skill-item-edit__fields {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(100px, 115px);
+    gap: 12px;
+    align-items: start;
+}
+
+.porto-admin .pa-skill-add-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 13px;
+    min-height: 38px;
+    border: 1px solid rgba(223,106,39,.32);
+    border-radius: 9px;
+    padding: 9px 13px;
+    background: #3a2b22;
+    color: var(--pa-accent-light);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-skill-add-item:hover {
+    background: #4a3224;
+}
+
+.porto-admin .pa-skill-add-item:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+.porto-admin .pa-skill-item-edit
+.pa-skill-inline-actions {
+    justify-content: flex-end;
+    margin-top: 13px;
+}
+
+/* EDIT CATEGORY */
+
+.porto-admin .pa-skill-category__edit {
+    background: #26221f;
+}
+
+.porto-admin .pa-skill-category__edit-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 22px 22px 0;
+}
+
+.porto-admin .pa-skill-category__edit-head h3 {
+    margin: 9px 0 0;
+    color: #f6f2ee;
+    font: 650 18px
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-skill-category__edit
+.pa-skill-form {
+    padding: 20px 22px;
+}
+
+.porto-admin .pa-skill-close {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #302c29;
+    color: #bdb1a9;
+}
+
+.porto-admin .pa-skill-close:hover {
+    background: #3c3029;
+    color: #fff;
+}
+
+.porto-admin .pa-skill-category__edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--pa-line);
+    padding: 17px 22px;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-skill-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 52px 23px;
+    text-align: center;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-skill-empty h3 {
+    margin: 0;
+    color: #f6f2ee;
+    font-size: 16px;
+}
+
+.porto-admin .pa-skill-empty p {
+    max-width: 300px;
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-skill-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-skill-create {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-skill-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-skill-panel__header {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-skill-form {
+        padding: 22px 21px;
+    }
+
+    .porto-admin .pa-skill-form__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin
+    .pa-skill-form__actions .pa-button {
+        width: 100%;
+    }
+
+    .porto-admin .pa-skill-list__body {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-skill-category__head {
+        padding: 17px;
+    }
+
+    .porto-admin .pa-skill-category__items {
+        padding: 17px;
+    }
+
+    .porto-admin .pa-skill-category__actions {
+        width: 100%;
+    }
+
+    .porto-admin
+    .pa-skill-category__actions button {
+        flex: 1;
+    }
+
+    .porto-admin .pa-skill-item-create__fields,
+    .porto-admin .pa-skill-item-edit__fields {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-skill-item
+    .pa-skill-inline-actions {
+        width: 100%;
+    }
+
+    .porto-admin .pa-skill-item
+    .pa-skill-inline-actions button {
+        flex: 1;
+    }
+
+    .porto-admin
+    .pa-skill-category__edit-actions .pa-button {
+        flex: 1;
+    }
+}
+
+/* ==========================================
+   ADMIN — PENDIDIKAN
+========================================== */
+
+.porto-admin .pa-edu-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(300px, .85fr)
+        minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+}
+
+/* PANELS */
+
+.porto-admin .pa-edu-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-edu-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-edu-panel__header {
+    padding: 28px 28px 23px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-edu-panel__header h2 {
+    margin: 12px 0 7px;
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 23px;
+    font-weight: 650;
+    letter-spacing: -.04em;
+    line-height: 1.3;
+}
+
+.porto-admin .pa-edu-panel__header p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* FORM */
+
+.porto-admin .pa-edu-form {
+    padding: 26px 28px;
+}
+
+.porto-admin .pa-edu-fields {
+    display: grid;
+    gap: 22px;
+}
+
+.porto-admin .pa-edu-fields select {
+    appearance: none;
+    cursor: pointer;
+    color-scheme: dark;
+}
+
+.porto-admin .pa-edu-year-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+}
+
+/* CURRENT EDUCATION CHECKBOX */
+
+.porto-admin .pa-edu-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid rgba(223,106,39,.21);
+    border-radius: 12px;
+    background: #2b241f;
+    cursor: pointer;
+}
+
+.porto-admin .pa-edu-checkbox input {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--pa-accent);
+    cursor: pointer;
+}
+
+.porto-admin .pa-edu-checkbox span {
+    display: grid;
+    gap: 4px;
+}
+
+.porto-admin .pa-edu-checkbox strong {
+    color: var(--pa-text);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-edu-checkbox small {
+    color: #b6a9a0;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.porto-admin .pa-edu-fields
+.pa-editor-input:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    background: #252323;
+}
+
+/* FORM ACTIONS */
+
+.porto-admin .pa-edu-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 19px 28px;
+    border-top: 1px solid var(--pa-line);
+    background: #252322;
+}
+
+/* PROFILE REQUIRED */
+
+.porto-admin .pa-edu-profile-notice {
+    display: grid;
+    justify-items: start;
+    gap: 13px;
+    padding: 28px;
+}
+
+.porto-admin .pa-edu-profile-notice strong {
+    color: var(--pa-text);
+    font-size: 14px;
+}
+
+.porto-admin .pa-edu-profile-notice p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+/* LIST HEADING */
+
+.porto-admin .pa-edu-list__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.porto-admin .pa-edu-total {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    padding-inline: 9px;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: var(--pa-accent-light);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* EDUCATION LIST */
+
+.porto-admin .pa-edu-list__body {
+    display: grid;
+    gap: 13px;
+    padding: 20px;
+}
+
+.porto-admin .pa-edu-item {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.085);
+    border-radius: 15px;
+    background: #1d1c1b;
+    transition: border-color .18s ease;
+}
+
+.porto-admin .pa-edu-item:hover {
+    border-color: rgba(223,106,39,.27);
+}
+
+.porto-admin .pa-edu-item__display {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 21px;
+}
+
+.porto-admin .pa-edu-item__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid rgba(223,106,39,.2);
+    border-radius: 13px;
+    background: #37291f;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-edu-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.porto-admin .pa-edu-item__topline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.porto-admin .pa-edu-level {
+    color: var(--pa-accent-light);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.porto-admin .pa-edu-period {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #b5a79c;
+    font-size: 11px;
+}
+
+.porto-admin .pa-edu-item__content h3 {
+    margin: 9px 0 5px;
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -.03em;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-edu-item__content p {
+    margin: 0;
+    color: #bcb0a8;
+    font-size: 12px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+/* ACTION BUTTONS */
+
+.porto-admin .pa-edu-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.porto-admin .pa-edu-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    padding: 8px 12px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background .18s ease;
+}
+
+.porto-admin .pa-edu-action:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-edu-action--danger {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-edu-action--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.porto-admin .pa-edu-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* EDIT EDUCATION */
+
+.porto-admin .pa-edu-edit__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 23px 23px 0;
+}
+
+.porto-admin .pa-edu-edit__header h3 {
+    margin: 10px 0 0;
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.035em;
+}
+
+.porto-admin .pa-edu-item .pa-edu-form {
+    padding: 23px;
+}
+
+.porto-admin .pa-edu-close {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #302c29;
+    color: #bdb1a9;
+}
+
+.porto-admin .pa-edu-close:hover {
+    background: #3c3029;
+    color: #fff;
+}
+
+.porto-admin .pa-edu-edit__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    border-top: 1px solid var(--pa-line);
+    padding: 18px 23px;
+    background: #252220;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-edu-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 54px 25px;
+    color: var(--pa-accent-light);
+    text-align: center;
+}
+
+.porto-admin .pa-edu-empty h3 {
+    margin: 0;
+    color: var(--pa-text);
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-edu-empty p {
+    max-width: 290px;
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-edu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-edu-create {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-edu-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-edu-panel__header {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-edu-form {
+        padding: 22px 21px;
+    }
+
+    .porto-admin .pa-edu-year-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-edu-form__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin .pa-edu-form__actions .pa-button {
+        width: 100%;
+    }
+
+    .porto-admin .pa-edu-list__body {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-edu-item__display {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .porto-admin .pa-edu-item__icon {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+    }
+
+    .porto-admin .pa-edu-item .pa-edu-form {
+        padding: 18px;
+    }
+
+    .porto-admin .pa-edu-edit__header {
+        padding: 18px 18px 0;
+    }
+
+    .porto-admin .pa-edu-edit__actions {
+        padding: 17px 18px;
+    }
+
+    .porto-admin .pa-edu-edit__actions .pa-button {
+        flex: 1;
+    }
+}
+
+/* ==========================================
+   ADMIN — PENGALAMAN
+========================================== */
+
+.porto-admin .pa-exp-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(320px, .85fr)
+        minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+}
+
+/* PANELS */
+
+.porto-admin .pa-exp-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-exp-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-exp-panel__header {
+    padding: 28px 28px 23px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-exp-panel__header h2 {
+    margin: 12px 0 7px;
+    color: var(--pa-text);
+    font: 650 23px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.04em;
+}
+
+.porto-admin .pa-exp-panel__header p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+/* FORM */
+
+.porto-admin .pa-exp-form {
+    padding: 27px 28px;
+}
+
+.porto-admin .pa-exp-fields {
+    display: grid;
+    gap: 22px;
+}
+
+.porto-admin .pa-exp-fields select {
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+.porto-admin .pa-exp-year-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+}
+
+.porto-admin .pa-exp-fields
+.pa-editor-input:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-exp-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid rgba(223,106,39,.22);
+    border-radius: 12px;
+    background: #2b241f;
+    cursor: pointer;
+}
+
+.porto-admin .pa-exp-check input {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: var(--pa-accent);
+}
+
+.porto-admin .pa-exp-check > span {
+    display: grid;
+    gap: 5px;
+}
+
+.porto-admin .pa-exp-check strong {
+    color: var(--pa-text);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-exp-check small {
+    color: #b6a9a0;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.porto-admin .pa-exp-form__actions,
+.porto-admin .pa-exp-edit__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 19px 28px;
+    border-top: 1px solid var(--pa-line);
+    background: #252322;
+}
+
+/* LOGO SECTION */
+
+.porto-admin .pa-exp-logo-section {
+    display: grid;
+    gap: 12px;
+    padding-top: 25px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-exp-logo-section h3 {
+    margin: 2px 0 0;
+    color: var(--pa-text);
+    font: 650 19px/1.3
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-exp-logo-section > p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-exp-logo-preview {
+    display: grid;
+    place-items: center;
+    min-height: 155px;
+    padding: 20px;
+    border: 1px solid var(--pa-line);
+    border-radius: 13px;
+    background: #191919;
+}
+
+.porto-admin .pa-exp-logo-preview img {
     display: block;
     width: auto;
     max-width: 100%;
-    max-height: 115px;
+    max-height: 125px;
     object-fit: contain;
 }
 
-.porto-admin .pa-editor-brand-preview span {
-    color: #918780;
+.porto-admin .pa-exp-logo-empty {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    color: #a39790;
     font-size: 12px;
+}
+
+.porto-admin .pa-exp-upload-wrap {
+    position: relative;
+}
+
+.porto-admin .pa-exp-upload {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 17px;
+    border: 1px dashed #79513a;
+    border-radius: 12px;
+    background: #2b231e;
+    color: var(--pa-accent-light);
+    cursor: pointer;
+}
+
+.porto-admin .pa-exp-upload:hover {
+    border-color: var(--pa-accent);
+    background: #342820;
+}
+
+.porto-admin .pa-exp-upload > span {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+
+.porto-admin .pa-exp-upload strong {
+    color: var(--pa-text);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-exp-upload small {
+    color: #b2a59d;
+    font-size: 11px;
+}
+
+.porto-admin .pa-exp-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    clip-path: inset(50%);
+}
+
+.porto-admin .pa-exp-upload-wrap:focus-within
+.pa-exp-upload {
+    outline: 2px solid var(--pa-accent-light);
+    outline-offset: 3px;
+}
+
+.porto-admin .pa-exp-remove-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #f1b6a8;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.porto-admin .pa-exp-remove-logo input {
+    accent-color: var(--pa-accent);
+}
+
+/* LIST HEADER & FILTERS */
+
+.porto-admin .pa-exp-list__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.porto-admin .pa-exp-count {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: var(--pa-accent-light);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.porto-admin .pa-exp-filters {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-exp-filter {
+    min-height: 35px;
+    padding: 8px 13px;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #292626;
+    color: #bfb4ac;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-exp-filter:hover {
+    color: var(--pa-text);
+    background: #332b26;
+}
+
+.porto-admin .pa-exp-filter--active {
+    border-color: rgba(223,106,39,.38);
+    background: #392920;
+    color: var(--pa-accent-light);
+}
+
+/* EXPERIENCE CARDS */
+
+.porto-admin .pa-exp-list__body {
+    display: grid;
+    gap: 13px;
+    padding: 20px;
+}
+
+.porto-admin .pa-exp-item {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 15px;
+    background: #1d1c1b;
+}
+
+.porto-admin .pa-exp-item__display {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+}
+
+.porto-admin .pa-exp-item__logo {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    flex: 0 0 50px;
+    overflow: hidden;
+    border: 1px solid rgba(223,106,39,.22);
+    border-radius: 12px;
+    background: #352820;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-exp-item__logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    object-fit: contain;
+}
+
+.porto-admin .pa-exp-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.porto-admin .pa-exp-item__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--pa-accent-light);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.porto-admin .pa-exp-item__period {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #b9ada5;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.porto-admin .pa-exp-item__content h3 {
+    margin: 10px 0 5px;
+    color: var(--pa-text);
+    font: 650 17px/1.4
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-exp-item__institution {
+    display: block;
+    color: #e2d8d0;
+    font-size: 12px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-exp-item__content p {
+    margin: 12px 0 0;
+    color: #bdb1a9;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-exp-item__order {
+    display: inline-block;
+    margin-top: 12px;
+    color: #988c84;
+    font-size: 11px;
+}
+
+/* EDIT / DELETE BUTTONS */
+
+.porto-admin .pa-exp-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.porto-admin .pa-exp-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-exp-action:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-exp-action--danger {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-exp-action--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.porto-admin .pa-exp-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* EDIT MODE */
+
+.porto-admin .pa-exp-edit__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 22px 22px 0;
+}
+
+.porto-admin .pa-exp-edit__header h3 {
+    margin: 10px 0 0;
+    color: var(--pa-text);
+    font: 650 18px
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-exp-item .pa-exp-form {
+    padding: 22px;
+}
+
+.porto-admin .pa-exp-edit__actions {
+    padding: 18px 22px;
+}
+
+.porto-admin .pa-exp-close {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #302c29;
+    color: #bdb1a9;
+}
+
+.porto-admin .pa-exp-close:hover {
+    color: #fff;
+    background: #3c3029;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-exp-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 54px 25px;
+    text-align: center;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-exp-empty h3 {
+    margin: 0;
+    color: var(--pa-text);
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-exp-empty p {
+    max-width: 290px;
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-exp-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-exp-create {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-exp-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-exp-panel__header {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-exp-form {
+        padding: 22px 21px;
+    }
+
+    .porto-admin .pa-exp-year-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-exp-form__actions,
+    .porto-admin .pa-exp-edit__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin .pa-exp-form__actions .pa-button {
+        width: 100%;
+    }
+
+    .porto-admin .pa-exp-list__body {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-exp-item__display {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .porto-admin .pa-exp-item__logo {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .porto-admin .pa-exp-item .pa-exp-form {
+        padding: 18px;
+    }
+
+    .porto-admin .pa-exp-edit__header {
+        padding: 18px 18px 0;
+    }
+
+    .porto-admin .pa-exp-edit__actions .pa-button {
+        flex: 1;
+    }
+}
+
+/* ==========================================
+   ADMIN — PENCAPAIAN
+========================================== */
+
+.porto-admin .pa-ach-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(300px, .85fr)
+        minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+}
+
+/* PANELS */
+
+.porto-admin .pa-ach-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-ach-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-ach-panel__header {
+    padding: 28px 28px 23px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-ach-panel__header h2 {
+    margin: 12px 0 7px;
+    color: var(--pa-text);
+    font: 650 23px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.04em;
+}
+
+.porto-admin .pa-ach-panel__header p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* FORM */
+
+.porto-admin .pa-ach-form {
+    padding: 26px 28px;
+}
+
+.porto-admin .pa-ach-fields {
+    display: grid;
+    gap: 22px;
+}
+
+.porto-admin .pa-ach-fields select {
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+.porto-admin .pa-ach-fields__row {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+}
+
+.porto-admin .pa-ach-form__actions,
+.porto-admin .pa-ach-edit__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 19px 28px;
+    border-top: 1px solid var(--pa-line);
+    background: #252322;
+}
+
+/* LIST HEADER */
+
+.porto-admin .pa-ach-list__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.porto-admin .pa-ach-count {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding-inline: 9px;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: var(--pa-accent-light);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* CATEGORY FILTERS */
+
+.porto-admin .pa-ach-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-ach-filter {
+    min-height: 35px;
+    padding: 8px 12px;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #292626;
+    color: #bfb4ac;
+    font-size: 12px;
+    font-weight: 600;
+    transition:
+        background .18s ease,
+        color .18s ease;
+}
+
+.porto-admin .pa-ach-filter:hover {
+    background: #332b26;
+    color: var(--pa-text);
+}
+
+.porto-admin .pa-ach-filter--active {
+    border-color: rgba(223,106,39,.38);
+    background: #392920;
+    color: var(--pa-accent-light);
+}
+
+/* ACHIEVEMENT CARDS */
+
+.porto-admin .pa-ach-list__body {
+    display: grid;
+    gap: 13px;
+    padding: 20px;
+}
+
+.porto-admin .pa-ach-item {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 15px;
+    background: #1d1c1b;
+    transition: border-color .18s ease;
+}
+
+.porto-admin .pa-ach-item:hover {
+    border-color: rgba(223,106,39,.28);
+}
+
+.porto-admin .pa-ach-item__display {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 21px;
+}
+
+.porto-admin .pa-ach-item__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid rgba(223,106,39,.23);
+    border-radius: 13px;
+    background: #37291f;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-ach-item__content {
+    min-width: 0;
+    flex: 1;
+}
+
+.porto-admin .pa-ach-item__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 11px;
+    color: var(--pa-accent-light);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.porto-admin .pa-ach-item__year {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #baada4;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.porto-admin .pa-ach-item__content h3 {
+    margin: 10px 0 7px;
+    color: var(--pa-text);
+    font: 650 17px/1.4
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-ach-item__institution {
+    display: block;
+    color: #e2d8d0;
+    font-size: 12px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-ach-item__content p {
+    margin: 12px 0 0;
+    color: #bdb1a9;
+    font-size: 12px;
+    line-height: 1.85;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-ach-item__order {
+    display: inline-block;
+    margin-top: 12px;
+    color: #a0948b;
+    font-size: 11px;
+}
+
+/* ACTION BUTTONS */
+
+.porto-admin .pa-ach-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.porto-admin .pa-ach-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-ach-action:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-ach-action--danger {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-ach-action--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.porto-admin .pa-ach-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* EDIT MODE */
+
+.porto-admin .pa-ach-edit__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 22px 22px 0;
+}
+
+.porto-admin .pa-ach-edit__header h3 {
+    margin: 10px 0 0;
+    color: var(--pa-text);
+    font: 650 18px
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-ach-item .pa-ach-form {
+    padding: 22px;
+}
+
+.porto-admin .pa-ach-edit__actions {
+    padding: 18px 22px;
+}
+
+.porto-admin .pa-ach-close {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #302c29;
+    color: #bdb1a9;
+}
+
+.porto-admin .pa-ach-close:hover {
+    color: #fff;
+    background: #3c3029;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-ach-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 54px 25px;
+    text-align: center;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-ach-empty h3 {
+    margin: 0;
+    color: var(--pa-text);
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-ach-empty p {
+    max-width: 290px;
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-ach-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-ach-create {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-ach-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-ach-panel__header {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-ach-form {
+        padding: 22px 21px;
+    }
+
+    .porto-admin .pa-ach-fields__row {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-ach-form__actions,
+    .porto-admin .pa-ach-edit__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin .pa-ach-form__actions .pa-button {
+        width: 100%;
+    }
+
+    .porto-admin .pa-ach-list__body {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-ach-item__display {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .porto-admin .pa-ach-item__icon {
+        width: 41px;
+        height: 41px;
+        flex-basis: 41px;
+    }
+
+    .porto-admin .pa-ach-item .pa-ach-form {
+        padding: 18px;
+    }
+
+    .porto-admin .pa-ach-edit__header {
+        padding: 18px 18px 0;
+    }
+
+    .porto-admin .pa-ach-edit__actions .pa-button {
+        flex: 1;
+    }
+}
+
+/* ==========================================
+   ADMIN — PROYEK & GALERI
+========================================== */
+
+.porto-admin .pa-prj-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-prj-panel__heading {
+    padding: 26px 28px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj-panel__heading h2 {
+    margin: 12px 0 7px;
+    color: #f6f2ee;
+    font: 650 23px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.04em;
+}
+
+.porto-admin .pa-prj-panel__heading p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* CATEGORY MANAGER */
+
+.porto-admin .pa-prj-category-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, .85fr)
+        minmax(0, 1.15fr);
+    gap: 24px;
+    padding: 25px 28px;
+}
+
+.porto-admin .pa-prj-category-create,
+.porto-admin .pa-prj-category-edit {
+    display: grid;
+    gap: 15px;
+    align-content: start;
+}
+
+.porto-admin .pa-prj-category-create > .pa-button {
+    justify-self: start;
+}
+
+.porto-admin .pa-prj-category-list {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+}
+
+.porto-admin .pa-prj-category-row {
+    min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 15px;
+    border: 1px solid var(--pa-line);
+    border-radius: 12px;
+    background: #1c1b1b;
+}
+
+.porto-admin .pa-prj-category-row:has(
+    .pa-prj-category-edit
+) {
+    display: block;
+}
+
+.porto-admin .pa-prj-category-row__info {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+
+.porto-admin .pa-prj-category-row__info strong {
+    color: #f6f2ee;
+    font-size: 13px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-prj-category-row__info span {
+    color: #a99d95;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj-inline-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.porto-admin .pa-prj-action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    min-height: 35px;
+    padding: 8px 11px;
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-prj-action:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-prj-action--danger {
+    color: #f2a2a2;
+    border-color: rgba(245,116,116,.3);
+}
+
+.porto-admin .pa-prj-action--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.porto-admin .pa-prj-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-prj-muted {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+}
+
+/* PROJECT GRID */
+
+.porto-admin .pa-prj-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(320px, .85fr)
+        minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+    margin-top: 22px;
+}
+
+.porto-admin .pa-prj-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-prj-form {
+    display: grid;
+    gap: 23px;
+    padding: 27px 28px;
+}
+
+.porto-admin .pa-prj-form select {
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+.porto-admin .pa-prj-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px 28px;
+    border-top: 1px solid var(--pa-line);
+    background: #252322;
+}
+
+.porto-admin .pa-prj-form__actions .pa-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-prj-notice {
+    margin: 18px 28px 0;
+    padding: 13px;
+    border: 1px solid rgba(223,106,39,.3);
+    border-radius: 10px;
+    background: #30251f;
+    color: #efb38e;
+    font-size: 12px;
+}
+
+.porto-admin .pa-prj-message-error {
+    padding: 14px 17px;
+    border: 1px solid rgba(245,116,116,.25);
+    border-radius: 12px;
+    background: rgba(245,116,116,.08);
+    color: #f2a2a2;
+    font-size: 12px;
+}
+
+/* GALLERY EDITOR */
+
+.porto-admin .pa-prj-gallery {
+    display: grid;
+    gap: 14px;
+    padding-top: 24px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj-gallery__heading h3 {
+    margin: 12px 0 6px;
+    color: #f6f2ee;
+    font: 650 19px/1.3
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-prj-gallery__heading p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-prj-gallery__count {
+    color: #f2a06e;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-prj-gallery__grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.porto-admin .pa-prj-gallery-thumb {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #49403a;
+    border-radius: 12px;
+    padding-bottom: 7px;
+    background: #191919;
+}
+
+.porto-admin .pa-prj-gallery-thumb > img,
+.porto-admin .pa-prj-gallery-thumb__placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: #292523;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-prj-gallery-thumb > span {
+    display: block;
+    padding: 8px 10px 3px;
+    color: #e7dbd3;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-prj-gallery-thumb__actions {
+    display: flex;
+    gap: 5px;
+    padding: 5px 9px;
+}
+
+.porto-admin .pa-prj-gallery-thumb__actions button,
+.porto-admin .pa-prj-gallery-thumb__remove {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #5a4940;
+    border-radius: 7px;
+    background: #2d2826;
+    color: #f6f2ee;
+}
+
+.porto-admin .pa-prj-gallery-thumb__actions button:hover,
+.porto-admin .pa-prj-gallery-thumb__remove:hover {
+    background: #463126;
+}
+
+.porto-admin .pa-prj-gallery-thumb__actions button:disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-prj-gallery-thumb__remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #251b1b;
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-prj-upload {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    min-height: 88px;
+    padding: 17px;
+    border: 1px dashed #79513a;
+    border-radius: 12px;
+    background: #2b231e;
+    color: #f2a06e;
+    cursor: pointer;
+}
+
+.porto-admin .pa-prj-upload:hover {
+    background: #342820;
+    border-color: #df6a27;
+}
+
+.porto-admin .pa-prj-upload > span {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+
+.porto-admin .pa-prj-upload strong {
+    color: #f6f2ee;
+    font-size: 12px;
+}
+
+.porto-admin .pa-prj-upload small {
+    color: #b2a59d;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj-upload input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    clip-path: inset(50%);
+}
+
+.porto-admin .pa-prj-upload:focus-within {
+    outline: 2px solid #f2a06e;
+    outline-offset: 3px;
+}
+
+/* PROJECT LIST */
+
+.porto-admin .pa-prj-list__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.porto-admin .pa-prj-count {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: #f2a06e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.porto-admin .pa-prj-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj-filter {
+    min-height: 35px;
+    padding: 8px 12px;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #292626;
+    color: #bfb4ac;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-prj-filter:hover {
+    background: #332b26;
+}
+
+.porto-admin .pa-prj-filter--active {
+    background: #392920;
+    border-color: rgba(223,106,39,.38);
+    color: #f2a06e;
+}
+
+.porto-admin .pa-prj-list__body {
+    display: grid;
+    gap: 15px;
+    padding: 20px;
+}
+
+.porto-admin .pa-prj-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 15px;
+    background: #1c1b1b;
+}
+
+.porto-admin .pa-prj-cover {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 210px;
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    background: #252220;
+    color: #f2a06e;
+    cursor: zoom-in;
+}
+
+.porto-admin .pa-prj-cover > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .25s ease;
+}
+
+.porto-admin .pa-prj-cover:hover > img {
+    transform: scale(1.035);
+}
+
+.porto-admin .pa-prj-cover__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    padding: 8px 11px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 9px;
+    background: rgba(18,18,18,.82);
+    color: #f6f2ee;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-prj-card__content {
+    padding: 21px;
+}
+
+.porto-admin .pa-prj-card__category {
+    color: #f2a06e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .09em;
+}
+
+.porto-admin .pa-prj-card__content h3 {
+    margin: 9px 0;
+    color: #f6f2ee;
+    font: 650 19px/1.35
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-prj-card__content > p {
+    margin: 0;
+    color: #bdb1a9;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-prj-technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 16px;
+}
+
+.porto-admin .pa-prj-technologies span {
+    padding: 6px 9px;
+    border: 1px solid rgba(223,106,39,.22);
+    border-radius: 7px;
+    background: #30261f;
+    color: #e9b090;
+    font-size: 10px;
+}
+
+.porto-admin .pa-prj-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj-card__footer > span {
+    color: #a3968e;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj-card__edit-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 22px 22px 0;
+}
+
+.porto-admin .pa-prj-card .pa-prj-form {
+    padding: 22px;
+}
+
+.porto-admin .pa-prj-card .pa-prj-form__actions {
+    padding: 18px 22px;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-prj-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 56px 25px;
+    color: #f2a06e;
+    text-align: center;
+}
+
+.porto-admin .pa-prj-empty h3 {
+    margin: 0;
+    color: #f6f2ee;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-prj-empty p {
+    max-width: 280px;
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   SLIDESHOW MODAL
+   Portal dirender di luar .porto-admin.
+========================================== */
+
+.pa-prj-modal-backdrop {
+    position: fixed;
+    z-index: 199;
+    inset: 0;
+    background: rgba(0,0,0,.88);
+    backdrop-filter: blur(8px);
+}
+
+.pa-prj-modal {
+    position: fixed;
+    z-index: 200;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    width: min(1020px, 94vw);
+    max-height: 94vh;
+    overflow: hidden;
+    border: 1px solid #49372b;
+    border-radius: 18px;
+    background: #1b1a19;
+    color: #f6f2ee;
+    box-shadow: 0 30px 100px rgba(0,0,0,.7);
+}
+
+.pa-prj-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 19px 22px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+}
+
+.pa-prj-modal__title {
+    margin: 7px 0 0;
+    color: #f6f2ee;
+    font: 650 18px
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.pa-prj-modal__close {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 1px solid #504239;
+    border-radius: 10px;
+    background: #2b2724;
+    color: #f6f2ee;
+    cursor: pointer;
+}
+
+.pa-prj-modal__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: min(65vh, 680px);
+    min-height: 220px;
+    overflow: hidden;
+    background: #101010;
+}
+
+.pa-prj-modal__stage img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.pa-prj-modal__prev,
+.pa-prj-modal__next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 50%;
+    background: rgba(0,0,0,.72);
+    color: #fff;
+    cursor: pointer;
+}
+
+.pa-prj-modal__prev {
+    left: 14px;
+}
+
+.pa-prj-modal__next {
+    right: 14px;
+}
+
+.pa-prj-modal__prev:hover,
+.pa-prj-modal__next:hover {
+    background: #9a4e25;
+}
+
+.pa-prj-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 17px 22px;
+    color: #bdb1a9;
+    font-size: 12px;
+}
+
+.pa-prj-modal__dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pa-prj-modal__dot {
+    width: 8px;
+    height: 8px;
+    border: 0;
+    border-radius: 50%;
+    background: #64564e;
+    cursor: pointer;
+}
+
+.pa-prj-modal__dot--active {
+    width: 22px;
+    border-radius: 6px;
+    background: #df6a27;
+}
+
+.pa-prj-modal :focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 3px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-prj-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-prj-create {
+        position: static;
+    }
+}
+
+@media (max-width: 760px) {
+    .porto-admin .pa-prj-category-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-prj-panel__heading {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-prj-category-layout,
+    .porto-admin .pa-prj-form {
+        padding: 21px;
+    }
+
+    .porto-admin .pa-prj-category-row {
+        flex-wrap: wrap;
+    }
+
+    .porto-admin .pa-prj-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-prj-form__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin .pa-prj-form__actions .pa-button {
+        flex: 1;
+    }
+
+    .porto-admin .pa-prj-list__body {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-prj-card__content {
+        padding: 17px;
+    }
+
+    .porto-admin .pa-prj-card .pa-prj-form {
+        padding: 18px;
+    }
+
+    .porto-admin .pa-prj-gallery-thumb > img {
+        height: 105px;
+    }
+
+    .pa-prj-modal__header {
+        padding: 16px;
+    }
+
+    .pa-prj-modal__title {
+        font-size: 15px;
+    }
+
+    .pa-prj-modal__prev,
+    .pa-prj-modal__next {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* ==========================================
+   ADMIN — PENELITIAN
+========================================== */
+
+.porto-admin .pa-res-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(300px, .85fr)
+        minmax(0, 1.15fr);
+    gap: 22px;
+    align-items: start;
+}
+
+/* PANELS */
+
+.porto-admin .pa-res-panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+}
+
+.porto-admin .pa-res-create {
+    position: sticky;
+    top: 103px;
+}
+
+.porto-admin .pa-res-panel__header {
+    padding: 28px 28px 23px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-res-panel__header h2 {
+    margin: 12px 0 7px;
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 23px;
+    font-weight: 650;
+    letter-spacing: -.04em;
+    line-height: 1.3;
+}
+
+.porto-admin .pa-res-panel__header p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+/* FORM */
+
+.porto-admin .pa-res-form {
+    padding: 27px 28px;
+}
+
+.porto-admin .pa-res-fields {
+    display: grid;
+    gap: 23px;
+}
+
+.porto-admin .pa-res-fields
+.pa-editor-textarea {
+    display: block;
+    width: 100%;
+    min-height: 170px;
+    resize: vertical;
+    border: 1px solid #49413a;
+    border-radius: 12px;
+    padding: 14px 15px;
+    background: #191919;
+    color: #f6f2ee;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.75;
+    outline: none;
+    transition: border-color .18s ease;
+}
+
+.porto-admin .pa-res-fields
+.pa-editor-textarea:focus {
+    border-color: #df6a27;
+}
+
+.porto-admin .pa-res-fields
+.pa-editor-textarea::placeholder {
+    color: #857b74;
+}
+
+.porto-admin .pa-res-character-count {
+    display: block;
+    margin-top: 7px;
+    color: #a99d95;
+    font-size: 11px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.porto-admin .pa-res-form__actions,
+.porto-admin .pa-res-edit__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 19px 28px;
+    border-top: 1px solid var(--pa-line);
+    background: #252322;
+}
+
+.porto-admin .pa-res-form__actions
+.pa-button:disabled,
+.porto-admin .pa-res-edit__actions
+.pa-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* LIST HEADER */
+
+.porto-admin .pa-res-list__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.porto-admin .pa-res-total {
+    display: grid;
+    place-items: center;
+    min-width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    padding: 0 9px;
+    border: 1px solid rgba(223,106,39,.25);
+    border-radius: 10px;
+    background: #35281f;
+    color: var(--pa-accent-light);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* SEARCH */
+
+.porto-admin .pa-res-search {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 20px 20px 10px;
+    padding: 0 13px;
+    min-height: 44px;
+    border: 1px solid #49413a;
+    border-radius: 11px;
+    background: #191919;
+    color: #968b83;
+    transition: border-color .18s ease;
+}
+
+.porto-admin .pa-res-search:focus-within {
+    border-color: var(--pa-accent);
+}
+
+.porto-admin .pa-res-search input {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: var(--pa-text);
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+}
+
+.porto-admin .pa-res-search input::placeholder {
+    color: #93877e;
+}
+
+.porto-admin .pa-res-search button {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    flex-shrink: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #aaa29c;
+}
+
+.porto-admin .pa-res-search button:hover {
+    color: #f6f2ee;
+}
+
+.porto-admin .pa-res-list__count {
+    padding: 5px 20px 15px;
+    border-bottom: 1px solid var(--pa-line);
+    color: #a99d95;
+    font-size: 11px;
+}
+
+/* RESEARCH CARDS */
+
+.porto-admin .pa-res-list__body {
+    display: grid;
+    gap: 13px;
+    padding: 20px;
+}
+
+.porto-admin .pa-res-item {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.085);
+    border-radius: 15px;
+    background: #1d1c1b;
+    transition: border-color .18s ease;
+}
+
+.porto-admin .pa-res-item:hover {
+    border-color: rgba(223,106,39,.28);
+}
+
+.porto-admin .pa-res-item__display {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 21px;
+}
+
+.porto-admin .pa-res-item__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid rgba(223,106,39,.23);
+    border-radius: 13px;
+    background: #37291f;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-res-item__content {
+    min-width: 0;
+    flex: 1;
+}
+
+.porto-admin .pa-res-item__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 11px;
+}
+
+.porto-admin .pa-res-item__eyebrow {
+    color: var(--pa-accent-light);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+}
+
+.porto-admin .pa-res-item__year {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8aba3;
+    font-size: 11px;
+}
+
+.porto-admin .pa-res-item__content h3 {
+    margin: 11px 0 12px;
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.035em;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-res-item__summary {
+    margin: 0;
+    color: #bdb1a9;
+    font-size: 12px;
+    line-height: 1.85;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* ACTIONS */
+
+.porto-admin .pa-res-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-res-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background .18s ease;
+}
+
+.porto-admin .pa-res-action:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-res-action--danger {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.porto-admin .pa-res-action--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.porto-admin .pa-res-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* EDIT MODE */
+
+.porto-admin .pa-res-edit__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 22px 22px 0;
+}
+
+.porto-admin .pa-res-edit__header h3 {
+    margin: 10px 0 0;
+    color: var(--pa-text);
+    font-family:
+        'Space Grotesk', Inter, sans-serif;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.035em;
+}
+
+.porto-admin .pa-res-item .pa-res-form {
+    padding: 22px;
+}
+
+.porto-admin .pa-res-edit__actions {
+    padding: 18px 22px;
+}
+
+.porto-admin .pa-res-close {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    border: 1px solid var(--pa-line);
+    border-radius: 9px;
+    background: #302c29;
+    color: #bdb1a9;
+}
+
+.porto-admin .pa-res-close:hover {
+    background: #3c3029;
+    color: #fff;
+}
+
+/* EMPTY STATE */
+
+.porto-admin .pa-res-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 54px 25px;
+    text-align: center;
+    color: var(--pa-accent-light);
+}
+
+.porto-admin .pa-res-empty h3 {
+    margin: 0;
+    color: var(--pa-text);
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-res-empty p {
+    max-width: 290px;
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1250px) {
+    .porto-admin .pa-res-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-res-create {
+        position: static;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-res-grid {
+        gap: 17px;
+    }
+
+    .porto-admin .pa-res-panel__header {
+        padding: 23px 21px;
+    }
+
+    .porto-admin .pa-res-form {
+        padding: 22px 21px;
+    }
+
+    .porto-admin .pa-res-form__actions {
+        padding: 18px 21px;
+    }
+
+    .porto-admin .pa-res-form__actions .pa-button {
+        width: 100%;
+    }
+
+    .porto-admin .pa-res-search {
+        margin: 16px 13px 9px;
+    }
+
+    .porto-admin .pa-res-list__count {
+        padding: 5px 13px 14px;
+    }
+
+    .porto-admin .pa-res-list__body {
+        padding: 13px;
+    }
+
+    .porto-admin .pa-res-item__display {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .porto-admin .pa-res-item__icon {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+    }
+
+    .porto-admin .pa-res-item__content h3 {
+        font-size: 16px;
+    }
+
+    .porto-admin .pa-res-edit__header {
+        padding: 18px 18px 0;
+    }
+
+    .porto-admin .pa-res-item .pa-res-form {
+        padding: 18px;
+    }
+
+    .porto-admin .pa-res-edit__actions {
+        padding: 18px;
+    }
+
+    .porto-admin .pa-res-edit__actions .pa-button {
+        flex: 1;
+    }
 }

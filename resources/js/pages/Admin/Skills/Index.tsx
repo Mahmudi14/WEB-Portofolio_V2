@@ -1,6 +1,23 @@
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
+
+import {
+    CheckCircle2,
+    Layers3,
+    Pencil,
+    Plus,
+    Save,
+    Trash2,
+    X,
+} from 'lucide-react';
+
+import AdminLayout from '@/layouts/admin-layout';
+
+// ==========================================
+// TYPES
+// ==========================================
 
 type SkillItem = {
     id: number;
@@ -17,24 +34,80 @@ type SkillCategory = {
     items: SkillItem[];
 };
 
-type Props = { categories: SkillCategory[] };
-type CategoryForm = { name: string; description: string; sort_order: number };
-type ItemForm = { name: string; sort_order: number };
+type Props = {
+    categories: SkillCategory[];
+};
 
-const field = 'mt-1 block w-full rounded-lg border border-[#49413a] bg-[#292929] p-2.5 text-[#f6f2ee] focus:border-[#df6a27] focus:outline-none';
-const primary = 'rounded-lg bg-[#df6a27] px-4 py-2 font-medium text-[#151515] disabled:opacity-50';
-const secondary = 'rounded-lg border border-[#6b5649] px-3 py-2 text-sm';
-const danger = 'rounded-lg border border-red-500/60 px-3 py-2 text-sm text-red-300';
+type CategoryForm = {
+    name: string;
+    description: string;
+    sort_order: number;
+};
 
-function ErrorText({ text }: { text?: string }) {
-    return text ? <p className="mt-1 text-sm text-red-400" role="alert">{text}</p> : null;
+type ItemForm = {
+    name: string;
+    sort_order: number;
+};
+
+// ==========================================
+// REUSABLE FIELD
+// ==========================================
+
+function SkillField({
+    id,
+    label,
+    error,
+    hint,
+    children,
+}: {
+    id: string;
+    label: string;
+    error?: string;
+    hint?: string;
+    children: ReactNode;
+}) {
+    return (
+        <div className="pa-editor-field">
+            <label
+                htmlFor={id}
+                className="pa-editor-label"
+            >
+                {label}
+            </label>
+
+            {children}
+
+            {hint && (
+                <p className="pa-editor-hint">{hint}</p>
+            )}
+
+            {error && (
+                <p
+                    id={`${id}-error`}
+                    role="alert"
+                    className="pa-editor-error"
+                >
+                    {error}
+                </p>
+            )}
+        </div>
+    );
 }
 
+// ==========================================
+// CREATE CATEGORY
+// ==========================================
+
 function CreateCategory() {
-    const form = useForm<CategoryForm>({ name: '', description: '', sort_order: 0 });
+    const form = useForm<CategoryForm>({
+        name: '',
+        description: '',
+        sort_order: 0,
+    });
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+
         form.post('/admin/skills', {
             preserveScroll: true,
             onSuccess: () => form.reset(),
@@ -42,208 +115,777 @@ function CreateCategory() {
     }
 
     return (
-        <form onSubmit={submit} className="space-y-3 rounded-xl border border-[#49413a] bg-[#252525] p-5">
-            <h2 className="text-lg font-semibold">Tambah Kategori</h2>
-            <label className="block">Nama kategori
-                <input className={field} required maxLength={120} value={form.data.name}
-                    onChange={e => form.setData('name', e.target.value)} placeholder="Machine Learning" />
-                <ErrorText text={form.errors.name} />
-            </label>
-            <label className="block">Deskripsi kategori
-                <textarea className={field} required rows={3} value={form.data.description}
-                    onChange={e => form.setData('description', e.target.value)} />
-                <ErrorText text={form.errors.description} />
-            </label>
-            <label className="block">Urutan
-                <input className={field} type="number" min={0} value={form.data.sort_order}
-                    onChange={e => form.setData('sort_order', Number(e.target.value || 0))} />
-                <ErrorText text={form.errors.sort_order} />
-            </label>
-            <button type="submit" className={primary} disabled={form.processing}>Tambah Kategori</button>
-        </form>
-    );
-}
+        <section
+            className="pa-skill-panel pa-skill-create"
+            aria-label="Tambah kategori"
+        >
+            <header className="pa-skill-panel__header">
+                <span className="pa-editor-kicker">
+                    <Plus size={15} aria-hidden="true" />
+                    KATEGORI BARU
+                </span>
 
-function CreateItem({ categoryId }: { categoryId: number }) {
-    const form = useForm<ItemForm>({ name: '', sort_order: 0 });
+                <h2>Tambah Kategori</h2>
 
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        form.post(`/admin/skills/${categoryId}/items`, {
-            preserveScroll: true,
-            onSuccess: () => form.reset(),
-        });
-    }
+                <p>
+                    Kelompokkan keahlian dan minat agar
+                    mudah dipahami pengunjung.
+                </p>
+            </header>
 
-    return (
-        <form onSubmit={submit} className="flex flex-wrap items-end gap-2 rounded-lg bg-[#292929] p-3">
-            <label className="min-w-[180px] flex-1 text-sm">Sub-keahlian baru
-                <input className={field} required maxLength={120} value={form.data.name}
-                    onChange={e => form.setData('name', e.target.value)} placeholder="Laravel" />
-                <ErrorText text={form.errors.name} />
-            </label>
-            <label className="w-24 text-sm">Urutan
-                <input className={field} type="number" min={0} value={form.data.sort_order}
-                    onChange={e => form.setData('sort_order', Number(e.target.value || 0))} />
-                <ErrorText text={form.errors.sort_order} />
-            </label>
-            <button type="submit" className={primary} disabled={form.processing}>Tambah</button>
-        </form>
-    );
-}
+            <form onSubmit={submit}>
+                <div className="pa-skill-form">
+                    <SkillField
+                        id="category-name"
+                        label="Nama Kategori"
+                        error={form.errors.name}
+                    >
+                        <input
+                            id="category-name"
+                            className="pa-editor-input"
+                            required
+                            maxLength={120}
+                            placeholder="Contoh: Web Development"
+                            value={form.data.name}
+                            aria-invalid={Boolean(
+                                form.errors.name
+                            )}
+                            onChange={(event) =>
+                                form.setData(
+                                    'name',
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </SkillField>
 
-function ExistingItem({ categoryId, item }: { categoryId: number; item: SkillItem }) {
-    const [editing, setEditing] = useState(false);
-    const form = useForm<ItemForm>({ name: item.name, sort_order: item.sort_order });
-    const itemUrl = `/admin/skills/${categoryId}/items/${item.id}`;
+                    <SkillField
+                        id="category-description"
+                        label="Deskripsi Kategori"
+                        error={form.errors.description}
+                        hint="Jelaskan fokus kategori ini. Deskripsi wajib diisi."
+                    >
+                        <textarea
+                            id="category-description"
+                            className="pa-editor-textarea"
+                            rows={4}
+                            required
+                            value={form.data.description}
+                            aria-invalid={Boolean(
+                                form.errors.description
+                            )}
+                            onChange={(event) =>
+                                form.setData(
+                                    'description',
+                                    event.target.value
+                                )
+                            }
+                            placeholder="Deskripsikan kemampuan dalam kategori ini..."
+                        />
+                    </SkillField>
 
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        form.put(itemUrl, {
-            preserveScroll: true,
-            onSuccess: () => { form.defaults(); setEditing(false); },
-        });
-    }
-
-    function destroy() {
-        if (!window.confirm(`Hapus sub-keahlian "${item.name}"?`)) return;
-        router.delete(itemUrl, { preserveScroll: true });
-    }
-
-    if (!editing) {
-        return (
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#413a34] p-3">
-                <div><span className="font-medium">{item.name}</span>
-                    <span className="ml-2 text-xs text-[#bbb4ad]">Urutan {item.sort_order}</span></div>
-                <div className="flex gap-2">
-                    <button type="button" className={secondary} onClick={() => setEditing(true)}>Edit</button>
-                    <button type="button" className={danger} onClick={destroy}>Hapus</button>
+                    <SkillField
+                        id="category-order"
+                        label="Urutan Tampil"
+                        error={form.errors.sort_order}
+                        hint="Angka lebih kecil ditampilkan lebih awal."
+                    >
+                        <input
+                            id="category-order"
+                            className="pa-editor-input"
+                            type="number"
+                            required
+                            min={0}
+                            max={4294967295}
+                            step={1}
+                            value={form.data.sort_order}
+                            aria-invalid={Boolean(
+                                form.errors.sort_order
+                            )}
+                            onChange={(event) =>
+                                form.setData(
+                                    'sort_order',
+                                    Number(
+                                        event.target.value || 0
+                                    )
+                                )
+                            }
+                        />
+                    </SkillField>
                 </div>
-            </div>
+
+                <div className="pa-skill-form__actions">
+                    <button
+                        type="submit"
+                        className="pa-button pa-button--primary"
+                        disabled={form.processing}
+                    >
+                        <Plus size={17} aria-hidden="true" />
+
+                        {form.processing
+                            ? 'Menambahkan...'
+                            : 'Tambah Kategori'}
+                    </button>
+                </div>
+            </form>
+        </section>
+    );
+}
+
+// ==========================================
+// CREATE SKILL ITEM
+// ==========================================
+
+function CreateItem({
+    categoryId,
+}: {
+    categoryId: number;
+}) {
+    const form = useForm<ItemForm>({
+        name: '',
+        sort_order: 0,
+    });
+
+    function submit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        form.post(
+            `/admin/skills/${categoryId}/items`,
+            {
+                preserveScroll: true,
+                onSuccess: () => form.reset(),
+            }
         );
     }
 
     return (
-        <form onSubmit={submit} className="flex flex-wrap items-end gap-2 rounded-lg border border-[#df6a27] p-3">
-            <label className="min-w-[160px] flex-1 text-sm">Nama sub-keahlian
-                <input className={field} required maxLength={120} value={form.data.name}
-                    onChange={e => form.setData('name', e.target.value)} />
-                <ErrorText text={form.errors.name} />
-            </label>
-            <label className="w-24 text-sm">Urutan
-                <input className={field} type="number" min={0} value={form.data.sort_order}
-                    onChange={e => form.setData('sort_order', Number(e.target.value || 0))} />
-                <ErrorText text={form.errors.sort_order} />
-            </label>
-            <button type="submit" className={primary} disabled={form.processing}>Simpan</button>
-            <button type="button" className={secondary}
-                onClick={() => { form.reset(); form.clearErrors(); setEditing(false); }}>Batal</button>
+        <form
+            className="pa-skill-item-create"
+            onSubmit={submit}
+        >
+            <div className="pa-skill-item-create__fields">
+                <SkillField
+                    id={`create-item-name-${categoryId}`}
+                    label="Nama Keahlian"
+                    error={form.errors.name}
+                >
+                    <input
+                        id={`create-item-name-${categoryId}`}
+                        className="pa-editor-input"
+                        required
+                        maxLength={120}
+                        placeholder="Contoh: Laravel"
+                        value={form.data.name}
+                        aria-invalid={Boolean(
+                            form.errors.name
+                        )}
+                        onChange={(event) =>
+                            form.setData(
+                                'name',
+                                event.target.value
+                            )
+                        }
+                    />
+                </SkillField>
+
+                <SkillField
+                    id={`create-item-order-${categoryId}`}
+                    label="Urutan"
+                    error={form.errors.sort_order}
+                >
+                    <input
+                        id={`create-item-order-${categoryId}`}
+                        className="pa-editor-input"
+                        type="number"
+                        required
+                        min={0}
+                        max={4294967295}
+                        step={1}
+                        value={form.data.sort_order}
+                        aria-invalid={Boolean(
+                            form.errors.sort_order
+                        )}
+                        onChange={(event) =>
+                            form.setData(
+                                'sort_order',
+                                Number(
+                                    event.target.value || 0
+                                )
+                            )
+                        }
+                    />
+                </SkillField>
+            </div>
+
+            <button
+                type="submit"
+                className="pa-skill-add-item"
+                disabled={form.processing}
+            >
+                <Plus size={16} aria-hidden="true" />
+
+                {form.processing
+                    ? 'Menambahkan...'
+                    : 'Tambah Keahlian'}
+            </button>
         </form>
     );
 }
 
-function CategoryBlock({ category }: { category: SkillCategory }) {
+// ==========================================
+// EXISTING SKILL ITEM
+// ==========================================
+
+function ExistingItem({
+    categoryId,
+    item,
+}: {
+    categoryId: number;
+    item: SkillItem;
+}) {
     const [editing, setEditing] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const form = useForm<ItemForm>({
+        name: item.name,
+        sort_order: item.sort_order,
+    });
+
+    const itemUrl =
+        `/admin/skills/${categoryId}/items/${item.id}`;
+
+    function submit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        form.put(itemUrl, {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.setDefaults();
+                setEditing(false);
+            },
+        });
+    }
+
+    function cancel() {
+        form.reset();
+        form.clearErrors();
+        setEditing(false);
+    }
+
+    function destroy() {
+        if (
+            !window.confirm(
+                `Hapus keahlian "${item.name}"?`
+            )
+        ) {
+            return;
+        }
+
+        router.delete(itemUrl, {
+            preserveScroll: true,
+            onStart: () => setDeleting(true),
+            onFinish: () => setDeleting(false),
+        });
+    }
+
+    if (editing) {
+        return (
+            <form
+                className="pa-skill-item-edit"
+                onSubmit={submit}
+            >
+                <div className="pa-skill-item-edit__fields">
+                    <SkillField
+                        id={`edit-item-name-${item.id}`}
+                        label="Nama Keahlian"
+                        error={form.errors.name}
+                    >
+                        <input
+                            id={`edit-item-name-${item.id}`}
+                            className="pa-editor-input"
+                            required
+                            maxLength={120}
+                            value={form.data.name}
+                            aria-invalid={Boolean(
+                                form.errors.name
+                            )}
+                            onChange={(event) =>
+                                form.setData(
+                                    'name',
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </SkillField>
+
+                    <SkillField
+                        id={`edit-item-order-${item.id}`}
+                        label="Urutan"
+                        error={form.errors.sort_order}
+                    >
+                        <input
+                            id={`edit-item-order-${item.id}`}
+                            className="pa-editor-input"
+                            type="number"
+                            required
+                            min={0}
+                            max={4294967295}
+                            step={1}
+                            value={form.data.sort_order}
+                            aria-invalid={Boolean(
+                                form.errors.sort_order
+                            )}
+                            onChange={(event) =>
+                                form.setData(
+                                    'sort_order',
+                                    Number(
+                                        event.target.value || 0
+                                    )
+                                )
+                            }
+                        />
+                    </SkillField>
+                </div>
+
+                <div className="pa-skill-inline-actions">
+                    <button
+                        type="button"
+                        className="pa-skill-action"
+                        onClick={cancel}
+                        disabled={form.processing}
+                    >
+                        <X size={15} aria-hidden="true" />
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        className="pa-button pa-button--primary"
+                        disabled={
+                            form.processing || !form.isDirty
+                        }
+                    >
+                        <Save size={15} aria-hidden="true" />
+
+                        {form.processing
+                            ? 'Menyimpan...'
+                            : 'Simpan'}
+                    </button>
+                </div>
+            </form>
+        );
+    }
+
+    return (
+        <div className="pa-skill-item">
+            <div className="pa-skill-item__info">
+                <strong>{item.name}</strong>
+                <span>Urutan {item.sort_order}</span>
+            </div>
+
+            <div className="pa-skill-inline-actions">
+                <button
+                    type="button"
+                    className="pa-skill-action"
+                    onClick={() => setEditing(true)}
+                >
+                    <Pencil size={15} aria-hidden="true" />
+                    Edit
+                </button>
+
+                <button
+                    type="button"
+                    className="pa-skill-action pa-skill-action--danger"
+                    onClick={destroy}
+                    disabled={deleting}
+                >
+                    <Trash2 size={15} aria-hidden="true" />
+
+                    {deleting
+                        ? 'Menghapus...'
+                        : 'Hapus'}
+                </button>
+            </div>
+        </div>
+    );
+}
+
+// ==========================================
+// CATEGORY BLOCK
+// ==========================================
+
+function CategoryBlock({
+    category,
+}: {
+    category: SkillCategory;
+}) {
+    const [editing, setEditing] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
     const form = useForm<CategoryForm>({
         name: category.name,
         description: category.description,
         sort_order: category.sort_order,
     });
-    const categoryUrl = `/admin/skills/${category.id}`;
+
+    const categoryUrl =
+        `/admin/skills/${category.id}`;
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+
         form.put(categoryUrl, {
             preserveScroll: true,
-            onSuccess: () => { form.defaults(); setEditing(false); },
+            onSuccess: () => {
+                form.setDefaults();
+                setEditing(false);
+            },
         });
     }
 
-    function destroy() {
-        const msg = category.items.length > 0
-            ? `Hapus kategori "${category.name}" BESERTA ${category.items.length} sub-keahlian di dalamnya?`
-            : `Hapus kategori "${category.name}"?`;
-        if (!window.confirm(msg)) return;
-        router.delete(categoryUrl, { preserveScroll: true });
+    function cancel() {
+        form.reset();
+        form.clearErrors();
+        setEditing(false);
     }
 
+    function destroy() {
+        const message =
+            category.items.length > 0
+                ? `Hapus kategori "${category.name}" beserta ${category.items.length} keahlian di dalamnya?`
+                : `Hapus kategori "${category.name}"?`;
+
+        if (!window.confirm(message)) {
+            return;
+        }
+
+        router.delete(categoryUrl, {
+            preserveScroll: true,
+            onStart: () => setDeleting(true),
+            onFinish: () => setDeleting(false),
+        });
+    }
+
+    const items = [...category.items].sort(
+        (a, b) =>
+            a.sort_order - b.sort_order ||
+            a.id - b.id
+    );
+
     return (
-        <section className="space-y-4 rounded-xl border border-[#49413a] bg-[#252525] p-5">
+        <article className="pa-skill-category">
             {!editing ? (
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1 space-y-1">
-                        <h2 className="text-lg font-semibold">{category.name}</h2>
-                        <p className="whitespace-pre-wrap text-sm text-[#bbb4ad]">{category.description}</p>
-                        <p className="text-xs text-[#f2a06e]">Urutan {category.sort_order} · {category.items.length} sub-keahlian</p>
+                <div className="pa-skill-category__head">
+                    <div className="pa-skill-category__main">
+                        <span className="pa-skill-category__eyebrow">
+                            KATEGORI · URUTAN {category.sort_order}
+                        </span>
+
+                        <h3>{category.name}</h3>
+
+                        <p>{category.description}</p>
+
+                        <span className="pa-skill-category__count">
+                            {category.items.length} keahlian
+                        </span>
                     </div>
-                    <div className="flex gap-2">
-                        <button type="button" className={secondary} onClick={() => setEditing(true)}>Edit</button>
-                        <button type="button" className={danger} onClick={destroy}>Hapus</button>
+
+                    <div className="pa-skill-category__actions">
+                        <button
+                            type="button"
+                            className="pa-skill-action"
+                            onClick={() => setEditing(true)}
+                        >
+                            <Pencil
+                                size={15}
+                                aria-hidden="true"
+                            />
+                            Edit
+                        </button>
+
+                        <button
+                            type="button"
+                            className="pa-skill-action pa-skill-action--danger"
+                            onClick={destroy}
+                            disabled={deleting}
+                        >
+                            <Trash2
+                                size={15}
+                                aria-hidden="true"
+                            />
+
+                            {deleting
+                                ? 'Menghapus...'
+                                : 'Hapus'}
+                        </button>
                     </div>
                 </div>
             ) : (
-                <form onSubmit={submit} className="space-y-3 rounded-lg border border-[#df6a27] p-3">
-                    <h2 className="font-semibold">Edit Kategori</h2>
-                    <label className="block">Nama kategori
-                        <input className={field} required maxLength={120} value={form.data.name}
-                            onChange={e => form.setData('name', e.target.value)} />
-                        <ErrorText text={form.errors.name} />
-                    </label>
-                    <label className="block">Deskripsi
-                        <textarea className={field} required rows={3} value={form.data.description}
-                            onChange={e => form.setData('description', e.target.value)} />
-                        <ErrorText text={form.errors.description} />
-                    </label>
-                    <label className="block">Urutan
-                        <input className={field} type="number" min={0} value={form.data.sort_order}
-                            onChange={e => form.setData('sort_order', Number(e.target.value || 0))} />
-                        <ErrorText text={form.errors.sort_order} />
-                    </label>
-                    <div className="flex gap-2">
-                        <button type="submit" className={primary} disabled={form.processing}>Simpan</button>
-                        <button type="button" className={secondary}
-                            onClick={() => { form.reset(); form.clearErrors(); setEditing(false); }}>Batal</button>
+                <form
+                    className="pa-skill-category__edit"
+                    onSubmit={submit}
+                >
+                    <div className="pa-skill-category__edit-head">
+                        <div>
+                            <span className="pa-editor-kicker">
+                                <Pencil
+                                    size={14}
+                                    aria-hidden="true"
+                                />
+                                EDIT KATEGORI
+                            </span>
+
+                            <h3>Perbarui Kategori</h3>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="pa-skill-close"
+                            onClick={cancel}
+                            disabled={form.processing}
+                            aria-label="Tutup edit kategori"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+
+                    <div className="pa-skill-form">
+                        <SkillField
+                            id={`edit-category-name-${category.id}`}
+                            label="Nama Kategori"
+                            error={form.errors.name}
+                        >
+                            <input
+                                id={`edit-category-name-${category.id}`}
+                                className="pa-editor-input"
+                                required
+                                maxLength={120}
+                                value={form.data.name}
+                                aria-invalid={Boolean(
+                                    form.errors.name
+                                )}
+                                onChange={(event) =>
+                                    form.setData(
+                                        'name',
+                                        event.target.value
+                                    )
+                                }
+                            />
+                        </SkillField>
+
+                        <SkillField
+                            id={`edit-category-description-${category.id}`}
+                            label="Deskripsi Kategori"
+                            error={form.errors.description}
+                        >
+                            <textarea
+                                id={`edit-category-description-${category.id}`}
+                                className="pa-editor-textarea"
+                                rows={4}
+                                required
+                                value={form.data.description}
+                                aria-invalid={Boolean(
+                                    form.errors.description
+                                )}
+                                onChange={(event) =>
+                                    form.setData(
+                                        'description',
+                                        event.target.value
+                                    )
+                                }
+                            />
+                        </SkillField>
+
+                        <SkillField
+                            id={`edit-category-order-${category.id}`}
+                            label="Urutan Tampil"
+                            error={form.errors.sort_order}
+                        >
+                            <input
+                                id={`edit-category-order-${category.id}`}
+                                className="pa-editor-input"
+                                type="number"
+                                required
+                                min={0}
+                                max={4294967295}
+                                step={1}
+                                value={form.data.sort_order}
+                                aria-invalid={Boolean(
+                                    form.errors.sort_order
+                                )}
+                                onChange={(event) =>
+                                    form.setData(
+                                        'sort_order',
+                                        Number(
+                                            event.target.value || 0
+                                        )
+                                    )
+                                }
+                            />
+                        </SkillField>
+                    </div>
+
+                    <div className="pa-skill-category__edit-actions">
+                        <button
+                            type="button"
+                            className="pa-skill-action"
+                            onClick={cancel}
+                            disabled={form.processing}
+                        >
+                            Batal
+                        </button>
+
+                        <button
+                            type="submit"
+                            className="pa-button pa-button--primary"
+                            disabled={
+                                form.processing || !form.isDirty
+                            }
+                        >
+                            <Save
+                                size={16}
+                                aria-hidden="true"
+                            />
+
+                            {form.processing
+                                ? 'Menyimpan...'
+                                : 'Simpan Perubahan'}
+                        </button>
                     </div>
                 </form>
             )}
 
-            <div className="space-y-2 border-t border-[#49413a] pt-4">
-                <h3 className="font-medium">Sub-keahlian</h3>
-                {category.items.length === 0
-                    ? <p className="text-sm text-[#bbb4ad]">Belum ada sub-keahlian.</p>
-                    : category.items.map(item => <ExistingItem key={item.id} categoryId={category.id} item={item} />)}
+            {/* SUB-KEAHLIAN */}
+
+            <div className="pa-skill-category__items">
+                <div className="pa-skill-category__items-title">
+                    <h4>Daftar Keahlian</h4>
+
+                    <span>
+                        {category.items.length} item
+                    </span>
+                </div>
+
+                {items.length === 0 ? (
+                    <p className="pa-skill-items-empty">
+                        Belum ada keahlian di kategori ini.
+                    </p>
+                ) : (
+                    <div className="pa-skill-items-list">
+                        {items.map((item) => (
+                            <ExistingItem
+                                key={item.id}
+                                categoryId={category.id}
+                                item={item}
+                            />
+                        ))}
+                    </div>
+                )}
+
                 <CreateItem categoryId={category.id} />
             </div>
-        </section>
+        </article>
     );
 }
 
-export default function Index({ categories }: Props) {
-    const flash = (usePage().props as unknown as { flash?: { success?: string } }).flash;
+// ==========================================
+// MAIN PAGE
+// ==========================================
+
+export default function Index({
+    categories,
+}: Props) {
+    const { flash } = usePage().props as {
+        flash?: {
+            success?: string | null;
+        };
+    };
+
+    const ordered = [...categories].sort(
+        (a, b) =>
+            a.sort_order - b.sort_order ||
+            a.id - b.id
+    );
 
     return (
-        <main className="min-h-screen bg-[#1d1d1d] p-5 text-[#f6f2ee] md:p-8">
-            <Head title="Admin — Keahlian & Minat" />
-            <div className="mx-auto max-w-4xl space-y-6">
-                <nav className="flex flex-wrap gap-1" aria-label="Menu admin">
-                    <Link href="/admin/profile" className={secondary}>Profil</Link>
-                    <Link href="/admin/social-links" className={secondary}>Media Sosial</Link>
-                    <Link href="/admin/skills" className={secondary}>Keahlian</Link>
-                </nav>
-                <div>
-                    <p className="text-sm font-medium text-[#df6a27]">ADMIN / KONTEN</p>
-                    <h1 className="text-2xl font-semibold">Keahlian & Minat</h1>
-                    <p className="mt-1 text-sm text-[#bbb4ad]">Kategori memiliki deskripsi; sub-keahlian cukup nama. Tanpa ikon.</p>
+        <AdminLayout
+            title="Keahlian & Minat"
+            description="Kelola kategori dan keahlian yang ditampilkan pada website."
+        >
+            <Head title="Keahlian & Minat · Portfolio Admin" />
+
+            {flash?.success && (
+                <div
+                    className="pa-editor-success"
+                    role="status"
+                >
+                    <CheckCircle2
+                        size={18}
+                        aria-hidden="true"
+                    />
+                    {flash.success}
                 </div>
-                {flash?.success && <p className="rounded-lg border border-[#df6a27] p-3" role="status">{flash.success}</p>}
+            )}
+
+            <div className="pa-skill-grid">
                 <CreateCategory />
-                <div className="space-y-4">
-                    <h2 className="text-lg font-semibold">Daftar Kategori ({categories.length})</h2>
-                    {categories.length === 0
-                        ? <p className="text-sm text-[#bbb4ad]">Belum ada kategori.</p>
-                        : categories.map(category => <CategoryBlock key={category.id} category={category} />)}
-                </div>
+
+                <section
+                    className="pa-skill-panel pa-skill-list"
+                    aria-label="Daftar kategori keahlian"
+                >
+                    <header className="pa-skill-panel__header">
+                        <span className="pa-editor-kicker">
+                            <Layers3
+                                size={15}
+                                aria-hidden="true"
+                            />
+                            KATEGORI TERDAFTAR
+                        </span>
+
+                        <div className="pa-skill-list__heading">
+                            <div>
+                                <h2>Daftar Kategori</h2>
+
+                                <p>
+                                    Kategori dan seluruh keahlian
+                                    yang sudah ditambahkan.
+                                </p>
+                            </div>
+
+                            <span className="pa-skill-total">
+                                {categories.length}
+                            </span>
+                        </div>
+                    </header>
+
+                    {ordered.length === 0 ? (
+                        <div className="pa-skill-empty">
+                            <Layers3
+                                size={29}
+                                strokeWidth={1.5}
+                                aria-hidden="true"
+                            />
+
+                            <h3>Belum ada kategori</h3>
+
+                            <p>
+                                Mulai dengan menambahkan kategori
+                                pertama melalui formulir di samping.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="pa-skill-list__body">
+                            {ordered.map((category) => (
+                                <CategoryBlock
+                                    key={category.id}
+                                    category={category}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
             </div>
-        </main>
+        </AdminLayout>
     );
 }

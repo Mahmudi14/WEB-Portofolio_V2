@@ -1,7 +1,7 @@
 
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import type { FormEvent, ReactNode } from 'react';
+import type { FormEvent, ReactNode, RefObject } from 'react';
 import {
     Camera,
     CheckCircle2,
@@ -15,10 +15,6 @@ import {
 
 import AdminLayout from '../../../layouts/admin-layout';
 
-// ========================================
-// TYPES
-// ========================================
-
 type ProfileValues = {
     full_name: string;
     display_name: string;
@@ -28,13 +24,12 @@ type ProfileValues = {
     logo_url: string | null;
 };
 
-type HeroValues = {
-    headline: string;
+type AboutValues = {
     description: string;
 };
 
-type AboutValues = {
-    description: string;
+type HeroValues = AboutValues & {
+    headline: string;
 };
 
 type Props =
@@ -42,31 +37,31 @@ type Props =
     | { kind: 'hero'; values: HeroValues }
     | { kind: 'about'; values: AboutValues };
 
-// ========================================
-// IMAGE PREVIEW HOOK
-// ========================================
+// ==========================================
+// PRATINJAU GAMBAR
+// ==========================================
 
-function useFilePreview(file: File | null): string | null {
-    const [preview, setPreview] = useState<string | null>(null);
+function useImagePreview(file: File | null) {
+    const [url, setUrl] = useState<string | null>(null);
 
     useEffect(() => {
         if (!file) {
-            setPreview(null);
+            setUrl(null);
             return;
         }
 
-        const url = URL.createObjectURL(file);
-        setPreview(url);
+        const nextUrl = URL.createObjectURL(file);
+        setUrl(nextUrl);
 
-        return () => URL.revokeObjectURL(url);
+        return () => URL.revokeObjectURL(nextUrl);
     }, [file]);
 
-    return preview;
+    return url;
 }
 
-// ========================================
-// REUSABLE COMPONENTS
-// ========================================
+// ==========================================
+// KOMPONEN FORM
+// ==========================================
 
 function Field({
     id,
@@ -84,8 +79,8 @@ function Field({
     return (
         <div className="pa-editor-field">
             <label
-                htmlFor={id}
                 className="pa-editor-label"
+                htmlFor={id}
             >
                 {label}
             </label>
@@ -111,7 +106,32 @@ function Field({
     );
 }
 
-function SaveButton({
+function EditorHeading({
+    icon,
+    eyebrow,
+    title,
+    description,
+}: {
+    icon: ReactNode;
+    eyebrow: string;
+    title: string;
+    description: string;
+}) {
+    return (
+        <header className="pa-editor-group__header">
+            <span className="pa-editor-kicker">
+                {icon}
+                {eyebrow}
+            </span>
+
+            <h2>{title}</h2>
+
+            <p>{description}</p>
+        </header>
+    );
+}
+
+function SaveBar({
     processing,
     dirty,
 }: {
@@ -120,18 +140,23 @@ function SaveButton({
 }) {
     return (
         <div className="pa-editor-actions">
-            <span className="pa-editor-save-note">
-                {dirty
-                    ? 'Ada perubahan yang belum disimpan'
-                    : 'Tidak ada perubahan'}
+            <span
+                className="pa-editor-save-note"
+                aria-live="polite"
+            >
+                {processing
+                    ? 'Sedang menyimpan perubahan...'
+                    : dirty
+                      ? 'Ada perubahan yang belum disimpan.'
+                      : 'Belum ada perubahan.'}
             </span>
 
             <button
+                className="pa-button pa-button--primary"
                 type="submit"
                 disabled={processing || !dirty}
-                className="pa-button pa-button--primary"
             >
-                <Save size={17} />
+                <Save size={17} aria-hidden="true" />
 
                 {processing
                     ? 'Menyimpan...'
@@ -147,21 +172,37 @@ function PreviewCard({
     children: ReactNode;
 }) {
     return (
-        <aside className="pa-editor-preview">
+        <aside
+            className="pa-editor-preview"
+            aria-label="Pratinjau konten"
+        >
             <div className="pa-editor-preview__header">
                 <span className="pa-editor-kicker">
-                    <Sparkles size={15} />
-                    LIVE PREVIEW
+                    <Sparkles
+                        size={15}
+                        aria-hidden="true"
+                    />
+                    PRATINJAU LANGSUNG
                 </span>
 
-                <span className="pa-editor-preview__dot" />
+                <span
+                    className="pa-editor-preview__dot"
+                    aria-hidden="true"
+                />
             </div>
 
             {children}
 
             <div className="pa-editor-preview__footer">
-                <Info size={15} />
-                Preview mengikuti input yang sedang diedit.
+                <Info
+                    size={15}
+                    aria-hidden="true"
+                />
+
+                <span>
+                    Pratinjau mengikuti perubahan.
+                    Data tersimpan setelah menekan Simpan.
+                </span>
             </div>
         </aside>
     );
@@ -170,35 +211,38 @@ function PreviewCard({
 function ImageUpload({
     id,
     title,
-    accept,
-    inputRef,
     file,
+    inputRef,
     onChange,
 }: {
     id: string;
     title: string;
-    accept: string;
-    inputRef: React.RefObject<HTMLInputElement | null>;
     file: File | null;
+    inputRef: RefObject<HTMLInputElement | null>;
     onChange: (file: File | null) => void;
 }) {
     return (
-        <>
+        <div className="pa-editor-upload-wrap">
             <label
-                htmlFor={id}
                 className="pa-editor-upload"
+                htmlFor={id}
             >
                 <span className="pa-editor-upload__icon">
-                    <Camera size={23} />
+                    <Camera
+                        size={21}
+                        aria-hidden="true"
+                    />
                 </span>
 
-                <span>
+                <span className="pa-editor-upload__content">
                     <strong>
                         {file ? file.name : title}
                     </strong>
 
                     <small>
-                        Klik untuk memilih gambar
+                        {file
+                            ? 'File baru siap diunggah'
+                            : 'Klik untuk memilih gambar'}
                     </small>
                 </span>
             </label>
@@ -206,48 +250,49 @@ function ImageUpload({
             <input
                 ref={inputRef}
                 id={id}
+                name={id}
                 type="file"
                 className="pa-editor-file-input"
-                accept={accept}
+                accept=".jpg,.jpeg,.png,.webp"
                 onChange={(event) => {
                     onChange(
                         event.target.files?.[0] ?? null
                     );
                 }}
             />
-        </>
+        </div>
     );
 }
 
-// ========================================
-// PERSONAL INFORMATION
-// ========================================
+// ==========================================
+// INFORMASI PRIBADI
+// ==========================================
 
 function ProfileEditor({
     values,
 }: {
     values: ProfileValues;
 }) {
-    const photoInputRef = useRef<HTMLInputElement>(null);
-    const logoInputRef = useRef<HTMLInputElement>(null);
+    const photoRef = useRef<HTMLInputElement>(null);
+    const logoRef = useRef<HTMLInputElement>(null);
 
     const form = useForm({
         full_name: values.full_name,
         display_name: values.display_name,
         email: values.email,
         whatsapp: values.whatsapp,
-
         photo: null as File | null,
         logo: null as File | null,
-
         _method: 'put' as const,
     });
 
-    const photoPreview = useFilePreview(form.data.photo);
-    const logoPreview = useFilePreview(form.data.logo);
+    const photoUrl =
+        useImagePreview(form.data.photo) ??
+        values.photo_url;
 
-    const currentPhoto = photoPreview || values.photo_url;
-    const currentLogo = logoPreview || values.logo_url;
+    const logoUrl =
+        useImagePreview(form.data.logo) ??
+        values.logo_url;
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -257,7 +302,7 @@ function ProfileEditor({
             preserveScroll: true,
 
             onSuccess: () => {
-                form.defaults({
+                form.setDefaults({
                     ...form.data,
                     photo: null,
                     logo: null,
@@ -265,12 +310,12 @@ function ProfileEditor({
 
                 form.reset('photo', 'logo');
 
-                if (photoInputRef.current) {
-                    photoInputRef.current.value = '';
+                if (photoRef.current) {
+                    photoRef.current.value = '';
                 }
 
-                if (logoInputRef.current) {
-                    logoInputRef.current.value = '';
+                if (logoRef.current) {
+                    logoRef.current.value = '';
                 }
             },
         });
@@ -279,224 +324,253 @@ function ProfileEditor({
     return (
         <div className="pa-editor-split">
             <form
-                onSubmit={submit}
                 className="pa-editor-card"
+                onSubmit={submit}
                 encType="multipart/form-data"
             >
-                <div className="pa-editor-card__heading">
-                    <span className="pa-editor-kicker">
-                        <UserRound size={15} />
-                        PERSONAL DETAILS
-                    </span>
+                {/* IDENTITAS PUBLIK */}
 
-                    <h2>Identitas & Branding</h2>
+                <section
+                    className="pa-editor-group"
+                    aria-label="Informasi pribadi"
+                >
+                    <EditorHeading
+                        icon={<UserRound size={15} />}
+                        eyebrow="INFORMASI PRIBADI"
+                        title="Profil & Kontak"
+                        description="Informasi yang digunakan untuk memperkenalkan dirimu dan memudahkan pengunjung menghubungi kamu."
+                    />
 
-                    <p>
-                        Kelola informasi pribadi, foto profil,
-                        dan logo yang digunakan pada website.
-                    </p>
-                </div>
-
-                <div className="pa-editor-fields">
-                    <div className="pa-editor-two">
-                        <Field
-                            id="full_name"
-                            label="Nama Lengkap"
-                            error={form.errors.full_name}
-                        >
-                            <input
+                    <div className="pa-editor-group__body">
+                        <div className="pa-editor-two">
+                            <Field
                                 id="full_name"
-                                required
-                                maxLength={150}
-                                className="pa-editor-input"
-                                value={form.data.full_name}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'full_name',
-                                        event.target.value
-                                    )
-                                }
-                                placeholder="Nama lengkap"
-                            />
-                        </Field>
-
-                        <Field
-                            id="display_name"
-                            label="Nama Tampilan"
-                            error={form.errors.display_name}
-                        >
-                            <input
-                                id="display_name"
-                                required
-                                maxLength={100}
-                                className="pa-editor-input"
-                                value={form.data.display_name}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'display_name',
-                                        event.target.value
-                                    )
-                                }
-                                placeholder="Nama di website"
-                            />
-                        </Field>
-                    </div>
-
-                    <Field
-                        id="email"
-                        label="Email Publik"
-                        error={form.errors.email}
-                    >
-                        <input
-                            id="email"
-                            type="email"
-                            required
-                            maxLength={255}
-                            className="pa-editor-input"
-                            value={form.data.email}
-                            onChange={(event) =>
-                                form.setData(
-                                    'email',
-                                    event.target.value
-                                )
-                            }
-                            placeholder="email@domain.com"
-                        />
-                    </Field>
-
-                    <Field
-                        id="whatsapp"
-                        label="Nomor WhatsApp"
-                        hint="Opsional. Gunakan nomor yang aktif."
-                        error={form.errors.whatsapp}
-                    >
-                        <input
-                            id="whatsapp"
-                            type="tel"
-                            className="pa-editor-input"
-                            value={form.data.whatsapp}
-                            onChange={(event) =>
-                                form.setData(
-                                    'whatsapp',
-                                    event.target.value
-                                )
-                            }
-                            placeholder="6281234567890"
-                        />
-                    </Field>
-
-                    {/* FOTO PROFIL */}
-
-                    <Field
-                        id="photo"
-                        label="Foto Profil"
-                        hint="JPG, PNG, atau WebP. Maksimal 3 MB."
-                        error={form.errors.photo}
-                    >
-                        <div className="pa-editor-image-current">
-                            {currentPhoto ? (
-                                <img
-                                    src={currentPhoto}
-                                    alt="Preview foto profil"
-                                    className="pa-editor-photo-image"
+                                label="Nama Lengkap"
+                                error={form.errors.full_name}
+                            >
+                                <input
+                                    id="full_name"
+                                    className="pa-editor-input"
+                                    aria-invalid={Boolean(
+                                        form.errors.full_name
+                                    )}
+                                    required
+                                    maxLength={150}
+                                    value={form.data.full_name}
+                                    onChange={(event) =>
+                                        form.setData(
+                                            'full_name',
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Masukkan nama lengkap"
                                 />
-                            ) : (
-                                <UserRound size={32} />
-                            )}
+                            </Field>
 
-                            <span>
-                                {form.data.photo
-                                    ? 'Foto baru dipilih'
-                                    : 'Foto profil saat ini'}
-                            </span>
+                            <Field
+                                id="display_name"
+                                label="Nama Tampilan"
+                                error={form.errors.display_name}
+                            >
+                                <input
+                                    id="display_name"
+                                    className="pa-editor-input"
+                                    aria-invalid={Boolean(
+                                        form.errors.display_name
+                                    )}
+                                    required
+                                    maxLength={100}
+                                    value={form.data.display_name}
+                                    onChange={(event) =>
+                                        form.setData(
+                                            'display_name',
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Nama yang tampil di website"
+                                />
+                            </Field>
                         </div>
 
-                        <ImageUpload
+                        <Field
+                            id="email"
+                            label="Email Publik"
+                            error={form.errors.email}
+                        >
+                            <input
+                                id="email"
+                                type="email"
+                                className="pa-editor-input"
+                                aria-invalid={Boolean(
+                                    form.errors.email
+                                )}
+                                required
+                                maxLength={255}
+                                value={form.data.email}
+                                onChange={(event) =>
+                                    form.setData(
+                                        'email',
+                                        event.target.value
+                                    )
+                                }
+                                placeholder="nama@domain.com"
+                            />
+                        </Field>
+
+                        <Field
+                            id="whatsapp"
+                            label="Nomor WhatsApp"
+                            hint="Opsional. Gunakan format internasional, misalnya 6281234567890."
+                            error={form.errors.whatsapp}
+                        >
+                            <input
+                                id="whatsapp"
+                                type="tel"
+                                className="pa-editor-input"
+                                aria-invalid={Boolean(
+                                    form.errors.whatsapp
+                                )}
+                                value={form.data.whatsapp}
+                                onChange={(event) =>
+                                    form.setData(
+                                        'whatsapp',
+                                        event.target.value
+                                    )
+                                }
+                                placeholder="6281234567890"
+                            />
+                        </Field>
+
+                        {/* FOTO PROFIL */}
+
+                        <Field
                             id="photo"
-                            title="Pilih foto profil"
-                            accept=".jpg,.jpeg,.png,.webp"
-                            inputRef={photoInputRef}
-                            file={form.data.photo}
-                            onChange={(file) =>
-                                form.setData('photo', file)
-                            }
-                        />
-                    </Field>
+                            label="Foto Profil"
+                            hint="JPG, PNG, atau WebP. Maksimal 3 MB. Biarkan kosong untuk memakai foto saat ini."
+                            error={form.errors.photo}
+                        >
+                            <div className="pa-editor-current-photo">
+                                <div className="pa-editor-current-photo__avatar">
+                                    {photoUrl ? (
+                                        <img
+                                            src={photoUrl}
+                                            alt="Pratinjau foto profil"
+                                        />
+                                    ) : (
+                                        <UserRound
+                                            size={29}
+                                            aria-hidden="true"
+                                        />
+                                    )}
+                                </div>
 
-                    {/* LOGO WEBSITE */}
+                                <div>
+                                    <strong>
+                                        {form.data.photo
+                                            ? 'Foto baru dipilih'
+                                            : 'Foto profil'}
+                                    </strong>
 
-                    <div className="pa-editor-brand-section">
-                        <span className="pa-editor-kicker">
-                            <ImageIcon size={15} />
-                            WEBSITE BRANDING
-                        </span>
-
-                        <h3>Logo Website</h3>
-
-                        <p>
-                            Logo digunakan pada sidebar admin,
-                            halaman login, dan website publik.
-                        </p>
-                    </div>
-
-                    <Field
-                        id="logo"
-                        label="Logo Utama"
-                        hint="Satu logo untuk seluruh website. JPG, PNG, atau WebP. Maksimal 2 MB."
-                        error={form.errors.logo}
-                    >
-                        <div className="pa-editor-brand-preview">
-                            {currentLogo ? (
-                                <img
-                                    src={currentLogo}
-                                    alt="Preview logo website"
-                                />
-                            ) : (
-                                <div className="pa-editor-brand-empty">
-                                    <ImageIcon size={30} />
                                     <span>
-                                        Belum ada logo
+                                        {photoUrl
+                                            ? 'Gambar tersedia'
+                                            : 'Belum ada foto profil'}
                                     </span>
                                 </div>
-                            )}
-                        </div>
+                            </div>
 
-                        <ImageUpload
+                            <ImageUpload
+                                id="photo"
+                                title="Pilih foto profil"
+                                file={form.data.photo}
+                                inputRef={photoRef}
+                                onChange={(file) =>
+                                    form.setData('photo', file)
+                                }
+                            />
+                        </Field>
+                    </div>
+                </section>
+
+                {/* IDENTITAS VISUAL */}
+
+                <section
+                    className="pa-editor-group pa-editor-group--branding"
+                    aria-label="Identitas visual"
+                >
+                    <EditorHeading
+                        icon={<ImageIcon size={15} />}
+                        eyebrow="IDENTITAS VISUAL"
+                        title="Logo Website"
+                        description="Kelola satu logo utama yang digunakan pada website publik dan panel admin."
+                    />
+
+                    <div className="pa-editor-group__body">
+                        <Field
                             id="logo"
-                            title="Pilih atau ganti logo"
-                            accept=".jpg,.jpeg,.png,.webp"
-                            inputRef={logoInputRef}
-                            file={form.data.logo}
-                            onChange={(file) =>
-                                form.setData('logo', file)
-                            }
-                        />
-                    </Field>
-                </div>
+                            label="Logo Utama"
+                            hint="JPG, PNG, atau WebP. Maksimal 2 MB. Logo lama tetap dipakai jika tidak ada file baru."
+                            error={form.errors.logo}
+                        >
+                            <div className="pa-editor-logo-stage">
+                                {logoUrl ? (
+                                    <img
+                                        src={logoUrl}
+                                        alt="Pratinjau logo website"
+                                    />
+                                ) : (
+                                    <div className="pa-editor-logo-empty">
+                                        <ImageIcon
+                                            size={28}
+                                            aria-hidden="true"
+                                        />
 
-                <SaveButton
+                                        <span>
+                                            Logo belum diunggah
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <ImageUpload
+                                id="logo"
+                                title="Pilih atau ganti logo"
+                                file={form.data.logo}
+                                inputRef={logoRef}
+                                onChange={(file) =>
+                                    form.setData('logo', file)
+                                }
+                            />
+                        </Field>
+                    </div>
+                </section>
+
+                <SaveBar
                     processing={form.processing}
                     dirty={form.isDirty}
                 />
             </form>
 
-            {/* LIVE PREVIEW */}
+            {/* PRATINJAU PROFIL */}
 
             <PreviewCard>
                 <div className="pa-profile-preview">
                     <div className="pa-profile-avatar">
-                        {currentPhoto ? (
+                        {photoUrl ? (
                             <img
-                                src={currentPhoto}
-                                alt="Preview profil"
+                                src={photoUrl}
+                                alt="Foto profil"
                             />
                         ) : (
-                            <UserRound size={38} />
+                            <UserRound
+                                size={38}
+                                aria-hidden="true"
+                            />
                         )}
                     </div>
 
                     <span className="pa-profile-preview__eyebrow">
-                        PORTFOLIO OWNER
+                        IDENTITAS PUBLIK
                     </span>
 
                     <h3>
@@ -525,16 +599,18 @@ function ProfileEditor({
                         </div>
 
                         <div>
-                            <span>Logo Website</span>
+                            <span>Logo Utama</span>
 
-                            {currentLogo ? (
+                            {logoUrl ? (
                                 <img
-                                    src={currentLogo}
-                                    alt="Logo website"
                                     className="pa-profile-logo-preview"
+                                    src={logoUrl}
+                                    alt="Logo utama"
                                 />
                             ) : (
-                                <strong>Belum tersedia</strong>
+                                <strong>
+                                    Belum tersedia
+                                </strong>
                             )}
                         </div>
                     </div>
@@ -544,9 +620,9 @@ function ProfileEditor({
     );
 }
 
-// ========================================
+// ==========================================
 // HERO SECTION
-// ========================================
+// ==========================================
 
 function HeroEditor({
     values,
@@ -563,31 +639,24 @@ function HeroEditor({
 
         form.put('/admin/hero', {
             preserveScroll: true,
-            onSuccess: () => form.defaults(),
+            onSuccess: () => form.setDefaults(),
         });
     }
 
     return (
         <div className="pa-editor-split">
             <form
-                onSubmit={submit}
                 className="pa-editor-card"
+                onSubmit={submit}
             >
-                <div className="pa-editor-card__heading">
-                    <span className="pa-editor-kicker">
-                        <Sparkles size={15} />
-                        HERO CONTENT
-                    </span>
+                <EditorHeading
+                    icon={<Sparkles size={15} />}
+                    eyebrow="HALAMAN UTAMA"
+                    title="Hero Section"
+                    description="Tentukan kalimat pembuka yang pertama kali dilihat pengunjung website."
+                />
 
-                    <h2>Konten Pembuka</h2>
-
-                    <p>
-                        Atur headline dan deskripsi yang
-                        menyambut pengunjung website.
-                    </p>
-                </div>
-
-                <div className="pa-editor-fields">
+                <div className="pa-editor-group__body">
                     <Field
                         id="headline"
                         label="Headline"
@@ -595,9 +664,12 @@ function HeroEditor({
                     >
                         <input
                             id="headline"
+                            className="pa-editor-input"
+                            aria-invalid={Boolean(
+                                form.errors.headline
+                            )}
                             required
                             maxLength={255}
-                            className="pa-editor-input"
                             value={form.data.headline}
                             onChange={(event) =>
                                 form.setData(
@@ -605,7 +677,7 @@ function HeroEditor({
                                     event.target.value
                                 )
                             }
-                            placeholder="Headline portofolio"
+                            placeholder="Tulis headline yang kuat dan singkat"
                         />
                     </Field>
 
@@ -616,10 +688,13 @@ function HeroEditor({
                     >
                         <textarea
                             id="hero_description"
-                            required
-                            rows={6}
-                            maxLength={3000}
                             className="pa-editor-textarea"
+                            aria-invalid={Boolean(
+                                form.errors.description
+                            )}
+                            required
+                            maxLength={3000}
+                            rows={7}
                             value={form.data.description}
                             onChange={(event) =>
                                 form.setData(
@@ -627,16 +702,16 @@ function HeroEditor({
                                     event.target.value
                                 )
                             }
-                            placeholder="Ceritakan secara singkat..."
+                            placeholder="Ceritakan secara singkat tentang dirimu..."
                         />
 
                         <div className="pa-editor-count">
-                            {form.data.description.length} / 3000
+                            {form.data.description.length} / 3000 karakter
                         </div>
                     </Field>
                 </div>
 
-                <SaveButton
+                <SaveBar
                     processing={form.processing}
                     dirty={form.isDirty}
                 />
@@ -644,20 +719,20 @@ function HeroEditor({
 
             <PreviewCard>
                 <div className="pa-hero-preview">
-                    <span>WELCOME TO MY PORTFOLIO</span>
+                    <span>SELAMAT DATANG</span>
 
                     <h3>
                         {form.data.headline ||
-                            'Headline portofolio'}
+                            'Headline utama akan tampil di sini.'}
                     </h3>
 
                     <p>
                         {form.data.description ||
-                            'Deskripsi Hero akan muncul di sini.'}
+                            'Deskripsi singkat akan tampil di sini.'}
                     </p>
 
                     <div className="pa-hero-preview__buttons">
-                        <span>Lihat Proyek ↗</span>
+                        <span>Lihat Proyek</span>
                         <span>Hubungi Saya</span>
                     </div>
                 </div>
@@ -666,9 +741,9 @@ function HeroEditor({
     );
 }
 
-// ========================================
-// ABOUT SECTION
-// ========================================
+// ==========================================
+// TENTANG SAYA
+// ==========================================
 
 function AboutEditor({
     values,
@@ -684,31 +759,24 @@ function AboutEditor({
 
         form.put('/admin/about', {
             preserveScroll: true,
-            onSuccess: () => form.defaults(),
+            onSuccess: () => form.setDefaults(),
         });
     }
 
     return (
         <div className="pa-editor-split">
             <form
-                onSubmit={submit}
                 className="pa-editor-card"
+                onSubmit={submit}
             >
-                <div className="pa-editor-card__heading">
-                    <span className="pa-editor-kicker">
-                        <FileText size={15} />
-                        ABOUT CONTENT
-                    </span>
+                <EditorHeading
+                    icon={<FileText size={15} />}
+                    eyebrow="CERITA PERSONAL"
+                    title="Tentang Saya"
+                    description="Tuliskan kisah dan latar belakangmu dengan bahasa yang jelas dan personal."
+                />
 
-                    <h2>Ceritakan Dirimu</h2>
-
-                    <p>
-                        Tulis deskripsi personal yang akan
-                        muncul pada bagian Tentang Saya.
-                    </p>
-                </div>
-
-                <div className="pa-editor-fields">
+                <div className="pa-editor-group__body">
                     <Field
                         id="about_description"
                         label="Deskripsi Tentang Saya"
@@ -716,10 +784,13 @@ function AboutEditor({
                     >
                         <textarea
                             id="about_description"
+                            className="pa-editor-textarea pa-editor-textarea--long"
+                            aria-invalid={Boolean(
+                                form.errors.description
+                            )}
                             required
                             rows={12}
                             maxLength={10000}
-                            className="pa-editor-textarea"
                             value={form.data.description}
                             onChange={(event) =>
                                 form.setData(
@@ -727,16 +798,16 @@ function AboutEditor({
                                     event.target.value
                                 )
                             }
-                            placeholder="Tuliskan tentang dirimu..."
+                            placeholder="Ceritakan tentang dirimu..."
                         />
 
                         <div className="pa-editor-count">
-                            {form.data.description.length} / 10000
+                            {form.data.description.length} / 10000 karakter
                         </div>
                     </Field>
                 </div>
 
-                <SaveButton
+                <SaveBar
                     processing={form.processing}
                     dirty={form.isDirty}
                 />
@@ -744,13 +815,13 @@ function AboutEditor({
 
             <PreviewCard>
                 <div className="pa-about-preview">
-                    <span>ABOUT ME</span>
+                    <span>TENTANG SAYA</span>
 
                     <h3>Lebih dekat dengan saya.</h3>
 
                     <p>
                         {form.data.description ||
-                            'Deskripsi tentang diri akan muncul di sini.'}
+                            'Cerita personal akan tampil di sini.'}
                     </p>
                 </div>
             </PreviewCard>
@@ -758,54 +829,56 @@ function AboutEditor({
     );
 }
 
-// ========================================
-// MAIN PAGE
-// ========================================
+// ==========================================
+// HALAMAN UTAMA EDITOR
+// ==========================================
+
+const headings = {
+    profile: {
+        title: 'Informasi Pribadi',
+        description:
+            'Kelola identitas, informasi kontak, foto profil, dan logo website.',
+    },
+    hero: {
+        title: 'Hero Section',
+        description:
+            'Atur headline dan pengantar halaman utama.',
+    },
+    about: {
+        title: 'Tentang Saya',
+        description:
+            'Kelola narasi personal yang ditampilkan kepada pengunjung.',
+    },
+} as const;
 
 export default function Edit(props: Props) {
-    const page = usePage();
-
-    const flash = (
-        page.props as {
-            flash?: {
-                success?: string | null;
-            };
-        }
-    ).flash;
-
-    const config = {
-        profile: {
-            title: 'Informasi Pribadi',
-            description:
-                'Kelola identitas dan branding website.',
-        },
-        hero: {
-            title: 'Hero Section',
-            description:
-                'Atur konten pembuka halaman utama.',
-        },
-        about: {
-            title: 'Tentang Saya',
-            description:
-                'Kelola deskripsi personal pada website.',
-        },
+    const { flash } = usePage().props as {
+        flash?: {
+            success?: string | null;
+        };
     };
 
-    const current = config[props.kind];
+    const heading = headings[props.kind];
 
     return (
         <AdminLayout
-            title={current.title}
-            description={current.description}
+            title={heading.title}
+            description={heading.description}
         >
-            <Head title={`${current.title} · Portfolio Admin`} />
+            <Head
+                title={`${heading.title} · Portfolio Admin`}
+            />
 
             {flash?.success && (
                 <div
                     className="pa-editor-success"
                     role="status"
                 >
-                    <CheckCircle2 size={19} />
+                    <CheckCircle2
+                        size={18}
+                        aria-hidden="true"
+                    />
+
                     <span>{flash.success}</span>
                 </div>
             )}

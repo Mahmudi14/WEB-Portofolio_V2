@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Education extends Model
 {
+    // Nama tabel sesuai migration yang sudah ada
+    protected $table = 'educations';
+
     protected $fillable = [
         'personal_information_id',
         'level',

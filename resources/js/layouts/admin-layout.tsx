@@ -35,7 +35,7 @@ export default function AdminLayout({
         <main id="admin-main-content" className="pa-main" tabIndex={-1}>
           <div className="pa-page-header">
             <div>
-              <div className="pa-eyebrow"><span /> PORTOFOLIO V2 / ADMIN</div>
+              <div className="pa-eyebrow"><span /> ADMIN WORKSPACE</div>
               <h1>{title}</h1>
               {description && <p>{description}</p>}
             </div>
@@ -43,8 +43,7 @@ export default function AdminLayout({
           </div>
           {children}
           <footer className="pa-footer">
-            <span>© Portofolio V2 · Content Studio</span>
-            <span>Built with Laravel + React</span>
+            <span>© Portofolio · Content Studio</span>
           </footer>
         </main>
       </div>
