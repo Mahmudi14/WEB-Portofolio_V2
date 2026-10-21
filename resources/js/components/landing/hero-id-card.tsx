@@ -16,12 +16,37 @@ type Point = {
     y: number;
 };
 
-type Fabric = {
-    body: string;
-    seamA: string;
-    seamB: string;
-    center: string;
+type Sample = Point & {
+    angle: number;
+    half: number;
 };
+
+type Strap = {
+    body: string;
+    lattice: string;
+    edgeA: string;
+    edgeB: string;
+    stitchA: string;
+    stitchB: string;
+    center: string;
+    centerReversed: string;
+    samples: Sample[];
+};
+
+type StrapNodes = {
+    body: SVGPathElement | null;
+    clip: SVGPathElement | null;
+    weave: SVGPathElement | null;
+    lattice: SVGPathElement | null;
+    edgeA: SVGPathElement | null;
+    edgeB: SVGPathElement | null;
+    label: SVGPathElement | null;
+    stitchA: SVGPathElement | null;
+    stitchB: SVGPathElement | null;
+    motifs: (SVGUseElement | null)[];
+};
+
+type PathNode = Exclude<keyof StrapNodes, "motifs">;
 
 type Motion = {
     width: number;
@@ -31,6 +56,11 @@ type Motion = {
     anchorX: number;
     anchorY: number;
     length: number;
+    scale: number;
+    slotY: number;
+    spread: number;
+    nominal: number;
+    gradEnd: number;
     x: number;
     y: number;
     vx: number;
@@ -43,7 +73,31 @@ type Motion = {
     reducedMotion: boolean;
 };
 
-const SLOT_Y = 18;
+/**
+ * Titik gantung (pusat slot holder) diukur dari sisi atas kartu, dalam em.
+ * Nilai ini HARUS sama dengan `--slot-y` di hero-id-card.css.
+ */
+const SLOT_EM = 1.9;
+
+/** Posisi ujung tali di dalam buckle, diukur dari pusat slot (px, skala 1). */
+const STRAP_END_Y = 98;
+
+/** Tali dimulai sedikit di atas stage supaya terlihat turun dari atas. */
+const STRAP_TOP_Y = -26;
+
+const STRAP_STEPS = 36;
+
+/** Posisi motif kawung di sepanjang tali (0 = atas, 1 = buckle). */
+const MOTIF_AT = [0.66, 0.75, 0.84, 0.93] as const;
+
+/** Warna motif: krem terang di atas teal, emas di atas krem. */
+const INK_TOP = [247, 236, 211] as const;
+const INK_BOTTOM = [168, 126, 70] as const;
+
+const STRAPS = [
+    { side: -1, key: "left", offset: "54%" },
+    { side: 1, key: "right", offset: "46%" },
+] as const;
 
 const clamp = (value: number, min: number, max: number) =>
     Math.max(min, Math.min(max, value));
@@ -54,93 +108,142 @@ const pointString = (point: Point) =>
 const linePath = (points: Point[]) =>
     `M ${points.map(pointString).join(" L ")}`;
 
-// Membuat permukaan kain berupa poligon.
-// Bukan stroke SVG yang ditebalkan.
-function makeFabric(start: Point, end: Point, side: -1 | 1): Fabric {
-    const rise = end.y - start.y;
-    const drift = end.x - start.x;
+const lerpPoint = (a: Point, b: Point, f: number): Point => ({
+    x: a.x + (b.x - a.x) * f,
+    y: a.y + (b.y - a.y) * f,
+});
 
-    const controlA = {
-        x: start.x + side * 27 + drift * 0.1,
-        y: start.y + rise * 0.32,
+const createNodes = (): StrapNodes => ({
+    body: null,
+    clip: null,
+    weave: null,
+    lattice: null,
+    edgeA: null,
+    edgeB: null,
+    label: null,
+    stitchA: null,
+    stitchB: null,
+    motifs: [],
+});
+
+// Warna motif mengikuti gradasi kain (teal -> krem).
+function inkColor(u: number) {
+    const f = clamp((u - 0.64) / 0.2, 0, 1);
+
+    const [r1, g1, b1] = INK_TOP;
+    const [r2, g2, b2] = INK_BOTTOM;
+
+    return `rgb(${Math.round(r1 + (r2 - r1) * f)} ${Math.round(
+        g1 + (g2 - g1) * f,
+    )} ${Math.round(b1 + (b2 - b1) * f)})`;
+}
+
+// Membuat satu sisi tali berupa pita poligon yang mengikuti kurva bezier.
+// `bow` = lengkung ke arah luar (bertambah saat tali mengendur).
+function makeStrap(
+    start: Point,
+    end: Point,
+    side: -1 | 1,
+    k: number,
+    bow: number,
+): Strap {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const chord = Math.max(1, Math.hypot(dx, dy));
+
+    // Vektor tegak lurus yang mengarah ke sisi luar tali.
+    const ox = (side * dy) / chord;
+    const oy = (-side * dx) / chord;
+
+    const a: Point = {
+        x: start.x + dx * 0.33 + ox * bow,
+        y: start.y + dy * 0.33 + oy * bow,
     };
 
-    const controlB = {
-        x: end.x + side * 39 - drift * 0.08,
-        y: end.y - rise * 0.27,
+    const b: Point = {
+        x: start.x + dx * 0.67 + ox * bow,
+        y: start.y + dy * 0.67 + oy * bow,
     };
 
     const edgeA: Point[] = [];
     const edgeB: Point[] = [];
     const center: Point[] = [];
+    const samples: Sample[] = [];
 
-    for (let i = 0; i <= 34; i++) {
-        const t = i / 34;
+    for (let i = 0; i < STRAP_STEPS; i++) {
+        const t = i / (STRAP_STEPS - 1);
         const u = 1 - t;
 
         const x =
             u ** 3 * start.x +
-            3 * u ** 2 * t * controlA.x +
-            3 * u * t ** 2 * controlB.x +
+            3 * u ** 2 * t * a.x +
+            3 * u * t ** 2 * b.x +
             t ** 3 * end.x;
 
         const y =
             u ** 3 * start.y +
-            3 * u ** 2 * t * controlA.y +
-            3 * u * t ** 2 * controlB.y +
+            3 * u ** 2 * t * a.y +
+            3 * u * t ** 2 * b.y +
             t ** 3 * end.y;
 
-        const dx =
-            3 * u ** 2 * (controlA.x - start.x) +
-            6 * u * t * (controlB.x - controlA.x) +
-            3 * t ** 2 * (end.x - controlB.x);
+        const tx =
+            3 * u ** 2 * (a.x - start.x) +
+            6 * u * t * (b.x - a.x) +
+            3 * t ** 2 * (end.x - b.x);
 
-        const dy =
-            3 * u ** 2 * (controlA.y - start.y) +
-            6 * u * t * (controlB.y - controlA.y) +
-            3 * t ** 2 * (end.y - controlB.y);
+        const ty =
+            3 * u ** 2 * (a.y - start.y) +
+            6 * u * t * (b.y - a.y) +
+            3 * t ** 2 * (end.y - b.y);
 
-        const size = Math.max(1, Math.hypot(dx, dy));
-        const nx = -dy / size;
-        const ny = dx / size;
+        const size = Math.max(1, Math.hypot(tx, ty));
+        const nx = -ty / size;
+        const ny = tx / size;
 
-        // Lebar pita berubah sedikit untuk
-        // menghasilkan kesan lipatan kain.
-        const halfWidth = 12.4 - 3.3 * t + 1.4 * Math.sin(t * Math.PI * 2.2);
+        // Lebar pita menyempit halus ke arah buckle,
+        // dengan sedikit riak supaya terasa seperti kain.
+        const half = (14.5 - 5 * t + 0.8 * Math.sin(t * Math.PI * 2.4)) * k;
 
-        const twist = 1.3 * Math.sin(t * Math.PI * 2 + side);
+        const twist = k * Math.sin(t * Math.PI * 2 + side);
 
-        center.push({
-            x: x + nx * twist,
-            y: y + ny * twist,
-        });
+        const cx = x + nx * twist;
+        const cy = y + ny * twist;
 
-        edgeA.push({
-            x: x + nx * (halfWidth + twist),
-            y: y + ny * (halfWidth + twist),
-        });
+        center.push({ x: cx, y: cy });
+        edgeA.push({ x: cx + nx * half, y: cy + ny * half });
+        edgeB.push({ x: cx - nx * half, y: cy - ny * half });
 
-        edgeB.push({
-            x: x - nx * (halfWidth - twist),
-            y: y - ny * (halfWidth - twist),
+        samples.push({
+            x: cx,
+            y: cy,
+            half,
+            angle: (Math.atan2(ty, tx) * 180) / Math.PI,
         });
     }
 
-    const perimeter = [...edgeA, ...edgeB.slice().reverse()];
+    const inset = (edge: Point[]) =>
+        linePath(edge.map((point, i) => lerpPoint(point, center[i]!, 0.17)));
 
-    const seam = (points: Point[]) =>
-        linePath(
-            points.map((point, index) => ({
-                x: point.x + (center[index]!.x - point.x) * 0.13,
-                y: point.y + (center[index]!.y - point.y) * 0.13,
-            })),
+    // Garis diagonal bersilang yang mengikuti arah tali (motif lattice).
+    const diamonds: string[] = [];
+
+    for (let i = 0; i + 6 < STRAP_STEPS; i += 6) {
+        diamonds.push(
+            `M ${pointString(edgeA[i]!)} L ${pointString(edgeB[i + 6]!)} ` +
+                `M ${pointString(edgeB[i]!)} L ${pointString(edgeA[i + 6]!)}`,
         );
+    }
 
     return {
-        body: `${linePath(perimeter)} Z`,
-        seamA: seam(edgeA),
-        seamB: seam(edgeB),
+        body: `${linePath([...edgeA, ...edgeB.slice().reverse()])} Z`,
+        lattice: diamonds.join(" "),
+        edgeA: linePath(edgeA),
+        edgeB: linePath(edgeB),
+        stitchA: inset(edgeA),
+        stitchB: inset(edgeB),
         center: linePath(center),
+        centerReversed: linePath(center.slice().reverse()),
+        samples,
     };
 }
 
@@ -150,19 +253,18 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
     const svgRef = useRef<SVGSVGElement>(null);
     const hardwareRef = useRef<SVGGElement>(null);
 
-    const leftRef = useRef<SVGPathElement>(null);
-    const rightRef = useRef<SVGPathElement>(null);
+    const fabricGradientRef = useRef<SVGLinearGradientElement>(null);
+    const inkGradientRef = useRef<SVGLinearGradientElement>(null);
 
-    const leftPatternRef = useRef<SVGPathElement>(null);
-    const rightPatternRef = useRef<SVGPathElement>(null);
-
-    const leftWeaveRef = useRef<SVGPathElement>(null);
-    const rightWeaveRef = useRef<SVGPathElement>(null);
-
-    const seamsRef = useRef<SVGPathElement[]>([]);
-    const textRefs = useRef<SVGPathElement[]>([]);
-
+    const strapsRef = useRef<StrapNodes[]>([createNodes(), createNodes()]);
     const motionRef = useRef<Motion | null>(null);
+
+    const bind =
+        (index: number, key: PathNode) => (el: SVGPathElement | null) => {
+            const nodes = strapsRef.current[index];
+
+            if (nodes) nodes[key] = el;
+        };
 
     useEffect(() => {
         const stage = stageRef.current;
@@ -178,42 +280,67 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
             "(prefers-reduced-motion: reduce)",
         ).matches;
 
-        function resize() {
-            const bounds = stage!.getBoundingClientRect();
+        const resize = () => {
+            const bounds = stage.getBoundingClientRect();
 
             if (!bounds.width || !bounds.height) return;
 
-            const cardWidth = card!.offsetWidth;
-            const cardHeight = card!.offsetHeight;
+            const cardWidth = card.offsetWidth;
+            const cardHeight = card.offsetHeight;
 
-            const width = bounds.width;
-            const height = bounds.height;
+            // 1em = 10px pada skala 1 (kartu 300px). Hardware lanyard
+            // ikut diskalakan mengikuti ukuran kartu.
+            const unit = parseFloat(getComputedStyle(card).fontSize) || 10;
+            const scale = unit / 10;
+            const slotY = unit * SLOT_EM;
+
+            const { width, height } = bounds;
 
             const anchorX = width / 2;
             const anchorY = 18;
 
-            // Panjang disesuaikan dengan tinggi kartu.
-            // Menyisakan ruang agar tidak terpotong.
+            // Panjang ayunan disesuaikan dengan tinggi kartu
+            // agar kartu tidak terpotong di bawah.
             const maxLength = Math.max(
-                75,
-                height - cardHeight + SLOT_Y - anchorY - 48,
+                80,
+                height - cardHeight + slotY - anchorY - 48,
             );
 
-            const length = Math.min(height * 0.3, maxLength);
+            const length = Math.min(height * 0.34, maxLength);
 
-            svg!.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            const spread = Math.min(66 * scale, width * 0.18);
+
+            // Posisi ujung tali saat kartu diam, dipakai untuk
+            // gradasi warna dan untuk menghitung kekenduran tali.
+            const restEndY = anchorY + length - STRAP_END_Y * scale;
+            const nominal = Math.hypot(spread, restEndY - STRAP_TOP_Y);
+            const gradEnd = Math.max(80, restEndY);
+
+            svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+            fabricGradientRef.current?.setAttribute("y2", String(gradEnd));
+            inkGradientRef.current?.setAttribute("y2", String(gradEnd));
+
+            const layout = {
+                width,
+                height,
+                cardWidth,
+                cardHeight,
+                anchorX,
+                anchorY,
+                length,
+                scale,
+                slotY,
+                spread,
+                nominal,
+                gradEnd,
+            };
 
             const old = motionRef.current;
 
             if (!old) {
                 motionRef.current = {
-                    width,
-                    height,
-                    cardWidth,
-                    cardHeight,
-                    anchorX,
-                    anchorY,
-                    length,
+                    ...layout,
 
                     x: reduceMotion
                         ? anchorX
@@ -232,97 +359,105 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                 };
             } else {
                 const ratioX = (old.x - old.anchorX) / Math.max(old.length, 1);
-
                 const ratioY = (old.y - old.anchorY) / Math.max(old.length, 1);
 
-                Object.assign(old, {
-                    width,
-                    height,
-                    cardWidth,
-                    cardHeight,
-                    anchorX,
-                    anchorY,
-                    length,
-                });
+                Object.assign(old, layout);
 
                 old.x = anchorX + ratioX * length;
                 old.y = anchorY + ratioY * length;
             }
-        }
+        };
 
-        function draw(state: Motion) {
-            card!.style.transform = [
-                `translate3d(`,
-                `${state.x - state.cardWidth / 2}px,`,
-                `${state.y - SLOT_Y}px, 0)`,
-                `rotate(${state.angle}deg)`,
-            ].join(" ");
-
-            card!.style.opacity = "1";
+        const draw = (state: Motion) => {
+            const k = state.scale;
 
             const rad = (state.angle * Math.PI) / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
 
-            const spread = Math.min(105, state.width * 0.25);
+            card.style.transform =
+                `translate3d(${state.x - state.cardWidth / 2}px, ` +
+                `${state.y - state.slotY}px, 0) rotate(${state.angle}deg)`;
 
-            // Dua pita turun dari atas dan
-            // bertemu pada konektor kartu.
-            const endpoints = ([-1, 1] as const).map((side) => {
-                const localX = side * 9;
-                const localY = -46;
-
-                return {
-                    start: {
-                        x: state.anchorX + side * spread,
-                        y: -48,
-                    },
-
-                    end: {
-                        x:
-                            state.x +
-                            localX * Math.cos(rad) -
-                            localY * Math.sin(rad),
-
-                        y:
-                            state.y +
-                            localX * Math.sin(rad) +
-                            localY * Math.cos(rad),
-                    },
-                };
-            });
-
-            const left = makeFabric(endpoints[0]!.start, endpoints[0]!.end, -1);
-
-            const right = makeFabric(endpoints[1]!.start, endpoints[1]!.end, 1);
-
-            leftRef.current?.setAttribute("d", left.body);
-
-            rightRef.current?.setAttribute("d", right.body);
-
-            leftPatternRef.current?.setAttribute("d", left.body);
-
-            rightPatternRef.current?.setAttribute("d", right.body);
-
-            leftWeaveRef.current?.setAttribute("d", left.body);
-
-            rightWeaveRef.current?.setAttribute("d", right.body);
-
-            const seams = [left.seamA, left.seamB, right.seamA, right.seamB];
-
-            seamsRef.current.forEach((element, index) =>
-                element?.setAttribute("d", seams[index]!),
+            // Pantulan plastik bening bergeser mengikuti ayunan.
+            card.style.setProperty(
+                "--sheen",
+                `${(50 - state.angle * 4).toFixed(1)}%`,
             );
 
-            textRefs.current[0]?.setAttribute("d", left.center);
+            card.style.opacity = "1";
 
-            textRefs.current[1]?.setAttribute("d", right.center);
+            STRAPS.forEach(({ side }, index) => {
+                const nodes = strapsRef.current[index];
+
+                if (!nodes) return;
+
+                const start: Point = {
+                    x: state.anchorX + side * state.spread,
+                    y: STRAP_TOP_Y,
+                };
+
+                // Dua tali bertemu di dalam buckle (koordinat lokal kartu).
+                const lx = side * 4 * k;
+                const ly = -STRAP_END_Y * k;
+
+                const end: Point = {
+                    x: state.x + lx * cos - ly * sin,
+                    y: state.y + lx * sin + ly * cos,
+                };
+
+                // Saat tali memendek, kain melengkung keluar (kendur).
+                const chord = Math.hypot(end.x - start.x, end.y - start.y);
+                const slack = Math.max(0, state.nominal - chord);
+                const bow = (6 + Math.min(32, slack * 0.45)) * k;
+
+                const strap = makeStrap(start, end, side, k, bow);
+
+                nodes.body?.setAttribute("d", strap.body);
+                nodes.clip?.setAttribute("d", strap.body);
+                nodes.weave?.setAttribute("d", strap.body);
+                nodes.lattice?.setAttribute("d", strap.lattice);
+                nodes.edgeA?.setAttribute("d", strap.edgeA);
+                nodes.edgeB?.setAttribute("d", strap.edgeB);
+                nodes.stitchA?.setAttribute("d", strap.stitchA);
+                nodes.stitchB?.setAttribute("d", strap.stitchB);
+
+                // Sisi kiri dibaca dari bawah ke atas, sisi kanan dari
+                // atas ke bawah (seperti lanyard cetak sungguhan).
+                nodes.label?.setAttribute(
+                    "d",
+                    side === -1 ? strap.centerReversed : strap.center,
+                );
+
+                MOTIF_AT.forEach((t, j) => {
+                    const sample =
+                        strap.samples[Math.round(t * (STRAP_STEPS - 1))];
+
+                    const node = nodes.motifs[j];
+
+                    if (!sample || !node) return;
+
+                    const s = (sample.half / 15) * 0.74;
+
+                    node.setAttribute(
+                        "transform",
+                        `translate(${sample.x.toFixed(2)} ${sample.y.toFixed(2)}) ` +
+                            `rotate(${(sample.angle - 90).toFixed(2)}) ` +
+                            `scale(${s.toFixed(3)})`,
+                    );
+
+                    node.style.color = inkColor(sample.y / state.gradEnd);
+                });
+            });
 
             hardwareRef.current?.setAttribute(
                 "transform",
-                `translate(${state.x} ${state.y}) rotate(${state.angle})`,
+                `translate(${state.x.toFixed(2)} ${state.y.toFixed(2)}) ` +
+                    `rotate(${state.angle.toFixed(2)}) scale(${k})`,
             );
-        }
+        };
 
-        function animate(now: number) {
+        const animate = (now: number) => {
             const state = motionRef.current;
 
             if (!state) {
@@ -355,11 +490,9 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                     state.x += state.vx * dt;
                     state.y += state.vy * dt;
 
-                    // Kartu jatuh hingga lanyard
-                    // mencapai panjang maksimal.
+                    // Kartu jatuh hingga lanyard mencapai panjang maksimal.
                     if (state.y > state.anchorY) {
                         const dx = state.x - state.anchorX;
-
                         const dy = state.y - state.anchorY;
 
                         const distance = Math.hypot(dx, dy);
@@ -369,7 +502,6 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                             const ny = dy / distance;
 
                             state.x = state.anchorX + nx * state.length;
-
                             state.y = state.anchorY + ny * state.length;
 
                             const radial = state.vx * nx + state.vy * ny;
@@ -400,7 +532,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
             draw(state);
 
             frame = requestAnimationFrame(animate);
-        }
+        };
 
         resize();
 
@@ -432,7 +564,6 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         state.dragging = true;
 
         state.grabX = event.clientX - rect.left - state.x;
-
         state.grabY = event.clientY - rect.top - state.y;
 
         state.lastPointerTime = performance.now();
@@ -441,7 +572,6 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         state.vy = 0;
 
         event.currentTarget.setPointerCapture(event.pointerId);
-
         event.currentTarget.classList.add("lp-id-card--dragging");
 
         event.preventDefault();
@@ -485,7 +615,6 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         const seconds = Math.max((now - state.lastPointerTime) / 1000, 0.016);
 
         state.vx = clamp((px - state.x) / seconds, -850, 850);
-
         state.vy = clamp((py - state.y) / seconds, -850, 850);
 
         state.x = px;
@@ -540,11 +669,24 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         .join("")
         .toUpperCase();
 
+    // Teks cetak di lanyard (seperti "CUSTOM NAMA" pada lanyard asli).
+    // Nama panjang dipersingkat jadi kata pertama agar muat di tali.
+    const fullName = name.trim().toUpperCase();
+
+    const lanyardText =
+        fullName.length <= 14
+            ? fullName
+            : (fullName.split(/\s+/)[0] ?? "").slice(0, 12);
+
     return (
         <div ref={stageRef} className="lp-id-stage">
             <div className="lp-id-stage__glow" />
 
-            {/* LANYARD BERTEKSTUR */}
+            {/* ==========================================
+                LANYARD BATIK + HARDWARE (SVG)
+                Ganti warna kain di gradient "lp-lny-fabric",
+                warna motif di gradient "lp-lny-ink".
+            ========================================== */}
 
             <svg
                 ref={svgRef}
@@ -553,215 +695,393 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                 preserveAspectRatio="none"
             >
                 <defs>
+                    {/* Kain: teal pekat di atas, memudar ke krem di bawah */}
                     <linearGradient
-                        id="lp-fabric-tone"
-                        x1="0"
-                        x2="1"
-                        y1="0"
-                        y2="0"
-                    >
-                        <stop offset="0%" stopColor="#b9b2aa" />
-                        <stop offset="16%" stopColor="#f6f0e8" />
-                        <stop offset="48%" stopColor="#ffffff" />
-                        <stop offset="80%" stopColor="#e4dad1" />
-                        <stop offset="100%" stopColor="#a69b91" />
-                    </linearGradient>
-
-                    <linearGradient
-                        id="lp-metal-tone"
+                        ref={fabricGradientRef}
+                        id="lp-lny-fabric"
+                        gradientUnits="userSpaceOnUse"
                         x1="0"
                         y1="0"
-                        x2="1"
-                        y2="0"
+                        x2="0"
+                        y2="220"
                     >
-                        <stop offset="0%" stopColor="#676970" />
-                        <stop offset="25%" stopColor="#fafafa" />
-                        <stop offset="53%" stopColor="#a5abb4" />
-                        <stop offset="76%" stopColor="#f4f5f6" />
-                        <stop offset="100%" stopColor="#62636c" />
+                        <stop offset="0" stopColor="#0a4743" />
+                        <stop offset=".5" stopColor="#0e5e59" />
+                        <stop offset=".63" stopColor="#2f8077" />
+                        <stop offset=".75" stopColor="#8db8a7" />
+                        <stop offset=".87" stopColor="#e5dfc3" />
+                        <stop offset="1" stopColor="#efe3c6" />
                     </linearGradient>
 
+                    {/* Tinta cetak: krem di atas teal, emas di atas krem */}
+                    <linearGradient
+                        ref={inkGradientRef}
+                        id="lp-lny-ink"
+                        gradientUnits="userSpaceOnUse"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="220"
+                    >
+                        <stop offset=".64" stopColor="#f7ecd3" />
+                        <stop offset=".84" stopColor="#a87e46" />
+                    </linearGradient>
+
+                    {/* Serat anyaman halus */}
                     <pattern
-                        id="lp-fabric-threads"
+                        id="lp-lny-weave"
                         patternUnits="userSpaceOnUse"
-                        width="7"
-                        height="7"
+                        width="4"
+                        height="4"
+                        patternTransform="rotate(45)"
                     >
                         <path
-                            d="M0 0 L7 7 M-2 5 L2 9"
-                            stroke="#a89f97"
-                            strokeWidth=".55"
-                            opacity=".26"
-                        />
-                        <path
-                            d="M7 0 L0 7"
+                            d="M0 0 H4"
                             stroke="#fff"
-                            strokeWidth=".55"
-                            opacity=".52"
+                            strokeWidth=".7"
+                            opacity=".28"
+                        />
+                        <path
+                            d="M0 2 H4"
+                            stroke="#000"
+                            strokeWidth=".7"
+                            opacity=".14"
                         />
                     </pattern>
 
-                    <pattern
-                        id="lp-fabric-graphic"
-                        patternUnits="userSpaceOnUse"
-                        width="78"
-                        height="98"
+                    <linearGradient
+                        id="lp-lny-metal"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
                     >
-                        <path
-                            d="M0 8 L78 8 L78 26 L0 26 Z"
-                            fill="#20375e"
-                            opacity=".96"
+                        <stop offset="0" stopColor="#6d7078" />
+                        <stop offset=".26" stopColor="#fafafa" />
+                        <stop offset=".54" stopColor="#a3a9b2" />
+                        <stop offset=".77" stopColor="#f4f5f6" />
+                        <stop offset="1" stopColor="#62646c" />
+                    </linearGradient>
+
+                    <linearGradient
+                        id="lp-lny-brass"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1"
+                    >
+                        <stop offset="0" stopColor="#f4e2b4" />
+                        <stop offset=".5" stopColor="#bb9052" />
+                        <stop offset="1" stopColor="#7c592b" />
+                    </linearGradient>
+
+                    <linearGradient
+                        id="lp-lny-plastic"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                    >
+                        <stop offset="0" stopColor="#2d3036" />
+                        <stop offset=".45" stopColor="#15171a" />
+                        <stop offset="1" stopColor="#0a0b0d" />
+                    </linearGradient>
+
+                    <linearGradient
+                        id="lp-lny-cream"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                    >
+                        <stop offset="0" stopColor="#d6c698" />
+                        <stop offset=".45" stopColor="#f2e8cc" />
+                        <stop offset="1" stopColor="#dfd0a6" />
+                    </linearGradient>
+
+                    {/* Motif kawung (batik): 4 elips saling bertumpuk */}
+                    <g
+                        id="lp-lny-motif"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                    >
+                        <ellipse cx="0" cy="-7" rx="4.2" ry="7" />
+                        <ellipse cx="0" cy="7" rx="4.2" ry="7" />
+                        <ellipse cx="-7" cy="0" rx="7" ry="4.2" />
+                        <ellipse cx="7" cy="0" rx="7" ry="4.2" />
+                        <circle cx="0" cy="0" r="1.6" fill="currentColor" />
+                    </g>
+
+                    <clipPath id="lp-lny-hook-clip">
+                        <rect x="-24" y="-60" width="48" height="63" />
+                    </clipPath>
+
+                    <filter
+                        id="lp-lny-strap-shadow"
+                        x="-30%"
+                        y="-10%"
+                        width="160%"
+                        height="130%"
+                    >
+                        <feDropShadow
+                            dx="2"
+                            dy="5"
+                            stdDeviation="3.2"
+                            floodColor="#000"
+                            floodOpacity=".38"
                         />
-                        <path
-                            d="M0 60 L78 60 L78 78 L0 78 Z"
-                            fill="#df6a27"
-                            opacity=".94"
+                    </filter>
+
+                    <filter
+                        id="lp-lny-hardware-shadow"
+                        x="-60%"
+                        y="-20%"
+                        width="220%"
+                        height="150%"
+                    >
+                        <feDropShadow
+                            dx="1.5"
+                            dy="3"
+                            stdDeviation="2.2"
+                            floodColor="#000"
+                            floodOpacity=".42"
                         />
-                        <path
-                            d="M0 32 L36 53 L0 53 Z M78 83 L40 98 L78 98 Z"
-                            fill="#efbc58"
-                        />
-                    </pattern>
+                    </filter>
+
+                    {STRAPS.map((strap, index) => (
+                        <clipPath
+                            key={strap.key}
+                            id={`lp-lny-clip-${strap.key}`}
+                        >
+                            <path ref={bind(index, "clip")} />
+                        </clipPath>
+                    ))}
                 </defs>
 
-                {/* Permukaan kain */}
-                <path
-                    ref={leftRef}
-                    className="lp-id-fabric__strap"
-                    fill="url(#lp-fabric-tone)"
-                />
-                <path
-                    ref={rightRef}
-                    className="lp-id-fabric__strap"
-                    fill="url(#lp-fabric-tone)"
-                />
+                {/* Dua sisi tali (V) */}
+                <g filter="url(#lp-lny-strap-shadow)">
+                    {STRAPS.map((strap, index) => (
+                        <g key={strap.key}>
+                            <path
+                                ref={bind(index, "body")}
+                                fill="url(#lp-lny-fabric)"
+                            />
 
-                {/* Motif tercetak */}
-                <path
-                    ref={leftPatternRef}
-                    fill="url(#lp-fabric-graphic)"
-                    opacity=".43"
-                />
-                <path
-                    ref={rightPatternRef}
-                    fill="url(#lp-fabric-graphic)"
-                    opacity=".43"
-                />
+                            <g clipPath={`url(#lp-lny-clip-${strap.key})`}>
+                                <path
+                                    ref={bind(index, "weave")}
+                                    className="lp-id-fabric__weave"
+                                    fill="url(#lp-lny-weave)"
+                                />
 
-                {/* Jahitan tepi */}
-                {[0, 1, 2, 3].map((index) => (
-                    <path
-                        key={index}
-                        ref={(element) => {
-                            if (element) {
-                                seamsRef.current[index] = element;
-                            }
-                        }}
-                        className="lp-id-fabric__stitch"
-                    />
-                ))}
+                                <path
+                                    ref={bind(index, "lattice")}
+                                    className="lp-id-fabric__lattice"
+                                    stroke="url(#lp-lny-ink)"
+                                />
 
-                {/* Serat anyaman kain */}
-                <path
-                    ref={leftWeaveRef}
-                    className="lp-id-fabric__grain"
-                    fill="url(#lp-fabric-threads)"
-                />
-                <path
-                    ref={rightWeaveRef}
-                    className="lp-id-fabric__grain"
-                    fill="url(#lp-fabric-threads)"
-                />
+                                <path
+                                    ref={bind(index, "edgeA")}
+                                    className="lp-id-fabric__edge"
+                                />
+                                <path
+                                    ref={bind(index, "edgeB")}
+                                    className="lp-id-fabric__edge"
+                                />
 
-                {/* Jalur teks cetak */}
-                <path
-                    id="lp-id-left-text-path"
-                    ref={(element) => {
-                        if (element) {
-                            textRefs.current[0] = element;
-                        }
-                    }}
-                    fill="none"
-                    stroke="none"
-                />
-                <path
-                    id="lp-id-right-text-path"
-                    ref={(element) => {
-                        if (element) {
-                            textRefs.current[1] = element;
-                        }
-                    }}
-                    fill="none"
-                    stroke="none"
-                />
+                                {/* Kilap tengah pita sekaligus jalur teks */}
+                                <path
+                                    id={`lp-id-${strap.key}-text-path`}
+                                    ref={bind(index, "label")}
+                                    className="lp-id-fabric__shine"
+                                />
 
-                <text className="lp-id-fabric__label">
-                    <textPath href="#lp-id-left-text-path" startOffset="15%">
-                        MHMD • PORTFOLIO • MHMD
-                    </textPath>
-                </text>
+                                <path
+                                    ref={bind(index, "stitchA")}
+                                    className="lp-id-fabric__stitch"
+                                    stroke="url(#lp-lny-ink)"
+                                />
+                                <path
+                                    ref={bind(index, "stitchB")}
+                                    className="lp-id-fabric__stitch"
+                                    stroke="url(#lp-lny-ink)"
+                                />
 
-                <text className="lp-id-fabric__label">
-                    <textPath href="#lp-id-right-text-path" startOffset="15%">
-                        MHMD • PORTFOLIO • MHMD
-                    </textPath>
-                </text>
+                                <text
+                                    className="lp-id-fabric__label"
+                                    textAnchor="middle"
+                                >
+                                    <textPath
+                                        href={`#lp-id-${strap.key}-text-path`}
+                                        startOffset={strap.offset}
+                                    >
+                                        {lanyardText}
+                                    </textPath>
+                                </text>
 
-                {/* BUCKLE DAN RING LOGAM */}
+                                {MOTIF_AT.map((t, j) => (
+                                    <use
+                                        key={t}
+                                        href="#lp-lny-motif"
+                                        ref={(el) => {
+                                            const nodes =
+                                                strapsRef.current[index];
 
-                <g ref={hardwareRef} className="lp-id-fabric__hardware">
-                    <path
-                        d="M -13 -48 L 13 -48 L 12 -31 L -12 -31 Z"
-                        fill="#f1e6d7"
-                        stroke="#b1a29a"
-                        strokeWidth="1"
-                    />
+                                            if (nodes) nodes.motifs[j] = el;
+                                        }}
+                                    />
+                                ))}
+                            </g>
+                        </g>
+                    ))}
+                </g>
 
+                {/* Hardware: tali krem, buckle snap hitam, ring dan lobster hook.
+                    Titik (0,0) = pusat slot holder; sumbu y negatif = ke atas. */}
+                <g ref={hardwareRef} filter="url(#lp-lny-hardware-shadow)">
+                    {/* Tali krem bawah */}
                     <rect
-                        x="-17"
-                        y="-39"
-                        width="34"
-                        height="25"
-                        rx="6"
-                        fill="#15171a"
-                        stroke="#51545a"
-                        strokeWidth="1.4"
+                        x="-13"
+                        y="-62"
+                        width="26"
+                        height="38"
+                        fill="url(#lp-lny-cream)"
                     />
-
-                    <rect
-                        x="-8"
-                        y="-32"
-                        width="16"
-                        height="12"
-                        rx="3"
-                        fill="#363940"
-                    />
-
                     <path
-                        d="M -12 -17 H 12 M -12 -14 H 12"
-                        stroke="#656970"
-                        strokeWidth="1"
+                        d="M -13 -62 V -24 M 13 -62 V -24"
+                        stroke="#9d8250"
+                        strokeWidth=".8"
+                        opacity=".5"
                     />
-
                     <path
-                        d="M -7 -14 L -7 -3 Q -7 0 0 0 Q 7 0 7 -3 L 7 -14"
-                        stroke="url(#lp-metal-tone)"
-                        strokeWidth="5"
+                        d="M -9.2 -58 V -27 M 9.2 -58 V -27"
                         fill="none"
+                        stroke="#a8814b"
+                        strokeWidth=".9"
+                        strokeDasharray="1.2 2.4"
+                        strokeLinecap="round"
                     />
-
                     <circle
                         cx="0"
-                        cy="9"
-                        r="10"
-                        stroke="url(#lp-metal-tone)"
-                        strokeWidth="4"
-                        fill="none"
+                        cy="-46"
+                        r="3.7"
+                        fill="url(#lp-lny-brass)"
+                        stroke="#6b4f2b"
+                        strokeWidth=".7"
                     />
+                    <circle cx="0" cy="-46" r="1.6" fill="#35261a" />
+
+                    {/* Buckle snap hitam */}
+                    <rect
+                        x="-14.5"
+                        y="-86"
+                        width="29"
+                        height="28"
+                        rx="5.5"
+                        fill="url(#lp-lny-plastic)"
+                    />
+                    <rect
+                        x="-17"
+                        y="-110"
+                        width="34"
+                        height="30"
+                        rx="6.5"
+                        fill="url(#lp-lny-plastic)"
+                    />
+                    <rect
+                        x="-15"
+                        y="-108.6"
+                        width="30"
+                        height="1.1"
+                        rx=".55"
+                        fill="#fff"
+                        opacity=".2"
+                    />
+                    <path
+                        d="M -17 -80 H 17"
+                        stroke="#000"
+                        strokeWidth=".9"
+                        opacity=".55"
+                    />
+                    <circle
+                        cx="0"
+                        cy="-83"
+                        r="9"
+                        fill="#0a0b0d"
+                        stroke="#363a41"
+                        strokeWidth="1.1"
+                    />
+                    <circle
+                        cx="0"
+                        cy="-83"
+                        r="5.4"
+                        fill="url(#lp-lny-plastic)"
+                        stroke="#4a5059"
+                        strokeWidth=".8"
+                    />
+                    <circle
+                        cx="-1.7"
+                        cy="-84.7"
+                        r="1.5"
+                        fill="#fff"
+                        opacity=".24"
+                    />
+
+                    {/* Ring dan swivel logam */}
+                    <rect
+                        x="-8.5"
+                        y="-35"
+                        width="17"
+                        height="19"
+                        rx="8.5"
+                        fill="none"
+                        stroke="url(#lp-lny-metal)"
+                        strokeWidth="2.6"
+                    />
+                    <rect
+                        x="-3.4"
+                        y="-19"
+                        width="6.8"
+                        height="9"
+                        rx="2.4"
+                        fill="url(#lp-lny-metal)"
+                        stroke="#6b6e76"
+                        strokeWidth=".5"
+                    />
+
+                    {/* Lobster hook: bagian bawahnya masuk ke slot holder */}
+                    <g clipPath="url(#lp-lny-hook-clip)">
+                        <path
+                            d="M -3.2 -12 C -11.5 -7 -11.5 7 0 11.5 C 11.5 7 11.5 -7 3.2 -12 Z"
+                            fill="none"
+                            stroke="url(#lp-lny-metal)"
+                            strokeWidth="2.8"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M 3.4 -10.5 L 7 4"
+                            fill="none"
+                            stroke="#8b9099"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                        />
+                        <rect
+                            x="7.6"
+                            y="-6"
+                            width="3.4"
+                            height="6.4"
+                            rx="1.4"
+                            fill="url(#lp-lny-metal)"
+                        />
+                    </g>
                 </g>
             </svg>
 
-            {/* ID CARD */}
+            {/* ==========================================
+                HOLDER KULIT + ID CARD
+            ========================================== */}
 
             <article
                 ref={cardRef}
@@ -776,61 +1096,85 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                 onLostPointerCapture={pointerEnd}
                 onKeyDown={keyDown}
             >
-                <div className="lp-id-card__slot" aria-hidden="true">
-                    <span />
+                <div className="lp-id-card__tab" aria-hidden="true">
+                    <span className="lp-id-card__slot" />
                 </div>
 
-                <header className="lp-id-card__header">
-                    <div className="lp-id-card__brand">
-                        <span className="lp-id-card__logo">
-                            {logoUrl ? (
-                                <img src={logoUrl} alt="" draggable={false} />
-                            ) : (
-                                <Layers3 size={19} />
-                            )}
-                        </span>
+                <div className="lp-id-card__holder">
+                    <div className="lp-id-card__window">
+                        <div className="lp-id-badge">
+                            <header className="lp-id-badge__header">
+                                <div className="lp-id-badge__brand">
+                                    <span className="lp-id-badge__logo">
+                                        {logoUrl ? (
+                                            <img
+                                                src={logoUrl}
+                                                alt=""
+                                                draggable={false}
+                                            />
+                                        ) : (
+                                            <Layers3 size="1.8em" />
+                                        )}
+                                    </span>
 
-                        <span>
-                            <strong>MHMD</strong>
-                            <small>DIGITAL PROFILE</small>
-                        </span>
-                    </div>
+                                    <span className="lp-id-badge__brand-text">
+                                        <strong>MHMD</strong>
+                                        <small>DIGITAL PROFILE</small>
+                                    </span>
+                                </div>
 
-                    <span className="lp-id-card__index">ID / 001</span>
-                </header>
+                                <span className="lp-id-badge__index">
+                                    ID / 001
+                                </span>
+                            </header>
 
-                <div className="lp-id-card__photo">
-                    {photoUrl ? (
-                        <img
-                            src={photoUrl}
-                            alt={`Foto ${name}`}
-                            draggable={false}
-                        />
-                    ) : (
-                        <div className="lp-id-card__initials">
-                            {initials || "M"}
+                            <div className="lp-id-badge__photo">
+                                {photoUrl ? (
+                                    <img
+                                        src={photoUrl}
+                                        alt={`Foto ${name}`}
+                                        draggable={false}
+                                    />
+                                ) : (
+                                    <div className="lp-id-badge__initials">
+                                        {initials || "M"}
+                                    </div>
+                                )}
+
+                                <span>SOFTWARE · AI · DATA · IOT</span>
+                            </div>
+
+                            <div className="lp-id-badge__info">
+                                <span className="lp-id-badge__role">
+                                    SOFTWARE ENGINEER
+                                </span>
+
+                                <h2 className="lp-id-badge__name">{name}</h2>
+
+                                <p className="lp-id-badge__skills">
+                                    Machine Learning · Data Mining · IoT
+                                </p>
+                            </div>
+
+                            <footer className="lp-id-badge__footer">
+                                <span
+                                    className="lp-id-badge__barcode"
+                                    aria-hidden="true"
+                                />
+
+                                <span>
+                                    <small>BASED IN</small>
+                                    <strong>INDONESIA</strong>
+                                </span>
+                            </footer>
                         </div>
-                    )}
 
-                    <span>SOFTWARE · AI · DATA · IOT</span>
+                        <span
+                            className="lp-id-card__glare"
+                            aria-hidden="true"
+                        />
+                    </div>
                 </div>
-
-                <div className="lp-id-card__information">
-                    <span className="lp-id-card__role">SOFTWARE ENGINEER</span>
-
-                    <h2>{name}</h2>
-
-                    <p>Machine Learning · Data Mining · IoT</p>
-                </div>
-
-                <footer className="lp-id-card__footer">
-                    <span className="lp-id-card__barcode" aria-hidden="true" />
-
-                    <span>
-                        <small>BASED IN</small>
-                        <strong>INDONESIA</strong>
-                    </span>
-                </footer>
             </article>
 
             <div className="lp-id-drag-hint">

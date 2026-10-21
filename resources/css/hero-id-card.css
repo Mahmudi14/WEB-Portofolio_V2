@@ -1,13 +1,22 @@
 /* ==========================================
-   HERO ID CARD — PHYSICAL LANYARD
+   HERO ID CARD — LANYARD BATIK + HOLDER KULIT
+
+   Semua ukuran di dalam kartu memakai `em`.
+   1em = 10px × --s, jadi kartu mengecil
+   proporsional di setiap breakpoint cukup
+   dengan mengubah --s (lebar kartu = 30em).
 ========================================== */
 
-.lp-id-stage {
+/* ==========================================
+   STAGE
+========================================== */
+
+.lp .lp-id-stage {
     position: relative;
     isolation: isolate;
 
     width: min(100%, 560px);
-    height: 700px;
+    height: 760px;
     margin-inline: auto;
     padding-inline: 26px;
 
@@ -19,210 +28,160 @@
     position: absolute;
     z-index: -1;
 
-    top: 15%;
+    top: 16%;
     left: 50%;
     transform: translateX(-50%);
 
-    width: 440px;
-    height: 440px;
+    width: 460px;
+    height: 460px;
     max-width: 100%;
 
     border-radius: 50%;
-    background: radial-gradient(
-        circle,
-        rgba(223, 106, 39, 0.14),
-        rgba(223, 106, 39, 0.035) 45%,
-        transparent 72%
-    );
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(223, 106, 39, 0.15),
+            rgba(223, 106, 39, 0.035) 46%,
+            transparent 72%
+        ),
+        radial-gradient(
+            circle at 50% 6%,
+            rgba(24, 128, 114, 0.16),
+            transparent 56%
+        );
 
     pointer-events: none;
 }
 
 /* ==========================================
-   ANCHOR / TEMPAT TALI DIGANTUNG
+   LANYARD (SVG)
 ========================================== */
 
-.lp-id-anchor {
-    position: absolute;
-    z-index: 4;
-
-    top: 10px;
-    left: 50%;
-
-    width: 16px;
-    height: 16px;
-
-    transform: translateX(-50%);
-
-    border: 3px solid #d9a27a;
-    border-radius: 50%;
-
-    background: #2e211a;
-    box-shadow:
-        0 0 0 6px rgba(223, 106, 39, 0.08),
-        0 3px 10px rgba(0, 0, 0, 0.28);
-}
-
-/* ==========================================
-   TALI DINAMIS BERBASIS SVG
-========================================== */
-
-/* ==========================================
-   LANYARD BARU
-========================================== */
-
-.lp-id-lanyard {
+.lp .lp-id-fabric {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 4;
 
+    display: block;
     width: 100%;
     height: 100%;
 
-    overflow: visible;
+    overflow: hidden;
     pointer-events: none;
+
+    /* Tali memudar halus saat masuk dari atas stage */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 46px);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 46px);
 }
 
-.lp-id-lanyard__shadow,
-.lp-id-lanyard__band,
-.lp-id-lanyard__accent {
+/* Serat anyaman */
+.lp-id-fabric .lp-id-fabric__weave {
+    opacity: 0.55;
+}
+
+/* Garis diagonal bersilang (lattice) */
+.lp-id-fabric .lp-id-fabric__lattice {
     fill: none;
+    stroke-width: 0.9;
     stroke-linecap: round;
+    opacity: 0.3;
+}
+
+/* Bayangan tipis di kedua tepi pita agar kain terlihat tebal */
+.lp-id-fabric .lp-id-fabric__edge {
+    fill: none;
+    stroke: rgba(6, 18, 16, 0.34);
+    stroke-width: 6;
     stroke-linejoin: round;
 }
 
-.lp-id-lanyard__shadow {
-    stroke: rgba(0, 0, 0, 0.18);
-    stroke-width: 30;
-    filter: blur(0.3px);
+/* Kilap lembut di tengah pita (juga jalur teks) */
+.lp-id-fabric .lp-id-fabric__shine {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.075);
+    stroke-width: 6;
+    stroke-linecap: round;
 }
 
-.lp-id-lanyard__band {
-    stroke: #f7f5f2;
-    stroke-width: 23;
+/* Jahitan di kedua tepi */
+.lp-id-fabric .lp-id-fabric__stitch {
+    fill: none;
+    stroke-width: 1;
+    stroke-dasharray: 1.4 3.4;
+    stroke-linecap: round;
+    opacity: 0.8;
 }
 
-.lp-id-lanyard__accent {
-    stroke: #2155d6;
-    stroke-width: 8;
-    stroke-dasharray: 24 20 10 18;
-    opacity: 0.9;
-}
-.lp-id-buckle {
-    position: absolute;
-    z-index: 4;
+/* Teks cetak di tali */
+.lp-id-fabric .lp-id-fabric__label {
+    fill: #fff8ea;
 
-    width: 40px;
-    height: 24px;
+    font:
+        800 9.5px/1 Inter,
+        sans-serif;
+    letter-spacing: 2.3px;
 
-    pointer-events: none;
-}
-
-.lp-id-buckle__top,
-.lp-id-buckle__bottom {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 22px;
-    height: 10px;
-
-    border-radius: 5px;
-    background: linear-gradient(180deg, #1f1f1f, #0f0f0f);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.15),
-        0 1px 4px rgba(0, 0, 0, 0.25);
-}
-
-.lp-id-buckle__top {
-    top: 0;
-}
-
-.lp-id-buckle__bottom {
-    bottom: 0;
-}
-
-.lp-id-ring {
-    position: absolute;
-    z-index: 4;
-
-    width: 18px;
-    height: 18px;
-
-    border: 2px solid #d0d4db;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.04);
-
-    box-shadow:
-        inset 0 1px 1px rgba(255, 255, 255, 0.22),
-        0 2px 5px rgba(0, 0, 0, 0.25);
-
-    pointer-events: none;
+    paint-order: stroke;
+    stroke: rgba(4, 32, 30, 0.4);
+    stroke-width: 0.5px;
 }
 
 /* ==========================================
-   KARTU ID
+   KARTU: HOLDER KULIT
 ========================================== */
 
-.lp-id-card {
+.lp .lp-id-card {
+    --s: 1;
+    --slot-y: 1.9em; /* HARUS sama dengan SLOT_EM di HeroIdCard.tsx */
+
+    --leather: #1d1a17;
+    --leather-deep: #100e0c;
+    --stitch: rgba(214, 170, 120, 0.46);
+
+    --grain: radial-gradient(
+            rgba(255, 255, 255, 0.045) 0.06em,
+            transparent 0.09em
+        )
+        0 0 / 0.32em 0.32em;
+
     position: absolute;
     z-index: 3;
 
     top: 0;
     left: 0;
 
-    width: min(82%, 300px);
-    max-width: 300px;
-    height: auto;
+    width: 30em;
+    padding-top: 3em;
 
-    padding: 24px 18px 17px;
+    font-size: calc(10px * var(--s));
 
-    border: 1px solid #a06c4a;
-    border-radius: 17px;
-
-    background:
-        radial-gradient(
-            ellipse at 12% 6%,
-            rgba(223, 106, 39, 0.17),
-            transparent 45%
-        ),
-        linear-gradient(156deg, #312720 0%, #211d1b 57%, #171716 100%);
-
-    box-shadow:
-        0 27px 65px rgba(0, 0, 0, 0.52),
-        0 4px 11px rgba(0, 0, 0, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
-
-    transform-origin: 50% 18px;
-    transform: translate3d(0, -600px, 0);
+    transform-origin: 50% var(--slot-y);
+    transform: translate3d(0, -700px, 0);
 
     opacity: 0;
+
+    filter: drop-shadow(0 2.4em 3em rgba(0, 0, 0, 0.5))
+        drop-shadow(0 0.4em 0.8em rgba(0, 0, 0, 0.3));
 
     will-change: transform;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
-    backface-visibility: hidden;
 
     cursor: grab;
 }
 
-.lp-id-card:hover {
-    border-color: #dd9563;
-}
-
-.lp-id-card--dragging {
+.lp .lp-id-card--dragging {
     cursor: grabbing;
 
-    box-shadow:
-        0 38px 80px rgba(0, 0, 0, 0.6),
-        0 6px 15px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    filter: drop-shadow(0 3.4em 4em rgba(0, 0, 0, 0.58))
+        drop-shadow(0 0.6em 1.2em rgba(0, 0, 0, 0.32));
 }
 
-.lp-id-card:focus-visible {
+.lp .lp-id-card:focus-visible {
     outline: 2px solid #f2a06e;
     outline-offset: 5px;
+    border-radius: 2em;
 }
 
 .lp-id-card img {
@@ -230,156 +189,298 @@
     -webkit-user-drag: none;
 }
 
-/* ==========================================
-   SLOT DAN KLIP LOGAM
-========================================== */
+/* Tab atas dengan slot logam */
 
-.lp-id-card__slot {
-    display: grid;
-    place-items: center;
-
+.lp-id-card .lp-id-card__tab {
     position: absolute;
-    top: 7px;
+    z-index: 2;
+
+    top: 0;
+    left: calc(50% - 6.5em);
+
+    width: 13em;
+    height: 3.4em;
+
+    border-radius: 1.7em 1.7em 0 0;
+    background: var(--grain), var(--leather);
+}
+
+/* Lengkung halus di pertemuan tab dan badan holder */
+.lp-id-card .lp-id-card__tab::before,
+.lp-id-card .lp-id-card__tab::after {
+    content: "";
+    position: absolute;
+    top: 2em;
+
+    width: 1em;
+    height: 1em;
+}
+
+.lp-id-card .lp-id-card__tab::before {
+    left: -1em;
+
+    background: radial-gradient(
+        circle at 0 0,
+        transparent 1em,
+        var(--leather) calc(1em + 0.5px)
+    );
+}
+
+.lp-id-card .lp-id-card__tab::after {
+    right: -1em;
+
+    background: radial-gradient(
+        circle at 100% 0,
+        transparent 1em,
+        var(--leather) calc(1em + 0.5px)
+    );
+}
+
+.lp-id-card .lp-id-card__slot {
+    position: absolute;
+    top: calc(var(--slot-y) - 0.55em);
     left: 50%;
 
-    width: 36px;
-    height: 11px;
+    width: 5.6em;
+    height: 1.1em;
 
     transform: translateX(-50%);
 
-    border: 1px solid #876b5a;
-    border-radius: 9px;
-    background: #100f0e;
+    border-radius: 1em;
+    background: #060504;
+
     box-shadow:
-        inset 0 2px 3px rgba(0, 0, 0, 0.8),
-        0 1px 0 rgba(255, 255, 255, 0.06);
+        inset 0 0.2em 0.35em rgba(0, 0, 0, 0.9),
+        0 0 0 0.22em #86623d,
+        0 0 0 0.32em rgba(255, 255, 255, 0.08);
 }
 
-.lp-id-card__slot span {
-    display: block;
-    width: 25px;
-    height: 3px;
+/* Badan holder */
 
-    border-radius: 4px;
-    background: #655349;
+.lp-id-card .lp-id-card__holder {
+    position: relative;
+
+    padding: 1.6em;
+
+    border-radius: 1.9em;
+    background:
+        var(--grain),
+        linear-gradient(
+            165deg,
+            var(--leather) 0%,
+            #14110f 58%,
+            var(--leather-deep) 100%
+        );
 }
 
-.lp-id-card__clip {
+/* Kilau lembut di sudut atas */
+.lp-id-card .lp-id-card__holder::after {
+    content: "";
     position: absolute;
-    top: -9px;
-    left: 50%;
+    inset: 0;
 
-    width: 18px;
-    height: 26px;
+    border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.06),
+        transparent 34%
+    );
 
-    transform: translateX(-50%);
+    pointer-events: none;
+}
 
-    border: 3px solid #c39b7d;
-    border-radius: 7px;
-    background: transparent;
+/* Jahitan tepi */
+.lp-id-card .lp-id-card__holder::before {
+    content: "";
+    position: absolute;
+    inset: 0.7em;
 
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+    border: 0.1em dashed var(--stitch);
+    border-radius: 1.4em;
+
+    pointer-events: none;
+}
+
+/* Jendela plastik bening */
+
+.lp-id-card .lp-id-card__window {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 1.1em;
+    background: #e9e2d4;
+
+    box-shadow:
+        0 0 0 0.15em #080706,
+        inset 0 0 0 0.1em rgba(255, 255, 255, 0.22);
+}
+
+.lp-id-card .lp-id-card__glare {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+
+    border-radius: inherit;
+    background: linear-gradient(
+        112deg,
+        transparent 32%,
+        rgba(255, 255, 255, 0.2) 44%,
+        rgba(255, 255, 255, 0.05) 52%,
+        transparent 62%
+    );
+    background-size: 280% 100%;
+    background-position: var(--sheen, 50%) 0;
+
+    pointer-events: none;
 }
 
 /* ==========================================
-   HEADER KARTU
+   ID CARD DI DALAM HOLDER
 ========================================== */
 
-.lp-id-card__header {
+.lp-id-card .lp-id-badge {
+    --ink: #2a1d15;
+    --copper: #b0561f;
+    --copper-soft: #e0a06e;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    background: linear-gradient(165deg, #fcf8ef 0%, #efe6d5 100%);
+    color: var(--ink);
+}
+
+/* Watermark kawung tipis */
+.lp-id-card .lp-id-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='none' stroke='%23b8763a' stroke-width='.7'%3E%3Cellipse cx='14' cy='7' rx='3.6' ry='7'/%3E%3Cellipse cx='14' cy='21' rx='3.6' ry='7'/%3E%3Cellipse cx='7' cy='14' rx='7' ry='3.6'/%3E%3Cellipse cx='21' cy='14' rx='7' ry='3.6'/%3E%3C/svg%3E");
+    background-size: 2.8em 2.8em;
+    opacity: 0.12;
+
+    -webkit-mask-image: linear-gradient(to bottom, transparent 30%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 30%, #000 100%);
+
+    pointer-events: none;
+}
+
+/* Header */
+
+.lp-id-card .lp-id-badge__header {
+    position: relative;
+    z-index: 1;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 1em;
 
-    margin: 11px 0 15px;
+    padding: 1.2em 1.4em;
+
+    background: linear-gradient(135deg, #2c2019, #1b1411);
+    color: #fff1e6;
 }
 
-.lp-id-card__brand {
+.lp-id-card .lp-id-badge__header::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 0.2em;
+    background: linear-gradient(90deg, #8f4c1f, #e0a06e, #8f4c1f);
+}
+
+.lp-id-card .lp-id-badge__brand {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 0.9em;
     min-width: 0;
 }
 
-.lp-id-card__logo {
+.lp-id-card .lp-id-badge__logo {
     display: grid;
     place-items: center;
-    flex: 0 0 37px;
+    flex: 0 0 3.6em;
 
-    width: 37px;
-    height: 37px;
+    width: 3.6em;
+    height: 3.6em;
 
-    border: 1px solid #875536;
-    border-radius: 9px;
+    border: 0.1em solid #8f5a38;
+    border-radius: 0.9em;
 
     background: #3c2b20;
     color: #f3a778;
 }
 
-.lp-id-card__logo img {
+.lp-id-card .lp-id-badge__logo img {
     display: block;
     width: 100%;
     height: 100%;
 
-    padding: 5px;
+    padding: 0.5em;
     object-fit: contain;
 }
 
-.lp-id-card__brand > span:last-child {
+.lp-id-card .lp-id-badge__brand-text {
     display: grid;
-    gap: 3px;
+    gap: 0.3em;
     min-width: 0;
 }
 
-.lp-id-card__brand strong {
+.lp-id-card .lp-id-badge__brand strong {
     color: #fff1e6;
 
     font:
-        700 14px/1.15 "Space Grotesk",
+        700 1.4em/1.15 "Space Grotesk",
         Inter,
         sans-serif;
-
     letter-spacing: 0.08em;
 }
 
-.lp-id-card__brand small {
-    color: #bf9e89;
+.lp-id-card .lp-id-badge__brand small {
+    color: #d3ae93;
 
     font:
-        650 8px/1.3 Inter,
+        650 0.8em/1.3 Inter,
         sans-serif;
-    letter-spacing: 0.11em;
+    letter-spacing: 0.12em;
 }
 
-.lp-id-card__index {
+.lp-id-card .lp-id-badge__index {
     flex-shrink: 0;
 
-    color: #c6a58c;
+    color: var(--copper-soft);
     font:
-        650 9px Inter,
+        650 0.9em Inter,
         sans-serif;
     letter-spacing: 0.06em;
 }
 
-/* ==========================================
-   FOTO PROFIL
-========================================== */
+/* Foto */
 
-.lp-id-card__photo {
+.lp-id-card .lp-id-badge__photo {
     position: relative;
+    z-index: 1;
 
-    width: 100%;
-    height: 220px;
+    height: 16.5em;
+    margin: 1.4em 1.4em 0;
 
     overflow: hidden;
 
-    border: 1px solid #77523b;
-    border-radius: 11px;
+    border: 0.1em solid #b8763a;
+    border-radius: 0.9em;
 
     background: linear-gradient(145deg, #584032, #25201c 75%);
+    box-shadow: 0 0.4em 1em rgba(60, 35, 15, 0.25);
 }
 
-.lp-id-card__photo > img {
+.lp-id-card .lp-id-badge__photo > img {
     display: block;
     width: 100%;
     height: 100%;
@@ -388,7 +489,7 @@
     object-position: center 18%;
 }
 
-.lp-id-card__initials {
+.lp-id-card .lp-id-badge__initials {
     display: grid;
     place-items: center;
 
@@ -398,114 +499,117 @@
     color: #f3ad80;
 
     font:
-        700 65px "Space Grotesk",
+        700 6.5em "Space Grotesk",
         Inter,
         sans-serif;
 }
 
-.lp-id-card__photo > span {
+.lp-id-card .lp-id-badge__photo > span {
     position: absolute;
     right: 0;
     bottom: 0;
     left: 0;
 
     display: block;
-    padding: 12px 8px 9px;
+    padding: 1.2em 0.8em 0.9em;
 
-    background: linear-gradient(transparent, rgba(11, 9, 8, 0.9));
+    background: linear-gradient(transparent, rgba(11, 9, 8, 0.88));
 
     color: #fff1e8;
-    font-size: 8px;
+    font-size: 0.8em;
     font-weight: 700;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.08em;
     text-align: center;
 }
 
-/* ==========================================
-   NAMA DAN ROLE
-========================================== */
+/* Nama dan role */
 
-.lp-id-card__information {
-    padding: 17px 0 15px;
+.lp-id-card .lp-id-badge__info {
+    position: relative;
+    z-index: 1;
+
+    padding: 1.5em 1.4em 1.2em;
 }
 
-.lp-id-card__role {
+.lp-id-card .lp-id-badge__role {
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 0.7em;
 
-    color: #f2a06e;
-    font-size: 9px;
+    color: var(--copper);
+    font-size: 0.9em;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
 }
 
-.lp-id-card__information h2 {
-    margin: 0 0 6px;
+.lp-id-card .lp-id-badge__name {
+    margin: 0 0 0.5em;
 
-    color: #fff1e7;
+    color: var(--ink);
     font:
-        700 26px/1.15 "Space Grotesk",
+        700 2.5em/1.12 "Space Grotesk",
         Inter,
         sans-serif;
-
-    letter-spacing: -0.045em;
+    letter-spacing: -0.04em;
 }
 
-.lp-id-card__information p {
+.lp-id-card .lp-id-badge__skills {
     margin: 0;
 
-    color: #c4b3a5;
-    font-size: 10px;
-    line-height: 1.6;
+    color: #6e5a4b;
+    font-size: 1.05em;
+    line-height: 1.55;
 }
 
-/* ==========================================
-   FOOTER ID CARD
-========================================== */
+/* Footer */
 
-.lp-id-card__footer {
+.lp-id-card .lp-id-badge__footer {
+    position: relative;
+    z-index: 1;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 15px;
+    gap: 1.5em;
 
-    padding-top: 13px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin: 0 1.4em;
+    padding: 1.1em 0 1.3em;
+
+    border-top: 0.1em solid rgba(42, 29, 21, 0.14);
 }
 
-.lp-id-card__barcode {
-    width: 100px;
-    height: 25px;
+.lp-id-card .lp-id-badge__barcode {
+    width: 10em;
+    height: 2.5em;
 
     background: repeating-linear-gradient(
         90deg,
-        #e4c7ae 0 2px,
-        transparent 2px 4px,
-        #e4c7ae 4px 5px,
-        transparent 5px 9px,
-        #e4c7ae 9px 12px,
-        transparent 12px 15px
+        var(--ink) 0 0.2em,
+        transparent 0.2em 0.4em,
+        var(--ink) 0.4em 0.5em,
+        transparent 0.5em 0.9em,
+        var(--ink) 0.9em 1.2em,
+        transparent 1.2em 1.5em
     );
 
-    opacity: 0.66;
+    opacity: 0.78;
 }
 
-.lp-id-card__footer > span:last-child {
+.lp-id-card .lp-id-badge__footer > span:last-child {
     display: grid;
-    gap: 5px;
+    gap: 0.5em;
     text-align: right;
 }
 
-.lp-id-card__footer small {
-    color: #978479;
-    font-size: 8px;
-    letter-spacing: 0.12em;
+.lp-id-card .lp-id-badge__footer small {
+    color: #8a7566;
+    font-size: 0.8em;
+    letter-spacing: 0.14em;
 }
 
-.lp-id-card__footer strong {
-    color: #f2b184;
-    font-size: 9px;
-    letter-spacing: 0.08em;
+.lp-id-card .lp-id-badge__footer strong {
+    color: var(--copper);
+    font-size: 0.9em;
+    letter-spacing: 0.1em;
 }
 
 /* ==========================================
@@ -514,7 +618,7 @@
 
 .lp-id-drag-hint {
     position: absolute;
-    z-index: 4;
+    z-index: 5;
 
     right: 0;
     bottom: 12px;
@@ -537,36 +641,43 @@
 }
 
 /* ==========================================
+   RUANG HERO
+========================================== */
+
+.lp .lp-hero__visual {
+    min-height: 0;
+    overflow: visible;
+}
+
+/* ==========================================
    RESPONSIVE
 ========================================== */
 
 @media (max-width: 1100px) {
-    .lp-id-stage {
-        height: 570px;
+    .lp .lp-id-stage {
+        height: 700px;
     }
 
-    .lp-id-card__photo {
-        height: 185px;
+    .lp .lp-id-card {
+        --s: 0.92;
     }
 }
 
 @media (max-width: 900px) {
-    /* FOTO DI ATAS, TEKS DI BAWAH */
-
     .lp .lp-hero__grid {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 24px;
+        gap: 22px;
     }
 
+    /* ID card di atas teks */
     .lp .lp-hero__visual {
-        display: grid;
-        place-items: center;
+        order: -1;
+        display: block;
         position: relative;
-        min-height: 680px;
+        width: 100%;
         isolation: isolate;
-        overflow: visible;
     }
 
     .lp .lp-hero__content {
@@ -578,18 +689,14 @@
         padding-top: 18px;
     }
 
-    .lp-id-stage {
+    .lp .lp-id-stage {
         width: 100%;
-        height: 540px;
+        height: 640px;
         padding-inline: 12px;
     }
 
-    .lp-id-card {
-        width: min(76%, 250px);
-    }
-
-    .lp-id-card__photo {
-        height: 165px;
+    .lp .lp-id-card {
+        --s: 0.86;
     }
 }
 
@@ -602,204 +709,33 @@
         padding-top: 8px;
     }
 
-    .lp-id-stage {
-        width: 100%;
-        height: 500px;
+    .lp .lp-id-stage {
+        height: 580px;
         padding-inline: 8px;
         border-radius: 0;
     }
 
-    .lp-id-card {
-        width: min(80%, 240px);
-        max-width: 240px;
-        padding: 22px 15px 15px;
-        border-radius: 15px;
-    }
-
-    .lp-id-card__photo {
-        height: 160px;
-    }
-
-    .lp-id-card__information {
-        padding: 13px 0 12px;
-    }
-
-    .lp-id-card__information h2 {
-        font-size: 22px;
-    }
-
-    .lp-id-card__brand strong {
-        font-size: 12px;
-    }
-
-    .lp-id-card__footer {
-        padding-top: 11px;
-    }
-
-    .lp-id-card__barcode {
-        width: 75px;
-        height: 20px;
+    .lp .lp-id-card {
+        --s: 0.8;
     }
 
     .lp-id-drag-hint {
         bottom: 6px;
-        font-size: 10px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .lp-id-card {
-        transition: none !important;
-    }
-}
-/* ==========================================
-   REALISTIC FABRIC LANYARD
-========================================== */
-
-.lp .lp-id-fabric {
-    position: absolute;
-    inset: 0;
-    z-index: 4;
-
-    display: block;
-    width: 100%;
-    height: 100%;
-
-    /* Ujung lanyard terlihat masuk dari atas */
-    overflow: hidden;
-    pointer-events: none;
-}
-
-/* Permukaan pita dengan bayangan dan sisi kain */
-
-.lp .lp-id-fabric__strap {
-    stroke: #aca199;
-    stroke-width: .8;
-
-    filter: drop-shadow(
-        2px 4px 3px rgba(0, 0, 0, .4)
-    );
-}
-
-/* Jahitan kecil mengikuti kedua tepi pita */
-
-.lp .lp-id-fabric__stitch {
-    fill: none;
-
-    stroke: #fff8ea;
-    stroke-width: 1;
-    stroke-dasharray: 1.2 3.6;
-    stroke-linecap: round;
-
-    opacity: .82;
-}
-
-/* Tekstur woven */
-
-.lp .lp-id-fabric__grain {
-    opacity: .45;
-}
-
-/* Tulisan sablon mengikuti arah pita */
-
-.lp .lp-id-fabric__label {
-    fill: #25385b;
-
-    font:
-        800 9px/1
-        Inter, sans-serif;
-
-    letter-spacing: .7px;
-
-    paint-order: stroke;
-    stroke: rgba(255, 255, 255, .65);
-    stroke-width: .4;
-}
-
-/* Buckle plastik dan ring metal */
-
-.lp .lp-id-fabric__hardware {
-    filter: drop-shadow(
-        1px 3px 3px rgba(0, 0, 0, .45)
-    );
-}
-
-/* Konektor sudah digambar di SVG.
-   Sembunyikan klip dekoratif lama. */
-
-.lp .lp-id-card__clip {
-    display: none;
-}
-
-/* ==========================================
-   HERO SPACE
-========================================== */
-
-.lp .lp-hero__visual {
-    min-height: 0;
-    overflow: visible;
-}
-
-.lp .lp-id-stage {
-    height: 700px;
-    overflow: visible;
-}
-
-/* ==========================================
-   RESPONSIVE
-========================================== */
-
-@media (max-width: 1100px) {
-    .lp .lp-id-stage {
-        height: 570px;
-    }
-}
-
-@media (max-width: 900px) {
-    .lp .lp-hero__grid {
-        display: flex;
-        flex-direction: column;
-        gap: 22px;
-    }
-
-    /* ID card di atas teks */
-
-    .lp .lp-hero__visual {
-        order: -1;
-        display: block;
-        width: 100%;
-        min-height: 0;
-    }
-
-    .lp .lp-hero__content {
-        order: 1;
-    }
-
-    .lp .lp-id-stage {
-        height: 540px;
-    }
-}
-
-@media (max-width: 600px) {
-    .lp .lp-id-stage {
-        height: 500px;
-    }
-
-    .lp .lp-id-card {
-        width: min(76%, 236px);
     }
 }
 
 @media (max-width: 380px) {
     .lp .lp-id-stage {
-        height: 480px;
+        height: 550px;
     }
 
     .lp .lp-id-card {
-        width: min(76%, 218px);
+        --s: 0.76;
     }
+}
 
-    .lp .lp-id-card__photo {
-        height: 146px;
+@media (prefers-reduced-motion: reduce) {
+    .lp .lp-id-card {
+        transition: none !important;
     }
 }
