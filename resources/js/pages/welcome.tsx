@@ -266,6 +266,14 @@ function Navbar({ name, logoUrl }: { name: string; logoUrl: string | null }) {
                     {menuOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>
             </div>
+            <div
+                className="lp-header__lanyard-mount"
+                data-hero-lanyard-mount
+                aria-hidden="true"
+            >
+                <span className="lp-header__lanyard-eyelet" />
+                <span className="lp-header__lanyard-eyelet" />
+            </div>
         </header>
     );
 }

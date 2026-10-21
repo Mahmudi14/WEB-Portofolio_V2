@@ -82,17 +82,14 @@ const SLOT_EM = 1.9;
 /** Posisi ujung tali di dalam buckle, diukur dari pusat slot (px, skala 1). */
 const STRAP_END_Y = 98;
 
-/** Tali dimulai sedikit di atas stage supaya terlihat turun dari atas. */
-const STRAP_TOP_Y = -26;
-
 const STRAP_STEPS = 36;
 
 /** Posisi motif kawung di sepanjang tali (0 = atas, 1 = buckle). */
 const MOTIF_AT = [0.66, 0.75, 0.84, 0.93] as const;
 
 /** Warna motif: krem terang di atas teal, emas di atas krem. */
-const INK_TOP = [247, 236, 211] as const;
-const INK_BOTTOM = [168, 126, 70] as const;
+const INK_TOP = [225, 204, 170] as const;
+const INK_BOTTOM = [184, 146, 101] as const;
 
 const STRAPS = [
     { side: -1, key: "left", offset: "54%" },
@@ -271,7 +268,15 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         const card = cardRef.current;
         const svg = svgRef.current;
 
-        if (!stage || !card || !svg) return;
+        const navbarMount = document.querySelector<HTMLElement>(
+            "[data-hero-lanyard-mount]",
+        );
+
+        const navbar = navbarMount?.closest<HTMLElement>(".lp-header");
+
+        if (!stage || !card || !svg || !navbarMount || !navbar) {
+            return;
+        }
 
         let frame = 0;
         let lastTime = 0;
@@ -282,44 +287,85 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
 
         const resize = () => {
             const bounds = stage.getBoundingClientRect();
+            const navbarBounds = navbar.getBoundingClientRect();
 
             if (!bounds.width || !bounds.height) return;
 
             const cardWidth = card.offsetWidth;
             const cardHeight = card.offsetHeight;
 
-            // 1em = 10px pada skala 1 (kartu 300px). Hardware lanyard
-            // ikut diskalakan mengikuti ukuran kartu.
             const unit = parseFloat(getComputedStyle(card).fontSize) || 10;
+
             const scale = unit / 10;
             const slotY = unit * SLOT_EM;
 
             const { width, height } = bounds;
 
-            const anchorX = width / 2;
-            const anchorY = 18;
-
-            // Panjang ayunan disesuaikan dengan tinggi kartu
-            // agar kartu tidak terpotong di bawah.
-            const maxLength = Math.max(
-                80,
-                height - cardHeight + slotY - anchorY - 48,
-            );
-
-            const length = Math.min(height * 0.34, maxLength);
-
             const spread = Math.min(66 * scale, width * 0.18);
 
-            // Posisi ujung tali saat kartu diam, dipakai untuk
-            // gradasi warna dan untuk menghitung kekenduran tali.
+            // Sejajarkan pengait Navbar dengan
+            // bagian tengah panggung ID card.
+            const mountCenterX = bounds.left + width / 2;
+
+            navbarMount.style.left = `${mountCenterX - navbarBounds.left}px`;
+
+            navbarMount.style.setProperty("--lp-lanyard-spread", `${spread}px`);
+
+            const mountBounds = navbarMount.getBoundingClientRect();
+
+            // Posisi anchor diambil dari pengait asli
+            // di Navbar, bukan dari titik lokal Hero.
+            const anchorX =
+                mountBounds.left + mountBounds.width / 2 - bounds.left;
+
+            const anchorY = mountBounds.bottom - bounds.top;
+
+            // Ruang yang tersedia dari Navbar
+            // sampai bagian bawah layar.
+            const availableViewportLength =
+                window.innerHeight -
+                mountBounds.bottom -
+                cardHeight +
+                slotY -
+                55;
+
+            // Pastikan kartu tidak keluar
+            // dari batas bawah area Hero.
+            const availableStageLength =
+                height - anchorY - cardHeight + slotY - 40;
+
+            // Panjang ideal tali.
+            // Pada HP sedikit lebih pendek.
+            const preferredLength = window.innerWidth <= 600 ? 195 : 225;
+
+            // Panjang tali dibatasi oleh
+            // ruang layar dan ukuran kartu.
+            const length = Math.max(
+                70,
+                Math.min(
+                    preferredLength,
+                    availableViewportLength,
+                    availableStageLength,
+                ),
+            );
+
+            // Posisi ujung pita pada buckle.
             const restEndY = anchorY + length - STRAP_END_Y * scale;
-            const nominal = Math.hypot(spread, restEndY - STRAP_TOP_Y);
+
+            const nominal = Math.hypot(spread, restEndY - anchorY);
+
             const gradEnd = Math.max(80, restEndY);
 
             svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
-            fabricGradientRef.current?.setAttribute("y2", String(gradEnd));
-            inkGradientRef.current?.setAttribute("y2", String(gradEnd));
+            // Gradasi kain dimulai tepat di Navbar.
+            fabricGradientRef.current?.setAttribute("y1", String(anchorY));
+
+            fabricGradientRef.current?.setAttribute("y2", String(restEndY));
+
+            inkGradientRef.current?.setAttribute("y1", String(anchorY));
+
+            inkGradientRef.current?.setAttribute("y2", String(restEndY));
 
             const layout = {
                 width,
@@ -359,6 +405,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                 };
             } else {
                 const ratioX = (old.x - old.anchorX) / Math.max(old.length, 1);
+
                 const ratioY = (old.y - old.anchorY) / Math.max(old.length, 1);
 
                 Object.assign(old, layout);
@@ -366,6 +413,106 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                 old.x = anchorX + ratioX * length;
                 old.y = anchorY + ratioY * length;
             }
+        };
+
+        const syncMobileScrollFade = () => {
+            const hero = stage.closest<HTMLElement>(".lp-hero");
+
+            if (!hero) return;
+
+            const isMobile = window.innerWidth <= 900;
+
+            if (!isMobile) {
+                stage.style.setProperty("--lp-mobile-fade", "1");
+                stage.style.setProperty("--lp-mobile-lift", "0px");
+                stage.classList.remove("lp-id-stage--mobile-hidden");
+                stage.style.removeProperty("pointer-events");
+                return;
+            }
+
+            // Seberapa jauh hero sudah tergeser ke atas.
+            const scrolled = Math.max(0, -hero.getBoundingClientRect().top);
+
+            // Fade mulai sedikit setelah user scroll,
+            // lalu cukup cepat menghilang.
+            const fadeStart = 16;
+            const fadeEnd = 165;
+
+            const progress = clamp(
+                (scrolled - fadeStart) / (fadeEnd - fadeStart),
+                0,
+                1,
+            );
+
+            const opacity = 1 - progress;
+            const lift = progress * 24;
+
+            stage.style.setProperty("--lp-mobile-fade", opacity.toFixed(3));
+
+            stage.style.setProperty("--lp-mobile-lift", `${lift.toFixed(1)}px`);
+
+            if (progress > 0.94) {
+                stage.classList.add("lp-id-stage--mobile-hidden");
+                stage.style.pointerEvents = "none";
+            } else {
+                stage.classList.remove("lp-id-stage--mobile-hidden");
+                stage.style.removeProperty("pointer-events");
+            }
+        };
+
+        const syncAnchorWhileScrolling = () => {
+            const state = motionRef.current;
+
+            if (!state) return;
+
+            const stageBounds = stage.getBoundingClientRect();
+            const mountBounds = navbarMount.getBoundingClientRect();
+
+            const nextX =
+                mountBounds.left + mountBounds.width / 2 - stageBounds.left;
+
+            const nextY = mountBounds.bottom - stageBounds.top;
+
+            // Sesuaikan koordinat kartu dan tali saat
+            // Navbar sticky sedangkan Hero bergulir.
+            const deltaX = nextX - state.anchorX;
+            const deltaY = nextY - state.anchorY;
+
+            state.anchorX = nextX;
+            state.anchorY = nextY;
+
+            state.x += deltaX;
+            state.y += deltaY;
+
+            const endY = nextY + state.length - STRAP_END_Y * state.scale;
+
+            state.gradEnd = Math.max(80, endY);
+
+            fabricGradientRef.current?.setAttribute("y1", String(nextY));
+
+            fabricGradientRef.current?.setAttribute("y2", String(endY));
+
+            inkGradientRef.current?.setAttribute("y1", String(nextY));
+
+            inkGradientRef.current?.setAttribute("y2", String(endY));
+
+            // Saat Hero sudah tidak terlihat, sembunyikan
+            // pengait agar tidak menggantung sendirian
+            // di halaman-halaman section berikutnya.
+            const hero = stage.closest<HTMLElement>(".lp-hero");
+
+            const visible =
+                !hero ||
+                (hero.getBoundingClientRect().bottom >
+                    mountBounds.bottom + 120 &&
+                    hero.getBoundingClientRect().top < window.innerHeight);
+
+            navbarMount.classList.toggle(
+                "lp-header__lanyard-mount--hidden",
+                !visible,
+            );
+
+            stage.classList.toggle("lp-id-stage--out-of-view", !visible);
         };
 
         const draw = (state: Motion) => {
@@ -394,7 +541,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
 
                 const start: Point = {
                     x: state.anchorX + side * state.spread,
-                    y: STRAP_TOP_Y,
+                    y: state.anchorY,
                 };
 
                 // Dua tali bertemu di dalam buckle (koordinat lokal kartu).
@@ -535,17 +682,40 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         };
 
         resize();
+        syncAnchorWhileScrolling();
+        syncMobileScrollFade();
 
         const observer = new ResizeObserver(resize);
 
         observer.observe(stage);
         observer.observe(card);
+        observer.observe(navbar);
+
+        window.addEventListener("scroll", syncAnchorWhileScrolling, {
+            passive: true,
+        });
+
+        window.addEventListener("scroll", syncMobileScrollFade, {
+            passive: true,
+        });
+
+        window.addEventListener("resize", syncMobileScrollFade);
 
         frame = requestAnimationFrame(animate);
 
         return () => {
             cancelAnimationFrame(frame);
+
             observer.disconnect();
+
+            window.removeEventListener("scroll", syncAnchorWhileScrolling);
+
+            window.removeEventListener("scroll", syncMobileScrollFade);
+
+            window.removeEventListener("resize", syncMobileScrollFade);
+
+            navbarMount.classList.remove("lp-header__lanyard-mount--hidden");
+
             motionRef.current = null;
         };
     }, []);
@@ -673,10 +843,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
     // Nama panjang dipersingkat jadi kata pertama agar muat di tali.
     const fullName = name.trim().toUpperCase();
 
-    const lanyardText =
-        fullName.length <= 14
-            ? fullName
-            : (fullName.split(/\s+/)[0] ?? "").slice(0, 12);
+    const lanyardText = "MHMD • PORTOFOLIO";
 
     return (
         <div ref={stageRef} className="lp-id-stage">
@@ -705,12 +872,12 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="0"
                         y2="220"
                     >
-                        <stop offset="0" stopColor="#0a4743" />
-                        <stop offset=".5" stopColor="#0e5e59" />
-                        <stop offset=".63" stopColor="#2f8077" />
-                        <stop offset=".75" stopColor="#8db8a7" />
-                        <stop offset=".87" stopColor="#e5dfc3" />
-                        <stop offset="1" stopColor="#efe3c6" />
+                        <stop offset="0" stopColor="#111B23" />
+                        <stop offset=".18" stopColor="#1A2932" />
+                        <stop offset=".42" stopColor="#28343C" />
+                        <stop offset=".65" stopColor="#30343A" />
+                        <stop offset=".84" stopColor="#34302D" />
+                        <stop offset="1" stopColor="#211F22" />
                     </linearGradient>
 
                     {/* Tinta cetak: krem di atas teal, emas di atas krem */}
@@ -723,8 +890,9 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="0"
                         y2="220"
                     >
-                        <stop offset=".64" stopColor="#f7ecd3" />
-                        <stop offset=".84" stopColor="#a87e46" />
+                        <stop offset="0" stopColor="#E6D1AE" />
+                        <stop offset=".55" stopColor="#D6B58C" />
+                        <stop offset="1" stopColor="#AF8960" />
                     </linearGradient>
 
                     {/* Serat anyaman halus */}
@@ -794,9 +962,10 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="1"
                         y2="0"
                     >
-                        <stop offset="0" stopColor="#d6c698" />
-                        <stop offset=".45" stopColor="#f2e8cc" />
-                        <stop offset="1" stopColor="#dfd0a6" />
+                        <stop offset="0" stopColor="#252A2E" />
+                        <stop offset=".45" stopColor="#55504A" />
+                        <stop offset=".7" stopColor="#403B37" />
+                        <stop offset="1" stopColor="#20252A" />
                     </linearGradient>
 
                     {/* Motif kawung (batik): 4 elips saling bertumpuk */}

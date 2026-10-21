@@ -739,3 +739,224 @@
         transition: none !important;
     }
 }
+/* ==========================================
+   NAVBAR — LANYARD MOUNT
+========================================== */
+
+.lp .lp-header {
+    position: sticky;
+    overflow: visible;
+    border-bottom-color: rgba(195, 165, 122, 0.18);
+}
+
+.lp .lp-header__lanyard-mount {
+    --lp-lanyard-spread: 66px;
+
+    position: absolute;
+    z-index: 5;
+
+    left: 75%;
+    bottom: -10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: calc(var(--lp-lanyard-spread) + var(--lp-lanyard-spread) + 18px);
+    height: 18px;
+
+    transform: translateX(-50%);
+    pointer-events: none;
+
+    transition: opacity 0.2s ease;
+}
+
+.lp .lp-header__lanyard-eyelet {
+    position: relative;
+    display: block;
+
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+
+    border: 1px solid #c4a67e;
+    border-radius: 5px;
+
+    background: linear-gradient(
+        145deg,
+        #ddc39d 0%,
+        #99805c 40%,
+        #4d4034 75%,
+        #a88b68 100%
+    );
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.48),
+        inset 0 1px 0 rgba(255, 245, 218, 0.4);
+}
+
+/* Lubang tempat pita terpasang */
+
+.lp .lp-header__lanyard-eyelet::before {
+    content: "";
+
+    position: absolute;
+    inset: 5px 3px;
+
+    border-radius: 3px;
+    background: #111419;
+
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+/* Detail kepala rivet */
+
+.lp .lp-header__lanyard-eyelet::after {
+    content: "";
+
+    position: absolute;
+    top: 2px;
+    right: 2px;
+
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+    background: #f3ddba;
+    opacity: 0.85;
+}
+
+.lp .lp-header__lanyard-mount--hidden {
+    opacity: 0;
+}
+
+/* ==========================================
+   LANYARD ANCHORED TO NAVBAR
+========================================== */
+
+/* SVG dapat memanjang ke area Navbar */
+
+.lp .lp-id-fabric {
+    overflow: visible;
+
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+/* Lanyard tidak hilang di batas atas Hero */
+
+.lp .lp-id-stage {
+    overflow: visible;
+    transition: opacity 0.2s ease;
+}
+
+.lp .lp-id-stage--out-of-view {
+    opacity: 0;
+    pointer-events: none;
+}
+/* ==========================================
+   PREMIUM PROFESSIONAL LANYARD
+========================================== */
+
+/* Garis tepian kain lebih halus */
+
+.lp .lp-id-fabric__edge {
+    stroke: rgba(7, 12, 17, 0.4);
+    stroke-width: 3.5;
+}
+
+/* Motif geometris tidak terlalu mencolok */
+
+.lp .lp-id-fabric__lattice {
+    stroke-width: 0.7;
+    opacity: 0.17;
+}
+
+/* Jahitan champagne */
+
+.lp .lp-id-fabric__stitch {
+    stroke-width: 0.9;
+    opacity: 0.56;
+}
+
+/* Refleksi halus pada permukaan kain */
+
+.lp .lp-id-fabric__shine {
+    stroke: rgba(242, 219, 179, 0.065);
+    stroke-width: 4;
+}
+
+/* Tulisan sablon champagne */
+
+.lp .lp-id-fabric__label {
+    fill: #e3cda8;
+
+    font-family: Inter, sans-serif;
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 1.1px;
+
+    paint-order: stroke;
+    stroke: rgba(12, 16, 22, 0.55);
+    stroke-width: 0.4;
+}
+
+/* Background glow mengikuti nuansa navy-gold */
+
+.lp .lp-id-stage__glow {
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(169, 132, 82, 0.12),
+            transparent 65%
+        ),
+        radial-gradient(
+            circle at 50% 12%,
+            rgba(35, 57, 68, 0.19),
+            transparent 52%
+        );
+}
+/* ==========================================
+   HERO ID CARD — VIEWPORT FIT
+========================================== */
+
+@media (min-width: 901px) {
+    .lp .lp-id-card {
+        --s: 0.86;
+    }
+}
+/* ==========================================
+   MOBILE SCROLL FADE
+========================================== */
+
+.lp .lp-id-stage {
+    --lp-mobile-fade: 1;
+    --lp-mobile-lift: 0px;
+}
+
+@media (max-width: 900px) {
+    .lp .lp-id-stage {
+        opacity: var(--lp-mobile-fade);
+        transform: translate3d(
+            0,
+            calc(var(--lp-mobile-lift) * -1),
+            0
+        );
+        transform-origin: top center;
+        will-change: opacity, transform;
+        transition:
+            opacity .16s linear,
+            transform .16s linear;
+    }
+
+    .lp .lp-id-stage--mobile-hidden {
+        opacity: 0;
+    }
+
+    .lp .lp-id-fabric,
+    .lp .lp-id-card,
+    .lp .lp-id-drag-hint,
+    .lp .lp-id-stage__glow {
+        transition: opacity .16s linear;
+    }
+}
