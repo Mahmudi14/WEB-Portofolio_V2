@@ -1,0 +1,1044 @@
+/* ==========================================
+   PROJECT REDESIGN
+========================================== */
+
+.porto-admin .pa-prj2-card {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 20px;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    background: #222121;
+    overflow: hidden;
+}
+
+.porto-admin .pa-prj2-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 23px 26px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj2-card-header h2 {
+    margin: 0 0 7px;
+    color: #f6f2ee;
+    font: 650 22px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+}
+
+.porto-admin .pa-prj2-card-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-prj2-saving {
+    color: #f2a06e;
+    font-size: 11px;
+}
+
+.pa-prj2-muted,
+.porto-admin .pa-prj2-muted {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.porto-admin .pa-prj2-info {
+    margin: 12px 0;
+    padding: 12px 15px;
+    border: 1px solid #705038;
+    border-radius: 9px;
+    color: #edb08c;
+    background: #34271f;
+    font-size: 12px;
+}
+
+/* ==========================================
+   TOMBOL — KECIL DAN SERAGAM
+========================================== */
+
+.pa-prj2-btn,
+.porto-admin .pa-prj2-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 36px;
+    padding: 8px 12px;
+
+    border: 1px solid #574a41;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #e8dfd8;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease;
+}
+
+.pa-prj2-btn:hover,
+.porto-admin .pa-prj2-btn:hover {
+    background: #342b25;
+    color: #fff;
+}
+
+.pa-prj2-btn.pa-prj2-btn--primary,
+.porto-admin .pa-prj2-btn.pa-prj2-btn--primary {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.pa-prj2-btn.pa-prj2-btn--primary:hover,
+.porto-admin .pa-prj2-btn.pa-prj2-btn--primary:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+    color: #fff;
+}
+
+.pa-prj2-btn--danger,
+.porto-admin .pa-prj2-btn--danger {
+    border-color: rgba(245,116,116,.3);
+    color: #f2a2a2;
+}
+
+.pa-prj2-btn--danger:hover,
+.porto-admin .pa-prj2-btn--danger:hover {
+    background: rgba(245,116,116,.09);
+}
+
+.pa-prj2-btn.pa-prj2-btn--danger-solid,
+.porto-admin .pa-prj2-btn.pa-prj2-btn--danger-solid {
+    background: #813333;
+    border-color: #a74343;
+    color: white;
+}
+
+.pa-prj2-btn:disabled,
+.porto-admin .pa-prj2-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-prj2-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ==========================================
+   KATEGORI PROYEK
+========================================== */
+
+.porto-admin .pa-prj2-category-manager {
+    margin-bottom: 20px;
+    background: #222121;
+    border: 1px solid var(--pa-line);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.porto-admin .pa-prj2-category-manager > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 17px 21px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.porto-admin .pa-prj2-category-manager > summary::-webkit-details-marker {
+    display: none;
+}
+
+.porto-admin .pa-prj2-category-manager > summary > span:first-child {
+    display: grid;
+    gap: 4px;
+}
+
+.porto-admin .pa-prj2-category-manager summary strong {
+    color: #f6f2ee;
+    font-size: 13px;
+}
+
+.porto-admin .pa-prj2-category-manager summary small,
+.porto-admin .pa-prj2-category-hint {
+    color: #aaa29c;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj2-category-body {
+    padding: 17px 21px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj2-category-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.porto-admin .pa-prj2-category-top p {
+    color: #aaa29c;
+    font-size: 12px;
+    margin: 0;
+}
+
+.porto-admin .pa-prj2-category-list {
+    display: grid;
+    gap: 8px;
+}
+
+.porto-admin .pa-prj2-category-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 11px 14px;
+    background: #292625;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 10px;
+}
+
+.porto-admin .pa-prj2-category-row > div:first-child {
+    display: grid;
+    gap: 4px;
+}
+
+.porto-admin .pa-prj2-category-row strong {
+    color: #f6f2ee;
+    font-size: 12px;
+}
+
+.porto-admin .pa-prj2-category-row span {
+    color: #aaa29c;
+    font-size: 11px;
+}
+
+/* ==========================================
+   CATEGORY FILTER
+========================================== */
+
+.porto-admin .pa-prj2-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj2-filter {
+    min-height: 33px;
+    padding: 7px 13px;
+    border: 1px solid #51443c;
+    border-radius: 9px;
+    background: transparent;
+    color: #c0b2a9;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.porto-admin .pa-prj2-filter:hover {
+    background: #342b25;
+}
+
+.porto-admin .pa-prj2-filter--active {
+    background: #3d2a20;
+    border-color: #96532f;
+    color: #f2a06e;
+}
+
+/* ==========================================
+   COMPACT TABLE
+========================================== */
+
+.porto-admin .pa-prj2-table {
+    padding: 10px 15px 17px;
+}
+
+.porto-admin .pa-prj2-row {
+    display: grid;
+    grid-template-columns:
+        28px
+        30px
+        48px
+        minmax(140px, 1.3fr)
+        minmax(100px, .8fr)
+        75px
+        auto;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 58px;
+    padding: 7px 12px;
+    margin-top: 6px;
+
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 10px;
+    background: #272423;
+
+    position: relative;
+}
+
+.porto-admin .pa-prj2-table-head {
+    min-height: 30px;
+    margin-top: 0;
+    background: transparent;
+    border: none;
+    color: #afa39a;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-prj2-row--dragging {
+    z-index: 5;
+    opacity: .9;
+    border-color: #df6a27;
+    box-shadow: 0 12px 30px rgba(0,0,0,.4);
+}
+
+.porto-admin .pa-prj2-handle {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 32px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #9d8e84;
+    cursor: grab;
+    touch-action: none;
+}
+
+.porto-admin .pa-prj2-handle:hover {
+    background: #3a2c23;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-prj2-handle:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-prj2-no {
+    color: #b8aba2;
+    font-size: 12px;
+}
+
+.porto-admin .pa-prj2-thumb {
+    display: block;
+    width: 44px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 7px;
+    background: #1a1919;
+    border: 1px solid #544138;
+}
+
+.porto-admin .pa-prj2-row-title {
+    min-width: 0;
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-prj2-category-badge {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    padding: 4px 8px;
+    background: #33271f;
+    border: 1px solid rgba(223,106,39,.24);
+    border-radius: 7px;
+    color: #eda879;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-prj2-image-count {
+    color: #b8aba2;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj2-row-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.porto-admin .pa-prj2-row-actions .pa-prj2-btn {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj2-right {
+    text-align: right;
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.porto-admin .pa-prj2-empty {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 52px 24px;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-prj2-empty h3 {
+    color: #f6f2ee;
+    font-size: 16px;
+    margin: 0;
+}
+
+.porto-admin .pa-prj2-empty p {
+    color: #aaa29c;
+    font-size: 12px;
+    margin: 0 0 8px;
+}
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.pa-prj2-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,.78);
+    backdrop-filter: blur(4px);
+}
+
+.pa-prj2-modal {
+    position: fixed;
+    z-index: 101;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: min(720px, calc(100vw - 24px));
+    max-height: 88vh;
+    overflow-y: auto;
+
+    background: #222121;
+    color: #f6f2ee;
+    border: 1px solid #514238;
+    border-radius: 18px;
+    box-shadow: 0 25px 80px rgba(0,0,0,.6);
+
+    font-family: Inter, sans-serif;
+}
+
+.pa-prj2-modal * {
+    box-sizing: border-box;
+}
+
+.pa-prj2-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+}
+
+.pa-prj2-modal-header h2 {
+    margin: 0 0 6px;
+    font-size: 21px;
+    font-weight: 650;
+}
+
+.pa-prj2-modal-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.pa-prj2-modal-close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #554940;
+    border-radius: 9px;
+    background: #302a27;
+    color: #eee3db;
+    cursor: pointer;
+}
+
+.pa-prj2-modal-body {
+    padding: 24px;
+}
+
+.pa-prj2-error {
+    margin: 0;
+    padding: 9px 11px;
+    border-radius: 8px;
+    background: rgba(210,60,60,.1);
+    color: #ffaaaa;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+.pa-prj2-form,
+.pa-prj2-fields {
+    display: grid;
+    gap: 21px;
+}
+
+.pa-prj2-field {
+    display: grid;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pa-prj2-field > label {
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pa-prj2-field input,
+.pa-prj2-field textarea {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 13px;
+    border: 1px solid #544840;
+    border-radius: 10px;
+    background: #1d1b1b;
+    color: #f6f2ee;
+    font: 400 13px/1.5 Inter, sans-serif;
+    outline: none;
+}
+
+.pa-prj2-field textarea {
+    resize: vertical;
+}
+
+.pa-prj2-field :is(input, textarea):focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 1px;
+}
+
+.pa-prj2-field > small {
+    color: #aaa29c;
+    font-size: 11px;
+}
+
+.pa-prj2-character-count {
+    color: #978b84;
+    font-size: 10px;
+    text-align: right;
+}
+
+.pa-prj2-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+/* ==========================================
+   CUSTOM RADIX SELECT
+========================================== */
+
+.pa-prj2-select,
+.porto-admin .pa-prj2-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 46px;
+    padding: 0 13px;
+
+    background: #1d1b1b;
+    border: 1px solid #544840;
+    border-radius: 10px;
+
+    color: #f6f2ee;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: left;
+    cursor: pointer;
+}
+
+.pa-prj2-select:hover,
+.porto-admin .pa-prj2-select:hover {
+    background: #26211f;
+    border-color: #9b5b34;
+}
+
+.pa-prj2-select:focus-visible,
+.pa-prj2-select[data-state="open"] {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223,106,39,.12);
+}
+
+.pa-prj2-select-arrow {
+    display: inline-flex;
+    color: #f2a06e;
+}
+
+.pa-prj2-select[data-placeholder] {
+    color: #9e938b;
+}
+
+.pa-prj2-select-menu {
+    z-index: 300;
+    width: var(--radix-select-trigger-width);
+    max-height: var(--radix-select-content-available-height);
+    background: #292524;
+    border: 1px solid #685042;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+    overflow: hidden;
+}
+
+.pa-prj2-select-menu [data-radix-select-viewport] {
+    padding: 6px;
+}
+
+.pa-prj2-select-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    min-height: 43px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #eee7e1;
+    font: 400 13px Inter, sans-serif;
+    outline: none;
+    cursor: pointer;
+}
+
+.pa-prj2-select-option[data-highlighted] {
+    background: #423026;
+    color: #fff;
+}
+
+.pa-prj2-select-option[data-state="checked"] {
+    color: #f2a06e;
+    background: rgba(223,106,39,.09);
+}
+
+/* ==========================================
+   GALLERY FORM
+========================================== */
+
+.pa-prj2-gallery {
+    display: grid;
+    gap: 17px;
+    padding-top: 21px;
+    border-top: 1px solid rgba(255,255,255,.085);
+}
+
+.pa-prj2-gallery-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.pa-prj2-gallery-heading h3 {
+    margin: 0 0 6px;
+    color: #f6f2ee;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.pa-prj2-gallery-heading p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.pa-prj2-count {
+    display: inline-flex;
+    padding: 5px 9px;
+    background: #33271f;
+    border: 1px solid rgba(223,106,39,.24);
+    border-radius: 8px;
+    color: #eda879;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.pa-prj2-gallery-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.pa-prj2-image-card {
+    position: relative;
+    border: 1px solid #544840;
+    border-radius: 12px;
+    background: #1d1b1b;
+    overflow: hidden;
+}
+
+.pa-prj2-image-card > img,
+.pa-prj2-image-placeholder {
+    display: block;
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: #171616;
+}
+
+.pa-prj2-image-placeholder {
+    display: grid;
+    place-items: center;
+    color: #f2a06e;
+}
+
+.pa-prj2-image-label {
+    display: block;
+    padding: 9px;
+    color: #f6f2ee;
+    font-size: 11px;
+}
+
+.pa-prj2-image-actions {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 9px 10px;
+}
+
+.pa-prj2-image-actions button {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #554940;
+    border-radius: 7px;
+    background: #302a27;
+    color: #f6f2ee;
+    cursor: pointer;
+}
+
+.pa-prj2-image-actions button:hover {
+    background: #423126;
+}
+
+.pa-prj2-image-actions button:disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+.pa-prj2-image-actions button:last-child {
+    color: #f2a2a2;
+}
+
+.pa-prj2-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 26px 18px;
+    border: 1px dashed #71503b;
+    border-radius: 12px;
+    background: #211e1d;
+    color: #f2a06e;
+    cursor: pointer;
+    text-align: center;
+}
+
+.pa-prj2-upload:hover {
+    border-color: #df6a27;
+    background: #29211e;
+}
+
+.pa-prj2-upload strong {
+    color: #f6f2ee;
+    font-size: 12px;
+}
+
+.pa-prj2-upload span {
+    color: #aaa29c;
+    font-size: 11px;
+}
+
+.pa-prj2-upload:has(input:disabled) {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.pa-prj2-upload input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+}
+
+/* ==========================================
+   DETAIL PROJECT
+========================================== */
+
+.porto-admin .pa-prj2-detail-header {
+    padding: 28px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj2-detail-header h2 {
+    margin: 15px 0 0;
+    color: #f6f2ee;
+    font: 650 27px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-prj2-detail-content {
+    display: grid;
+    gap: 30px;
+    padding: 28px;
+}
+
+.porto-admin .pa-prj2-section + .pa-prj2-section {
+    padding-top: 25px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-prj2-section h3 {
+    margin: 0 0 13px;
+    color: #f6f2ee;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-prj2-description {
+    margin: 0;
+    color: #c5b8ae;
+    font-size: 13px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-prj2-tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.porto-admin .pa-prj2-tech-list span {
+    padding: 7px 11px;
+    border: 1px solid #584335;
+    border-radius: 8px;
+    background: #33271f;
+    color: #eda879;
+    font-size: 11px;
+}
+
+.porto-admin .pa-prj2-gallery-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.porto-admin .pa-prj2-gallery-title h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+}
+
+.porto-admin .pa-prj2-gallery-stage {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 220px;
+    max-height: 580px;
+    overflow: hidden;
+    background: #151414;
+    border: 1px solid #44382f;
+    border-radius: 13px;
+}
+
+.porto-admin .pa-prj2-gallery-stage img {
+    width: 100%;
+    max-height: 580px;
+    object-fit: contain;
+}
+
+.porto-admin .pa-prj2-detail-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 14px;
+}
+
+.porto-admin .pa-prj2-detail-thumb {
+    position: relative;
+    width: 110px;
+    height: 85px;
+    padding: 0;
+    border: 2px solid #544840;
+    border-radius: 9px;
+    background: #1d1b1b;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.porto-admin .pa-prj2-detail-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.porto-admin .pa-prj2-detail-thumb--active {
+    border-color: #df6a27;
+}
+
+.porto-admin .pa-prj2-detail-thumb span {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    padding: 3px 6px;
+    background: rgba(0,0,0,.75);
+    border-radius: 5px;
+    color: #fff;
+    font-size: 10px;
+}
+
+/* ==========================================
+   EDIT FULL WIDTH
+========================================== */
+
+.porto-admin .pa-prj2-edit-card {
+    width: 100%;
+    max-width: none;
+}
+
+.porto-admin .pa-prj2-edit-form {
+    width: 100%;
+    max-width: none;
+    padding: 28px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1150px) {
+    .porto-admin .pa-prj2-table-head {
+        display: none;
+    }
+
+    .porto-admin .pa-prj2-row {
+        grid-template-columns:
+            28px 32px 48px minmax(0, 1fr);
+    }
+
+    .porto-admin .pa-prj2-row-title {
+        grid-column: 4;
+    }
+
+    .porto-admin .pa-prj2-row
+    :is(
+        .pa-prj2-category-badge,
+        .pa-prj2-image-count,
+        .pa-prj2-row-actions
+    ) {
+        grid-column: 4;
+    }
+
+    .porto-admin .pa-prj2-row-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .porto-admin .pa-prj2-card-header,
+    .porto-admin .pa-prj2-detail-header,
+    .porto-admin .pa-prj2-detail-content,
+    .porto-admin .pa-prj2-edit-form {
+        padding: 20px;
+    }
+
+    .porto-admin .pa-prj2-page-actions {
+        width: 100%;
+    }
+
+    .pa-prj2-modal-header,
+    .pa-prj2-modal-body {
+        padding: 19px;
+    }
+
+    .porto-admin .pa-prj2-row {
+        padding: 10px 12px;
+    }
+
+    .porto-admin .pa-prj2-filters {
+        padding: 15px;
+    }
+
+    .porto-admin .pa-prj2-gallery-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .porto-admin .pa-prj2-detail-thumb {
+        width: 82px;
+        height: 70px;
+    }
+
+    .porto-admin .pa-prj2-category-hint {
+        display: none;
+    }
+}

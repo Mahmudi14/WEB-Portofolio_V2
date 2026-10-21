@@ -13,10 +13,14 @@ use App\Http\Controllers\Admin\ResearchController;
 use App\Http\Controllers\Admin\SkillCategoryController;
 use App\Http\Controllers\Admin\SkillItemController;
 use App\Http\Controllers\Admin\SocialLinkController;
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 
 // Website publik
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', [
+    LandingPageController::class,
+    'index',
+])->name('home');
 
 // Seluruh halaman dan aksi admin harus login.
 Route::middleware(['auth'])->group(function () {
@@ -89,6 +93,54 @@ Route::middleware(['auth'])->group(function () {
                 'destroy',
             ])->name('social-links.destroy');
 
+            // Simpan urutan drag-and-drop
+            Route::put('/social-links/reorder', [
+                SocialLinkController::class,
+                'reorder',
+            ])->name('social-links.reorder');
+
+            // Halaman edit media sosial
+            Route::get('/social-links/{socialLink}/edit', [
+                SocialLinkController::class,
+                'edit',
+            ])->name('social-links.edit');
+
+            // Halaman detail media sosial
+            Route::get('/social-links/{socialLink}', [
+                SocialLinkController::class,
+                'show',
+            ])->name('social-links.show');
+
+            // Drag-and-drop urutan kategori
+            Route::put('/skills/reorder', [
+                SkillCategoryController::class,
+                'reorder',
+            ])->name('skills.reorder');
+
+            // Halaman edit kategori
+            Route::get('/skills/{skillCategory}/edit', [
+                SkillCategoryController::class,
+                'edit',
+            ])->name('skills.edit');
+
+            // Halaman detail kategori
+            Route::get('/skills/{skillCategory}', [
+                SkillCategoryController::class,
+                'show',
+            ])->name('skills.show');
+
+            // Tambah banyak sub-keahlian sekaligus
+            Route::post('/skills/{skillCategory}/items/bulk', [
+                SkillItemController::class,
+                'storeMany',
+            ])->name('skills.items.bulk-store');
+
+            // Drag-and-drop urutan sub-keahlian
+            Route::put('/skills/{skillCategory}/items/reorder', [
+                SkillItemController::class,
+                'reorder',
+            ])->name('skills.items.reorder');
+
             // Kategori Keahlian
             Route::get('/skills', [
                 SkillCategoryController::class,
@@ -147,6 +199,16 @@ Route::middleware(['auth'])->group(function () {
                 [EducationController::class, 'destroy']
             )->name('educations.destroy');
 
+            Route::get(
+                '/educations/{education}/edit',
+                [EducationController::class, 'edit']
+            )->name('educations.edit');
+
+            Route::get(
+                '/educations/{education}',
+                [EducationController::class, 'show']
+            )->name('educations.show');
+
 
             Route::get(
                 '/experiences',
@@ -168,6 +230,24 @@ Route::middleware(['auth'])->group(function () {
                 [ExperienceController::class, 'destroy']
             )->name('experiences.destroy');
 
+            // Simpan urutan pengalaman
+            Route::put(
+                '/experiences/reorder',
+                [ExperienceController::class, 'reorder']
+            )->name('experiences.reorder');
+
+            // Halaman detail pengalaman
+            Route::get(
+                '/experiences/{experience}',
+                [ExperienceController::class, 'show']
+            )->name('experiences.show');
+
+            // Halaman edit pengalaman
+            Route::get(
+                '/experiences/{experience}/edit',
+                [ExperienceController::class, 'edit']
+            )->name('experiences.edit');
+
 
             Route::get(
                 '/achievements',
@@ -188,6 +268,23 @@ Route::middleware(['auth'])->group(function () {
                 '/achievements/{achievement}',
                 [AchievementController::class, 'destroy']
             )->name('achievements.destroy');
+            // Drag-and-drop urutan pencapaian
+            Route::put('/achievements/reorder', [
+                AchievementController::class,
+                'reorder',
+            ])->name('achievements.reorder');
+
+            // Halaman edit pencapaian
+            Route::get('/achievements/{achievement}/edit', [
+                AchievementController::class,
+                'edit',
+            ])->name('achievements.edit');
+
+            // Halaman detail pencapaian
+            Route::get('/achievements/{achievement}', [
+                AchievementController::class,
+                'show',
+            ])->name('achievements.show');
 
 
             /*
@@ -237,6 +334,23 @@ Route::middleware(['auth'])->group(function () {
                 '/projects/{project}',
                 [ProjectController::class, 'destroy']
             )->name('projects.destroy');
+            // Drag-and-drop urutan proyek
+            Route::put('/projects/reorder', [
+                ProjectController::class,
+                'reorder',
+            ])->name('projects.reorder');
+
+            // Halaman edit proyek
+            Route::get('/projects/{project}/edit', [
+                ProjectController::class,
+                'edit',
+            ])->name('projects.edit');
+
+            // Halaman detail proyek
+            Route::get('/projects/{project}', [
+                ProjectController::class,
+                'show',
+            ])->name('projects.show');
 
 
             /*
@@ -264,6 +378,24 @@ Route::middleware(['auth'])->group(function () {
                 '/researches/{research}',
                 [ResearchController::class, 'destroy']
             )->name('researches.destroy');
+
+            // Drag-and-drop urutan penelitian
+            Route::put('/researches/reorder', [
+                ResearchController::class,
+                'reorder',
+            ])->name('researches.reorder');
+
+            // Halaman edit penelitian
+            Route::get('/researches/{research}/edit', [
+                ResearchController::class,
+                'edit',
+            ])->name('researches.edit');
+
+            // Halaman detail penelitian
+            Route::get('/researches/{research}', [
+                ResearchController::class,
+                'show',
+            ])->name('researches.show');
         });
 });
 

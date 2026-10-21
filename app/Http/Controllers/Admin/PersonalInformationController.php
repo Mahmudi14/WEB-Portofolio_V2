@@ -45,9 +45,16 @@ class PersonalInformationController extends Controller
         PersonalInformationService $service
     ): RedirectResponse {
         $service->update(
-            $request->safe()->except(['photo', 'logo']),
+            $request->safe()->except([
+                'photo',
+                'logo',
+                'remove_photo',
+                'remove_logo',
+            ]),
             $request->file('photo'),
-            $request->file('logo')
+            $request->file('logo'),
+            $request->boolean('remove_photo'),
+            $request->boolean('remove_logo')
         );
 
         return to_route('admin.profile.edit')

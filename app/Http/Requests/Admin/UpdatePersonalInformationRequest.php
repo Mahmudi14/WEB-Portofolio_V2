@@ -53,6 +53,8 @@ class UpdatePersonalInformationRequest extends FormRequest
                     ->types(['jpg', 'jpeg', 'png', 'webp'])
                     ->max('3mb'),
             ],
+            'remove_photo' => ['sometimes', 'boolean'],
+            'remove_logo' => ['sometimes', 'boolean'],
 
             'logo' => [
                 'nullable',

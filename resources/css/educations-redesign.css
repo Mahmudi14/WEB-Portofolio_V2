@@ -1,0 +1,699 @@
+/* ==========================================
+   PENDIDIKAN — REDESIGN
+========================================== */
+
+.porto-admin .pa-edu2-card {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background: #222121;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+}
+
+.porto-admin .pa-edu2-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 23px 26px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-edu2-card-header h2 {
+    margin: 0 0 7px;
+    color: #f6f2ee;
+    font: 650 22px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+}
+
+.porto-admin .pa-edu2-card-header p {
+    max-width: 680px;
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-edu2-count {
+    color: #f2a06e;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* ==========================================
+   BUTTON
+========================================== */
+
+.pa-edu2-btn,
+.porto-admin .pa-edu2-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    width: auto;
+    min-height: 36px;
+    padding: 8px 12px;
+    flex: 0 0 auto;
+
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease;
+}
+
+.pa-edu2-btn:hover,
+.porto-admin .pa-edu2-btn:hover {
+    background: #342b25;
+    color: #fff;
+}
+
+.pa-edu2-btn.pa-edu2-btn--primary,
+.porto-admin .pa-edu2-btn.pa-edu2-btn--primary {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.pa-edu2-btn.pa-edu2-btn--primary:hover,
+.porto-admin .pa-edu2-btn.pa-edu2-btn--primary:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+}
+
+.pa-edu2-btn--danger,
+.porto-admin .pa-edu2-btn--danger {
+    color: #f2a2a2;
+    border-color: rgba(245, 116, 116, .3);
+}
+
+.pa-edu2-btn--danger:hover {
+    background: rgba(245, 116, 116, .1);
+}
+
+.pa-edu2-btn.pa-edu2-btn--danger-solid,
+.porto-admin .pa-edu2-btn.pa-edu2-btn--danger-solid {
+    background: #823333;
+    border-color: #ad4545;
+    color: #fff;
+}
+
+.pa-edu2-btn:disabled,
+.porto-admin .pa-edu2-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-edu2-page-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ==========================================
+   COMPACT TABLE
+========================================== */
+
+.porto-admin .pa-edu2-table {
+    padding: 10px 15px 17px;
+}
+
+.porto-admin .pa-edu2-row {
+    display: grid;
+    grid-template-columns:
+        30px
+        65px
+        minmax(160px, 1.3fr)
+        minmax(110px, 1fr)
+        120px
+        auto;
+
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    margin-top: 6px;
+    padding: 7px 12px;
+
+    background: #272423;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 10px;
+}
+
+.porto-admin .pa-edu2-table-head {
+    min-height: 30px;
+    margin-top: 0;
+    border: 0;
+    background: transparent;
+    color: #afa39a;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-edu2-number,
+.porto-admin .pa-edu2-period {
+    color: #b8aba2;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+.porto-admin .pa-edu2-level {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+    min-width: 40px;
+    padding: 5px 9px;
+
+    border: 1px solid rgba(223,106,39,.28);
+    border-radius: 7px;
+    background: #33271f;
+
+    color: #eda879;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.porto-admin .pa-edu2-institution {
+    min-width: 0;
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-edu2-major {
+    min-width: 0;
+    color: #c2b6ae;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-edu2-row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.porto-admin .pa-edu2-row-actions .pa-edu2-btn {
+    min-height: 32px;
+    padding: 5px 8px;
+}
+
+.porto-admin .pa-edu2-right {
+    text-align: right;
+}
+
+/* ==========================================
+   EMPTY STATE & NOTICES
+========================================== */
+
+.porto-admin .pa-edu2-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 52px 24px;
+    text-align: center;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-edu2-empty h3 {
+    margin: 0;
+    color: #f6f2ee;
+    font-size: 16px;
+}
+
+.porto-admin .pa-edu2-empty p {
+    margin: 0 0 8px;
+    color: #aaa29c;
+    font-size: 12px;
+}
+
+.porto-admin .pa-edu2-notice {
+    margin-bottom: 20px;
+    padding: 14px 17px;
+    background: #35271f;
+    border: 1px solid #795039;
+    border-radius: 10px;
+    color: #eab08c;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.porto-admin .pa-edu2-notice a {
+    color: #ffc199;
+    text-decoration: underline;
+}
+
+.pa-edu2-muted {
+    color: #b8aba2;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   MODAL — RADIX PORTAL
+========================================== */
+
+.pa-edu2-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,.78);
+    backdrop-filter: blur(4px);
+}
+
+.pa-edu2-modal {
+    position: fixed;
+    z-index: 101;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: min(650px, calc(100vw - 24px));
+    max-height: 88vh;
+    overflow-y: auto;
+
+    background: #222121;
+    color: #f6f2ee;
+    border: 1px solid #514238;
+    border-radius: 18px;
+    box-shadow: 0 25px 80px rgba(0,0,0,.6);
+
+    font-family: Inter, sans-serif;
+}
+
+.pa-edu2-modal * {
+    box-sizing: border-box;
+}
+
+.pa-edu2-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+}
+
+.pa-edu2-modal-header h2 {
+    margin: 0 0 6px;
+    font-size: 21px;
+    font-weight: 650;
+}
+
+.pa-edu2-modal-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.pa-edu2-modal-close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid #554940;
+    border-radius: 9px;
+    background: #302a27;
+    color: #eee3db;
+    cursor: pointer;
+}
+
+.pa-edu2-modal-body {
+    padding: 24px;
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+.pa-edu2-form,
+.pa-edu2-fields {
+    display: grid;
+    gap: 21px;
+}
+
+.pa-edu2-field {
+    display: grid;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pa-edu2-field > label {
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pa-edu2-field input {
+    display: block;
+    width: 100%;
+    min-height: 45px;
+    padding: 11px 13px;
+
+    background: #1d1b1b;
+    border: 1px solid #544840;
+    border-radius: 10px;
+
+    color: #f6f2ee;
+    font: 400 13px/1.5 Inter, sans-serif;
+    outline: none;
+}
+
+.pa-edu2-field input:focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 1px;
+}
+
+.pa-edu2-field input:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.pa-edu2-error {
+    margin: 0;
+    color: #ffaaaa;
+    font-size: 11px;
+}
+
+.pa-edu2-years {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.pa-edu2-current {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.pa-edu2-current input {
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    accent-color: #df6a27;
+}
+
+.pa-edu2-current > span {
+    display: grid;
+    gap: 5px;
+}
+
+.pa-edu2-current strong {
+    color: #f6f2ee;
+    font-size: 12px;
+}
+
+.pa-edu2-current small {
+    color: #aaa29c;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.pa-edu2-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+/* ==========================================
+   CUSTOM JENJANG DROPDOWN
+========================================== */
+
+.pa-edu2-select,
+.porto-admin .pa-edu2-select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    height: 46px;
+    min-height: 46px;
+    padding: 0 13px;
+
+    background: #1d1b1b;
+    border: 1px solid #544840;
+    border-radius: 10px;
+    color: #f6f2ee;
+
+    font: 400 13px/1.5 Inter, sans-serif;
+    text-align: left;
+    cursor: pointer;
+}
+
+.pa-edu2-select:hover {
+    background: #26211f;
+    border-color: #9b5b34;
+}
+
+.pa-edu2-select:focus-visible,
+.pa-edu2-select[data-state="open"] {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223,106,39,.12);
+}
+
+.pa-edu2-select-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.pa-edu2-select-value > svg,
+.pa-edu2-select-arrow {
+    flex-shrink: 0;
+    color: #f2a06e;
+}
+
+.pa-edu2-select-arrow {
+    display: inline-flex;
+}
+
+.pa-edu2-select-content {
+    z-index: 300;
+    width: var(--radix-select-trigger-width);
+    max-height: min(
+        340px,
+        var(--radix-select-content-available-height)
+    );
+
+    background: #292524;
+    border: 1px solid #685042;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+    overflow: hidden;
+}
+
+.pa-edu2-select-viewport {
+    padding: 6px;
+}
+
+.pa-edu2-select-item {
+    display: grid;
+    grid-template-columns: 20px 1fr 18px;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 42px;
+    padding: 10px 12px;
+
+    border-radius: 8px;
+    color: #eee7e1;
+    font: 400 13px Inter, sans-serif;
+    outline: none;
+    cursor: pointer;
+}
+
+.pa-edu2-select-item[data-highlighted] {
+    background: #423026;
+    color: #fff;
+}
+
+.pa-edu2-select-item[data-state="checked"] {
+    color: #f2a06e;
+}
+
+.pa-edu2-select-check {
+    display: inline-flex;
+    color: #f2a06e;
+}
+
+/* ==========================================
+   DETAIL & EDIT FULL WIDTH
+========================================== */
+
+.porto-admin .pa-edu2-edit-card,
+.porto-admin .pa-edu2-edit-form {
+    width: 100%;
+    max-width: none;
+}
+
+.porto-admin .pa-edu2-edit-form {
+    padding: 28px;
+}
+
+.porto-admin .pa-edu2-hint {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-edu2-detail-header {
+    padding: 28px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-edu2-detail-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 17px;
+    border-radius: 13px;
+    background: #382a21;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-edu2-detail-header h2 {
+    margin: 15px 0 7px;
+    color: #f6f2ee;
+    font: 650 26px/1.3
+        'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-edu2-detail-header p {
+    margin: 0;
+    color: #b8aba2;
+    font-size: 13px;
+}
+
+.porto-admin .pa-edu2-detail-content {
+    padding: 28px;
+}
+
+.porto-admin .pa-edu2-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 25px;
+}
+
+.porto-admin .pa-edu2-info-grid > div {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.porto-admin .pa-edu2-info-grid span {
+    color: #a99e96;
+    font-size: 11px;
+}
+
+.porto-admin .pa-edu2-info-grid strong {
+    color: #f6f2ee;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-edu2-detail-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid var(--pa-line);
+    font-size: 12px;
+}
+
+.porto-admin .pa-edu2-detail-status strong {
+    color: #f6f2ee;
+}
+
+.porto-admin .pa-edu2-detail-status span {
+    color: #f2a06e;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1150px) {
+    .porto-admin .pa-edu2-table-head {
+        display: none;
+    }
+
+    .porto-admin .pa-edu2-row {
+        grid-template-columns:
+            30px 65px minmax(0, 1fr);
+    }
+
+    .porto-admin .pa-edu2-major,
+    .porto-admin .pa-edu2-period,
+    .porto-admin .pa-edu2-row-actions {
+        grid-column: 3;
+    }
+
+    .porto-admin .pa-edu2-row-actions {
+        justify-content: flex-start;
+    }
+
+    .porto-admin .pa-edu2-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .porto-admin .pa-edu2-card-header,
+    .porto-admin .pa-edu2-detail-header,
+    .porto-admin .pa-edu2-detail-content,
+    .porto-admin .pa-edu2-edit-form {
+        padding: 20px;
+    }
+
+    .porto-admin .pa-edu2-info-grid,
+    .pa-edu2-years {
+        grid-template-columns: 1fr;
+    }
+
+    .pa-edu2-modal-header,
+    .pa-edu2-modal-body {
+        padding: 19px;
+    }
+
+    .porto-admin .pa-edu2-row {
+        padding: 10px;
+    }
+}

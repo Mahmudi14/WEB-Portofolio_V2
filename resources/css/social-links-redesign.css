@@ -1,0 +1,763 @@
+/* ==========================================
+   MEDIA SOSIAL — REDESIGN
+========================================== */
+
+.porto-admin .pa-soc2-card {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 20px;
+    background: #222121;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.porto-admin .pa-soc2-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 23px 26px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-soc2-card-header h2 {
+    margin: 0 0 7px;
+    color: #f6f2ee;
+    font: 650 22px/1.3
+        'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+}
+
+.porto-admin .pa-soc2-card-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-soc2-saving {
+    color: #f2a06e;
+    font-size: 11px;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.pa-soc2-btn,
+.porto-admin .pa-soc2-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 36px;
+    padding: 8px 12px;
+
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+
+    color: #e8dfd8;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease;
+}
+
+.pa-soc2-btn:hover,
+.porto-admin .pa-soc2-btn:hover {
+    background: #342b25;
+    color: #fff;
+}
+
+.pa-soc2-btn.pa-soc2-btn--primary,
+.porto-admin .pa-soc2-btn.pa-soc2-btn--primary {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.pa-soc2-btn.pa-soc2-btn--primary:hover,
+.porto-admin .pa-soc2-btn.pa-soc2-btn--primary:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+    color: #fff;
+}
+
+.pa-soc2-btn--danger,
+.porto-admin .pa-soc2-btn--danger {
+    color: #f2a2a2;
+    border-color: rgba(245, 116, 116, .3);
+}
+
+.pa-soc2-btn--danger:hover {
+    background: rgba(245, 116, 116, .1);
+}
+
+.pa-soc2-btn.pa-soc2-btn--danger-solid,
+.porto-admin .pa-soc2-btn.pa-soc2-btn--danger-solid {
+    background: #823333;
+    border-color: #ad4545;
+    color: #fff;
+}
+
+.pa-soc2-btn:disabled,
+.porto-admin .pa-soc2-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-soc2-page-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ==========================================
+   COMPACT TABLE
+========================================== */
+
+.porto-admin .pa-soc2-table {
+    padding: 10px 15px 17px;
+}
+
+.porto-admin .pa-soc2-row {
+    display: grid;
+    grid-template-columns:
+        28px
+        32px
+        minmax(160px, 1fr)
+        minmax(130px, 1fr)
+        auto;
+
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 7px 12px;
+    margin-top: 6px;
+
+    background: #272423;
+    border: 1px solid rgba(255, 255, 255, .075);
+    border-radius: 10px;
+
+    position: relative;
+}
+
+.porto-admin .pa-soc2-table-head {
+    min-height: 30px;
+    margin-top: 0;
+    border: 0;
+    background: transparent;
+    color: #afa39a;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-soc2-row--dragging {
+    z-index: 5;
+    opacity: .9;
+    border-color: #df6a27;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+}
+
+.porto-admin .pa-soc2-handle {
+    display: grid;
+    place-items: center;
+
+    width: 28px;
+    height: 32px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #9d8e84;
+    cursor: grab;
+    touch-action: none;
+}
+
+.porto-admin .pa-soc2-handle:hover {
+    background: #3a2c23;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-soc2-handle:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-soc2-no {
+    color: #b8aba2;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.porto-admin .pa-soc2-identity {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.porto-admin .pa-soc2-platform-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+
+    background: #382b24;
+    border: 1px solid rgba(223, 106, 39, .25);
+    border-radius: 9px;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-soc2-identity > div {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.porto-admin .pa-soc2-identity strong {
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-soc2-identity small {
+    color: #aaa29c;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.porto-admin .pa-soc2-url {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #b8aba2;
+    font-size: 11px;
+}
+
+.porto-admin .pa-soc2-row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.porto-admin .pa-soc2-row-actions .pa-soc2-btn {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 11px;
+}
+
+.porto-admin .pa-soc2-right {
+    text-align: right;
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.porto-admin .pa-soc2-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+
+    padding: 52px 24px;
+    text-align: center;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-soc2-empty h3 {
+    margin: 0;
+    color: #f6f2ee;
+    font-size: 16px;
+}
+
+.porto-admin .pa-soc2-empty p {
+    margin: 0 0 8px;
+    max-width: 340px;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.pa-soc2-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    background: rgba(0, 0, 0, .78);
+    backdrop-filter: blur(4px);
+}
+
+.pa-soc2-modal {
+    position: fixed;
+    z-index: 101;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: min(590px, calc(100vw - 24px));
+    max-height: 88vh;
+    overflow-y: auto;
+
+    background: #222121;
+    color: #f6f2ee;
+    border: 1px solid #514238;
+    border-radius: 18px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .6);
+
+    font-family: Inter, sans-serif;
+}
+
+.pa-soc2-modal * {
+    box-sizing: border-box;
+}
+
+.pa-soc2-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+}
+
+.pa-soc2-modal-header h2 {
+    margin: 0 0 6px;
+    font-size: 21px;
+    font-weight: 650;
+}
+
+.pa-soc2-modal-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.pa-soc2-modal-close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid #554940;
+    border-radius: 9px;
+    background: #302a27;
+    color: #eee3db;
+    cursor: pointer;
+}
+
+.pa-soc2-modal-body {
+    padding: 24px;
+}
+
+.pa-soc2-muted {
+    color: #b8aba2;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+.pa-soc2-form,
+.pa-soc2-fields {
+    display: grid;
+    gap: 21px;
+}
+
+.pa-soc2-field {
+    display: grid;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pa-soc2-field > label,
+.pa-soc2-custom-platform > label {
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pa-soc2-field input,
+.pa-soc2-custom-platform input {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 13px;
+
+    border: 1px solid #544840;
+    border-radius: 10px;
+    background: #1d1b1b;
+
+    color: #f6f2ee;
+    font: 400 13px/1.5 Inter, sans-serif;
+    outline: none;
+}
+
+.pa-soc2-field input:focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 1px;
+}
+
+.pa-soc2-field > small {
+    color: #aaa29c;
+    font-size: 11px;
+}
+
+.pa-soc2-error {
+    margin: 0;
+    color: #ffaaaa;
+    font-size: 11px;
+}
+
+.pa-soc2-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+.pa-soc2-custom-platform {
+    display: grid;
+    gap: 9px;
+    margin-top: 12px;
+}
+
+.pa-soc2-url-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 12px 14px;
+    border: 1px solid #514238;
+    border-radius: 10px;
+    background: #29221e;
+}
+
+.pa-soc2-url-preview span,
+.pa-soc2-url-preview a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+}
+
+.pa-soc2-url-preview span {
+    color: #d8c2b3;
+}
+
+.pa-soc2-url-preview a {
+    color: #f2a06e;
+    text-decoration: none;
+}
+
+/* ==========================================
+   RADIX CUSTOM SELECT
+========================================== */
+
+.pa-soc2-select,
+.porto-admin .pa-soc2-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 46px;
+    padding: 0 13px;
+
+    border: 1px solid #544840;
+    border-radius: 10px;
+    background: #1d1b1b;
+
+    color: #f6f2ee;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+}
+
+.pa-soc2-select:hover {
+    background: #26211f;
+    border-color: #9b5b34;
+}
+
+.pa-soc2-select:focus-visible,
+.pa-soc2-select[data-state="open"] {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223,106,39,.12);
+}
+
+.pa-soc2-select-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.pa-soc2-select-value > svg {
+    flex-shrink: 0;
+    color: #f2a06e;
+}
+
+.pa-soc2-select-arrow {
+    display: inline-flex;
+    align-items: center;
+    color: #f2a06e;
+    transition: transform .2s ease;
+}
+
+.pa-soc2-select[data-state="open"]
+.pa-soc2-select-arrow {
+    transform: rotate(180deg);
+}
+
+.pa-soc2-select[data-placeholder] {
+    color: #9e938b;
+}
+
+.pa-soc2-select-content {
+    z-index: 300;
+
+    width: var(--radix-select-trigger-width);
+    max-height: min(
+        350px,
+        var(--radix-select-content-available-height)
+    );
+
+    background: #292524;
+    border: 1px solid #685042;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+
+    overflow: hidden;
+}
+
+.pa-soc2-select-viewport {
+    padding: 6px;
+}
+
+.pa-soc2-select-item {
+    display: grid;
+    grid-template-columns: 20px 1fr 18px;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: 8px;
+
+    color: #eee7e1;
+    font: 400 13px Inter, sans-serif;
+
+    outline: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pa-soc2-select-item > svg {
+    color: #ca9a7e;
+}
+
+.pa-soc2-select-item[data-highlighted] {
+    background: #423026;
+    color: #fff;
+}
+
+.pa-soc2-select-item[data-state="checked"] {
+    background: rgba(223,106,39,.09);
+    color: #f2a06e;
+}
+
+.pa-soc2-select-check {
+    display: inline-flex;
+    color: #f2a06e;
+}
+
+.pa-soc2-select-separator {
+    height: 1px;
+    margin: 6px 4px;
+    background: #54443b;
+}
+
+/* ==========================================
+   DETAIL
+========================================== */
+
+.porto-admin .pa-soc2-detail-header {
+    display: grid;
+    gap: 18px;
+    padding: 28px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-soc2-detail-header
+.pa-soc2-identity .pa-soc2-platform-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 13px;
+}
+
+.porto-admin .pa-soc2-detail-header
+.pa-soc2-identity strong {
+    font-size: 21px;
+}
+
+.porto-admin .pa-soc2-detail-header
+.pa-soc2-identity small {
+    font-size: 13px;
+}
+
+.porto-admin .pa-soc2-detail-content {
+    padding: 28px;
+}
+
+.porto-admin .pa-soc2-info-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 25px;
+}
+
+.porto-admin .pa-soc2-info-grid > div {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.porto-admin .pa-soc2-info-grid span {
+    color: #a99e96;
+    font-size: 11px;
+}
+
+.porto-admin .pa-soc2-info-grid strong {
+    color: #f6f2ee;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-soc2-detail-link {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-soc2-detail-link h3 {
+    margin: 0 0 13px;
+    color: #f6f2ee;
+    font-size: 16px;
+}
+
+.porto-admin .pa-soc2-detail-link p {
+    margin: 0 0 17px;
+    color: #c5b8ae;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   EDIT FULL WIDTH
+========================================== */
+
+.porto-admin .pa-soc2-edit-card {
+    width: 100%;
+    max-width: none;
+}
+
+.porto-admin .pa-soc2-edit-form {
+    width: 100%;
+    max-width: none;
+    padding: 28px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+    .porto-admin .pa-soc2-table-head {
+        display: none;
+    }
+
+    .porto-admin .pa-soc2-row {
+        grid-template-columns:
+            28px 32px minmax(0, 1fr);
+    }
+
+    .porto-admin .pa-soc2-row .pa-soc2-identity,
+    .porto-admin .pa-soc2-row .pa-soc2-url,
+    .porto-admin .pa-soc2-row .pa-soc2-row-actions {
+        grid-column: 3;
+    }
+
+    .porto-admin .pa-soc2-row-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .porto-admin .pa-soc2-card-header,
+    .porto-admin .pa-soc2-detail-header,
+    .porto-admin .pa-soc2-detail-content,
+    .porto-admin .pa-soc2-edit-form {
+        padding: 20px;
+    }
+
+    .porto-admin .pa-soc2-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-soc2-page-actions {
+        width: 100%;
+    }
+
+    .pa-soc2-modal-header,
+    .pa-soc2-modal-body {
+        padding: 19px;
+    }
+
+    .porto-admin .pa-soc2-row {
+        padding: 10px 12px;
+    }
+}

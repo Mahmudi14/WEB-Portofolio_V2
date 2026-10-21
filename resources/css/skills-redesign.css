@@ -1,0 +1,631 @@
+/* ==========================================
+   KEAHLIAN & MINAT — REDESIGN
+========================================== */
+
+.porto-admin .pa-sk-page-actions {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.porto-admin .pa-sk-card {
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+    overflow: hidden;
+    background: #222121;
+    margin-bottom: 20px;
+}
+
+.porto-admin .pa-sk-card__header {
+    padding: 25px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-sk-card__header h2,
+.porto-admin .pa-sk-summary h2 {
+    margin: 0 0 7px;
+    color: #f6f2ee;
+    font: 650 22px/1.3 'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.04em;
+}
+
+.porto-admin .pa-sk-card__header p,
+.porto-admin .pa-sk-summary p {
+    font-size: 12px;
+    color: #afa39b;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.porto-admin .pa-sk-summary {
+    padding: 27px 29px;
+}
+
+.porto-admin .pa-sk-summary h2 {
+    margin: 12px 0 7px;
+    font-size: 25px;
+}
+
+.porto-admin .pa-sk-summary p {
+    max-width: 680px;
+    white-space: pre-wrap;
+}
+
+.porto-admin .pa-sk-summary .pa-sk-count {
+    margin-top: 17px;
+}
+
+.porto-admin .pa-sk-saving {
+    font-size: 12px;
+    color: #f2a06e;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   TABLE & SORTABLE ROWS
+========================================== */
+
+.porto-admin .pa-sk-table {
+    padding: 12px 18px 20px;
+}
+
+.porto-admin .pa-sk-row {
+    display: grid;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 17px 18px;
+    background: #252322;
+    border: 1px solid rgba(255, 255, 255, .085);
+    border-radius: 12px;
+    margin-top: 9px;
+    position: relative;
+}
+
+.porto-admin .pa-sk-table--categories .pa-sk-row {
+    grid-template-columns:
+        30px 45px minmax(170px, 1fr) 100px auto;
+}
+
+.porto-admin .pa-sk-table--items .pa-sk-row {
+    grid-template-columns:
+        30px 45px minmax(170px, 1fr) auto;
+}
+
+.porto-admin .pa-sk-row--header {
+    background: transparent;
+    border-color: transparent;
+    margin-top: 0;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    color: #ada39b;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.porto-admin .pa-sk-row--dragging {
+    z-index: 5;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+    border-color: rgba(223, 106, 39, .65);
+    opacity: .9;
+}
+
+.porto-admin .pa-sk-drag-handle {
+    width: 32px;
+    height: 38px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: #9d8e84;
+    touch-action: none;
+    cursor: grab;
+}
+
+.porto-admin .pa-sk-drag-handle:hover,
+.porto-admin .pa-sk-drag-handle:focus-visible {
+    border-color: #70503a;
+    color: #f2a06e;
+    background: #332720;
+}
+
+.porto-admin .pa-sk-drag-handle:active {
+    cursor: grabbing;
+}
+
+.porto-admin .pa-sk-order {
+    color: #afa49c;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.porto-admin .pa-sk-category-details {
+    min-width: 0;
+}
+
+.porto-admin .pa-sk-category-details strong,
+.porto-admin .pa-sk-item-name {
+    color: #faf5f1;
+    font-weight: 650;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-sk-category-details p {
+    color: #aaa09b;
+    line-height: 1.7;
+    font-size: 11px;
+    margin: 5px 0 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.porto-admin .pa-sk-count {
+    display: inline-flex;
+    width: max-content;
+    max-width: 100%;
+    background: #33271f;
+    border: 1px solid rgba(223, 106, 39, .25);
+    border-radius: 8px;
+    color: #f2aa7d;
+    font-size: 11px;
+    padding: 6px 10px;
+    white-space: nowrap;
+}
+
+.porto-admin .pa-sk-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.porto-admin .pa-sk-align-right {
+    text-align: right;
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.porto-admin .pa-sk-empty {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 13px;
+    color: #f2a06e;
+    padding: 50px 22px;
+}
+
+.porto-admin .pa-sk-empty h3 {
+    color: #f8f1ed;
+    font-size: 16px;
+    font-weight: 650;
+    margin: 0;
+}
+
+.porto-admin .pa-sk-empty p {
+    color: #aea39c;
+    max-width: 330px;
+    font-size: 12px;
+    line-height: 1.8;
+    margin: 0 0 8px;
+}
+
+.porto-admin .pa-sk-edit-card {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.porto-admin .pa-sk-form--page {
+    width: 100%;
+    max-width: none;
+    padding: 28px;
+}
+
+.porto-admin .pa-sk-form--page .pa-editor-field {
+    width: 100%;
+    min-width: 0;
+}
+
+.porto-admin .pa-sk-form--page .pa-editor-input,
+.porto-admin .pa-sk-form--page .pa-editor-textarea {
+    width: 100%;
+}
+
+.porto-admin .pa-sk-form--page {
+    padding: 28px;
+}
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.pa-sk-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 9, 9, .78);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+}
+
+.pa-sk-modal {
+    --pa-text: #f6f2ee;
+    --pa-muted: #aaa29c;
+    --pa-line: rgba(255, 255, 255, .095);
+    --pa-accent: #df6a27;
+    --pa-accent-light: #f2a06e;
+
+    position: fixed;
+    z-index: 101;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(540px, calc(100vw - 24px));
+    max-height: min(88vh, 820px);
+    overflow: auto;
+    background: #222121;
+    color: #f6f2ee;
+    border: 1px solid #514238;
+    border-radius: 18px;
+    box-shadow: 0 26px 90px rgba(0, 0, 0, .65);
+    font-family: Inter, sans-serif;
+    line-height: 1.5;
+}
+
+.pa-sk-modal * {
+    box-sizing: border-box;
+}
+
+.pa-sk-modal__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 24px 25px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.pa-sk-modal__title {
+    font: 650 21px/1.3 'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+    margin: 0 0 6px;
+}
+
+.pa-sk-modal__body {
+    padding: 23px 25px 25px;
+}
+
+.pa-sk-muted {
+    color: #b5a9a1;
+    line-height: 1.75;
+    margin: 0;
+    font-size: 12px;
+}
+
+.pa-sk-form {
+    display: grid;
+    gap: 20px;
+}
+
+.pa-sk-form .pa-editor-field {
+    display: grid;
+    gap: 8px;
+}
+
+.pa-sk-form .pa-editor-label {
+    color: #f5efeb;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pa-sk-form :is(
+    .pa-editor-input,
+    .pa-editor-textarea
+) {
+    width: 100%;
+    background: #1c1b1b;
+    border: 1px solid #50443d;
+    border-radius: 10px;
+    color: #faf6f3;
+    padding: 12px 14px;
+    font: 400 13px/1.5 Inter, sans-serif;
+    outline: none;
+    min-height: 44px;
+}
+
+.pa-sk-form :is(
+    .pa-editor-input,
+    .pa-editor-textarea
+):focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 1px;
+}
+
+.pa-sk-form .pa-editor-error {
+    font-size: 11px;
+    color: #ffaaaa;
+    margin: 0;
+}
+
+.pa-sk-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 9px;
+    align-items: center;
+    margin-top: 7px;
+}
+
+.pa-sk-form__actions :is(button, a),
+.pa-sk-modal .pa-skill-add-item {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid #5a4b41;
+    min-height: 40px;
+    padding: 9px 15px;
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+    background: #302a27;
+    color: #f5ece5;
+}
+
+.pa-sk-form__actions .pa-button--primary {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.pa-sk-form__actions .pa-sk-danger-button {
+    background: #762e2e;
+    border-color: #a63c3c;
+    color: #fff;
+}
+
+.pa-sk-form__actions button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.pa-sk-icon-button {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: #c6b8ae;
+    background: #342d29;
+    border: 1px solid #564940;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.pa-sk-icon-button:hover {
+    background: #46352c;
+    color: #fff;
+}
+
+.pa-sk-bulk-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.pa-sk-bulk-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.pa-sk-bulk-row .pa-sk-icon-button {
+    margin-bottom: 5px;
+}
+
+.pa-sk-modal .pa-skill-add-item {
+    width: fit-content;
+    background: #422e22;
+    color: #f2aa7d;
+    border-color: #77513a;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 900px) {
+    .porto-admin .pa-sk-card__header {
+        padding: 20px;
+    }
+
+    .porto-admin .pa-sk-table {
+        padding: 11px;
+    }
+
+    .porto-admin .pa-sk-row--header {
+        display: none;
+    }
+
+    .porto-admin .pa-sk-table--categories .pa-sk-row,
+    .porto-admin .pa-sk-table--items .pa-sk-row {
+        grid-template-columns:
+            32px 30px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .porto-admin .pa-sk-row {
+        padding: 15px;
+    }
+
+    .porto-admin .pa-sk-count,
+    .porto-admin .pa-sk-actions {
+        grid-column: 3;
+    }
+
+    .porto-admin .pa-sk-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 530px) {
+    .porto-admin .pa-sk-page-actions {
+        width: 100%;
+    }
+
+    .porto-admin .pa-sk-page-actions > * {
+        flex: 1 1 auto;
+    }
+
+    .porto-admin .pa-sk-card__header {
+        flex-wrap: wrap;
+    }
+
+    .porto-admin .pa-sk-actions .pa-skill-action span {
+        display: none;
+    }
+
+    .porto-admin .pa-sk-row {
+        gap: 8px;
+    }
+
+    .pa-sk-modal__header {
+        padding: 19px;
+    }
+
+    .pa-sk-modal__body {
+        padding: 19px;
+    }
+
+    .pa-sk-form__actions > * {
+        flex: 1 1 auto;
+    }
+}
+
+@media (max-width: 530px) {
+    .porto-admin .pa-sk-page-actions > * {
+        flex: 0 0 auto;
+        width: auto;
+    }
+
+    .porto-admin .pa-sk-form--page {
+        padding: 20px;
+    }
+}
+
+/* Ukuran tombol header seragam */
+.porto-admin .pa-page-header__actions .pa-skill-action,
+.porto-admin .pa-sk-page-actions .pa-skill-action {
+    width: auto;
+    min-height: 36px;
+    padding: 8px 11px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Tombol Tambah — Oranye dan Ringkas */
+.porto-admin .pa-skill-action--primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    width: auto;
+    min-height: 36px;
+    padding: 8px 12px;
+
+    background: #df6a27;
+    border: 1px solid #df6a27;
+    border-radius: 9px;
+
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+
+    flex: 0 0 auto;
+    transition: background 0.2s ease;
+}
+
+.porto-admin .pa-skill-action--primary:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+    color: #ffffff;
+}
+/* ==========================================
+   COMPACT DATA ROWS — INDEX & DETAIL
+========================================== */
+
+/* Baris data lebih ringkas */
+.porto-admin .pa-sk-row {
+    min-height: 50px;
+    padding: 7px 12px;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+/* Header tabel */
+.porto-admin .pa-sk-row--header {
+    min-height: auto;
+    padding: 8px 12px;
+    margin-top: 0;
+}
+
+/* Ikon drag-and-drop */
+.porto-admin .pa-sk-drag-handle {
+    width: 30px;
+    height: 34px;
+}
+
+/* Nama kategori dan sub-keahlian */
+.porto-admin .pa-sk-category-details strong,
+.porto-admin .pa-sk-item-name {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Jumlah sub-keahlian */
+.porto-admin .pa-sk-count {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+/* Tombol aksi dalam tabel */
+.porto-admin .pa-sk-actions {
+    gap: 6px;
+}
+
+.porto-admin .pa-sk-actions .pa-skill-action {
+    min-height: 34px;
+    padding: 5px 9px;
+    font-size: 11px;
+}
+
+/* Jarak antarbaris */
+.porto-admin .pa-sk-table {
+    padding: 10px 16px 16px;
+}
+
+/* Tampilan mobile */
+@media (max-width: 900px) {
+    .porto-admin .pa-sk-row {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+}

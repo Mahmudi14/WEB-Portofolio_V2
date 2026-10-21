@@ -1,4 +1,3 @@
-
 import {
     Head,
     Link,
@@ -7,663 +6,188 @@ import {
     usePage,
 } from '@inertiajs/react';
 
-import { useState } from 'react';
-import type { FormEvent, ReactNode } from 'react';
-
 import {
-    CalendarDays,
-    CheckCircle2,
+    Eye,
     GraduationCap,
     Pencil,
     Plus,
-    Save,
     Trash2,
-    X,
 } from 'lucide-react';
+
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+
+import { toast } from 'sonner';
 
 import AdminLayout from '@/layouts/admin-layout';
 
-// ==========================================
-// TYPES
-// ==========================================
+import {
+    EducationFields,
+    EducationModal,
+    educationPeriod,
+    emptyEducation,
+} from './Shared';
 
-type Education = {
-    id: number;
-    personal_information_id: number;
-    level: string;
-    institution_name: string;
-    major: string | null;
-    start_year: number;
-    end_year: number | null;
-    is_current: boolean;
-};
+import type {
+    Education,
+    EducationForm,
+} from './Shared';
 
-type EducationFormData = {
-    level: string;
-    institution_name: string;
-    major: string;
-    start_year: number | '';
-    end_year: number | '';
-    is_current: boolean;
-};
+import '../../../../css/educations-redesign.css';
 
 type Props = {
     educations: Education[];
     profileExists: boolean;
 };
 
-type FormErrors = Partial<
-    Record<keyof EducationFormData, string>
->;
-
-const levels = [
-    'SD',
-    'SMP',
-    'SMA',
-    'D3',
-    'D4',
-    'S1',
-    'S2',
-    'S3',
-] as const;
-
-const currentYear = new Date().getFullYear();
-
 // ==========================================
-// SHARED COMPONENTS
-// ==========================================
-
-function Field({
-    id,
-    label,
-    error,
-    hint,
-    children,
-}: {
-    id: string;
-    label: string;
-    error?: string;
-    hint?: string;
-    children: ReactNode;
-}) {
-    return (
-        <div className="pa-editor-field">
-            <label
-                className="pa-editor-label"
-                htmlFor={id}
-            >
-                {label}
-            </label>
-
-            {children}
-
-            {hint && (
-                <p className="pa-editor-hint">
-                    {hint}
-                </p>
-            )}
-
-            {error && (
-                <p
-                    className="pa-editor-error"
-                    role="alert"
-                    id={`${id}-error`}
-                >
-                    {error}
-                </p>
-            )}
-        </div>
-    );
-}
-
-function EducationFields({
-    prefix,
-    data,
-    errors,
-    onChange,
-}: {
-    prefix: string;
-    data: EducationFormData;
-    errors: FormErrors;
-    onChange: (
-        values: Partial<EducationFormData>
-    ) => void;
-}) {
-    return (
-        <div className="pa-edu-fields">
-            <Field
-                id={`${prefix}-level`}
-                label="Jenjang Pendidikan"
-                error={errors.level}
-            >
-                <select
-                    id={`${prefix}-level`}
-                    className="pa-editor-input"
-                    required
-                    value={data.level}
-                    aria-invalid={Boolean(errors.level)}
-                    onChange={(event) =>
-                        onChange({
-                            level: event.target.value,
-                        })
-                    }
-                >
-                    <option value="">
-                        Pilih jenjang pendidikan
-                    </option>
-
-                    {levels.map((level) => (
-                        <option
-                            key={level}
-                            value={level}
-                        >
-                            {level}
-                        </option>
-                    ))}
-                </select>
-            </Field>
-
-            <Field
-                id={`${prefix}-institution`}
-                label="Nama Institusi"
-                error={errors.institution_name}
-            >
-                <input
-                    id={`${prefix}-institution`}
-                    className="pa-editor-input"
-                    required
-                    maxLength={200}
-                    value={data.institution_name}
-                    aria-invalid={Boolean(
-                        errors.institution_name
-                    )}
-                    onChange={(event) =>
-                        onChange({
-                            institution_name:
-                                event.target.value,
-                        })
-                    }
-                    placeholder="Nama sekolah atau perguruan tinggi"
-                />
-            </Field>
-
-            <Field
-                id={`${prefix}-major`}
-                label="Jurusan / Program Studi"
-                hint="Opsional. Kosongkan jika tidak diperlukan."
-                error={errors.major}
-            >
-                <input
-                    id={`${prefix}-major`}
-                    className="pa-editor-input"
-                    maxLength={150}
-                    value={data.major}
-                    aria-invalid={Boolean(errors.major)}
-                    onChange={(event) =>
-                        onChange({
-                            major: event.target.value,
-                        })
-                    }
-                    placeholder="Contoh: Teknik Informatika"
-                />
-            </Field>
-
-            <div className="pa-edu-year-grid">
-                <Field
-                    id={`${prefix}-start`}
-                    label="Tahun Mulai"
-                    error={errors.start_year}
-                >
-                    <input
-                        id={`${prefix}-start`}
-                        type="number"
-                        inputMode="numeric"
-                        className="pa-editor-input"
-                        required
-                        min={1900}
-                        max={currentYear}
-                        step={1}
-                        value={data.start_year}
-                        aria-invalid={Boolean(
-                            errors.start_year
-                        )}
-                        onChange={(event) =>
-                            onChange({
-                                start_year:
-                                    event.target.value === ''
-                                        ? ''
-                                        : Number(event.target.value),
-                            })
-                        }
-                        placeholder="2022"
-                    />
-                </Field>
-
-                <Field
-                    id={`${prefix}-end`}
-                    label="Tahun Selesai"
-                    error={errors.end_year}
-                    hint={
-                        data.is_current
-                            ? 'Otomatis menjadi Sekarang.'
-                            : 'Opsional.'
-                    }
-                >
-                    <input
-                        id={`${prefix}-end`}
-                        type="number"
-                        inputMode="numeric"
-                        className="pa-editor-input"
-                        min={1900}
-                        max={currentYear}
-                        step={1}
-                        disabled={data.is_current}
-                        value={
-                            data.is_current
-                                ? ''
-                                : data.end_year
-                        }
-                        aria-invalid={Boolean(
-                            errors.end_year
-                        )}
-                        onChange={(event) =>
-                            onChange({
-                                end_year:
-                                    event.target.value === ''
-                                        ? ''
-                                        : Number(event.target.value),
-                            })
-                        }
-                        placeholder={
-                            data.is_current
-                                ? 'Sekarang'
-                                : '2026'
-                        }
-                    />
-                </Field>
-            </div>
-
-            <label className="pa-edu-checkbox">
-                <input
-                    type="checkbox"
-                    checked={data.is_current}
-                    onChange={(event) =>
-                        onChange({
-                            is_current:
-                                event.target.checked,
-                            end_year:
-                                event.target.checked
-                                    ? ''
-                                    : data.end_year,
-                        })
-                    }
-                />
-
-                <span>
-                    <strong>
-                        Masih menempuh pendidikan
-                    </strong>
-
-                    <small>
-                        Tahun selesai dikosongkan dan
-                        ditampilkan sebagai Sekarang.
-                    </small>
-                </span>
-            </label>
-
-            {errors.is_current && (
-                <p
-                    className="pa-editor-error"
-                    role="alert"
-                >
-                    {errors.is_current}
-                </p>
-            )}
-        </div>
-    );
-}
-
-// ==========================================
-// CREATE EDUCATION
+// TAMBAH PENDIDIKAN
 // ==========================================
 
 function CreateEducation({
-    profileExists,
+    open,
+    onClose,
 }: {
-    profileExists: boolean;
+    open: boolean;
+    onClose: () => void;
 }) {
-    const form = useForm<EducationFormData>({
-        level: '',
-        institution_name: '',
-        major: '',
-        start_year: '',
-        end_year: '',
-        is_current: false,
-    });
+    const form = useForm<EducationForm>(
+        emptyEducation()
+    );
 
-    function update(
-        values: Partial<EducationFormData>
-    ) {
-        form.setData({
-            ...form.data,
-            ...values,
-        });
+    function close() {
+        form.reset();
+        form.clearErrors();
+        onClose();
     }
 
-    function submit(event: FormEvent<HTMLFormElement>) {
+    function submit(
+        event: FormEvent<HTMLFormElement>
+    ) {
         event.preventDefault();
 
         form.post('/admin/educations', {
             preserveScroll: true,
-            onSuccess: () => {
-                form.reset();
-                form.clearErrors();
-            },
+            onSuccess: close,
         });
     }
 
     return (
-        <section className="pa-edu-panel pa-edu-create">
-            <header className="pa-edu-panel__header">
-                <span className="pa-editor-kicker">
-                    <Plus size={15} aria-hidden="true" />
-                    RIWAYAT BARU
-                </span>
+        <EducationModal
+            open={open}
+            onOpenChange={(next) => {
+                if (!next) close();
+            }}
+            busy={form.processing}
+            title="Tambah Pendidikan"
+            description="Tambahkan riwayat pendidikan. Urutan tampil akan diatur otomatis."
+        >
+            <form
+                className="pa-edu2-form"
+                onSubmit={submit}
+            >
+                <EducationFields
+                    prefix="create-education"
+                    data={form.data}
+                    errors={form.errors}
+                    onChange={(patch) =>
+                        form.setData({
+                            ...form.data,
+                            ...patch,
+                        })
+                    }
+                />
 
-                <h2>Tambah Pendidikan</h2>
-
-                <p>
-                    Tambahkan riwayat sekolah atau
-                    perguruan tinggi yang pernah ditempuh.
-                </p>
-            </header>
-
-            {!profileExists ? (
-                <div className="pa-edu-profile-notice">
-                    <strong>
-                        Lengkapi informasi pribadi dahulu.
-                    </strong>
-
-                    <p>
-                        Pendidikan terhubung dengan
-                        data Informasi Pribadi.
-                    </p>
-
-                    <Link
-                        href="/admin/profile"
-                        className="pa-button pa-button--primary"
+                <div className="pa-edu2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-edu2-btn"
+                        disabled={form.processing}
+                        onClick={close}
                     >
-                        Buka Informasi Pribadi
-                    </Link>
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        className="pa-edu2-btn pa-edu2-btn--primary"
+                        disabled={form.processing}
+                    >
+                        {form.processing
+                            ? 'Menyimpan...'
+                            : 'Simpan Pendidikan'}
+                    </button>
                 </div>
-            ) : (
-                <form onSubmit={submit}>
-                    <div className="pa-edu-form">
-                        <EducationFields
-                            prefix="create"
-                            data={form.data}
-                            errors={form.errors}
-                            onChange={update}
-                        />
-                    </div>
-
-                    <div className="pa-edu-form__actions">
-                        <button
-                            type="submit"
-                            className="pa-button pa-button--primary"
-                            disabled={form.processing}
-                        >
-                            <Plus
-                                size={17}
-                                aria-hidden="true"
-                            />
-
-                            {form.processing
-                                ? 'Menambahkan...'
-                                : 'Tambah Pendidikan'}
-                        </button>
-                    </div>
-                </form>
-            )}
-        </section>
+            </form>
+        </EducationModal>
     );
 }
 
 // ==========================================
-// EXISTING EDUCATION
-// ==========================================
-
-function EducationCard({
-    education,
-}: {
-    education: Education;
-}) {
-    const [editing, setEditing] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-
-    const form = useForm<EducationFormData>({
-        level: education.level,
-        institution_name: education.institution_name,
-        major: education.major ?? '',
-        start_year: education.start_year,
-        end_year: education.end_year ?? '',
-        is_current: education.is_current,
-    });
-
-    const endpoint =
-        `/admin/educations/${education.id}`;
-
-    const period = education.is_current
-        ? `${education.start_year} – Sekarang`
-        : education.end_year
-          ? `${education.start_year} – ${education.end_year}`
-          : `${education.start_year}`;
-
-    function update(
-        values: Partial<EducationFormData>
-    ) {
-        form.setData({
-            ...form.data,
-            ...values,
-        });
-    }
-
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        form.put(endpoint, {
-            preserveScroll: true,
-            onSuccess: () => {
-                form.setDefaults();
-                setEditing(false);
-            },
-        });
-    }
-
-    function cancel() {
-        form.reset();
-        form.clearErrors();
-        setEditing(false);
-    }
-
-    function destroy() {
-        if (
-            !window.confirm(
-                `Hapus riwayat pendidikan di "${education.institution_name}"?`
-            )
-        ) {
-            return;
-        }
-
-        router.delete(endpoint, {
-            preserveScroll: true,
-            onStart: () => setDeleting(true),
-            onFinish: () => setDeleting(false),
-        });
-    }
-
-    return (
-        <article className="pa-edu-item">
-            {!editing ? (
-                <div className="pa-edu-item__display">
-                    <div
-                        className="pa-edu-item__icon"
-                        aria-hidden="true"
-                    >
-                        <GraduationCap size={22} />
-                    </div>
-
-                    <div className="pa-edu-item__content">
-                        <div className="pa-edu-item__topline">
-                            <span className="pa-edu-level">
-                                {education.level}
-                            </span>
-
-                            <span className="pa-edu-period">
-                                <CalendarDays
-                                    size={13}
-                                    aria-hidden="true"
-                                />
-                                {period}
-                            </span>
-                        </div>
-
-                        <h3>
-                            {education.institution_name}
-                        </h3>
-
-                        {education.major && (
-                            <p>{education.major}</p>
-                        )}
-
-                        <div className="pa-edu-item__actions">
-                            <button
-                                type="button"
-                                className="pa-edu-action"
-                                onClick={() =>
-                                    setEditing(true)
-                                }
-                            >
-                                <Pencil
-                                    size={15}
-                                    aria-hidden="true"
-                                />
-                                Edit
-                            </button>
-
-                            <button
-                                type="button"
-                                className="pa-edu-action pa-edu-action--danger"
-                                onClick={destroy}
-                                disabled={deleting}
-                            >
-                                <Trash2
-                                    size={15}
-                                    aria-hidden="true"
-                                />
-
-                                {deleting
-                                    ? 'Menghapus...'
-                                    : 'Hapus'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                <form onSubmit={submit}>
-                    <div className="pa-edu-edit__header">
-                        <div>
-                            <span className="pa-editor-kicker">
-                                <Pencil
-                                    size={14}
-                                    aria-hidden="true"
-                                />
-                                EDIT PENDIDIKAN
-                            </span>
-
-                            <h3>
-                                Perbarui Pendidikan
-                            </h3>
-                        </div>
-
-                        <button
-                            type="button"
-                            className="pa-edu-close"
-                            onClick={cancel}
-                            disabled={form.processing}
-                            aria-label="Batal edit pendidikan"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
-
-                    <div className="pa-edu-form">
-                        <EducationFields
-                            prefix={`edit-${education.id}`}
-                            data={form.data}
-                            errors={form.errors}
-                            onChange={update}
-                        />
-                    </div>
-
-                    <div className="pa-edu-edit__actions">
-                        <button
-                            type="button"
-                            className="pa-edu-action"
-                            onClick={cancel}
-                            disabled={form.processing}
-                        >
-                            Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            className="pa-button pa-button--primary"
-                            disabled={
-                                form.processing ||
-                                !form.isDirty
-                            }
-                        >
-                            <Save
-                                size={16}
-                                aria-hidden="true"
-                            />
-
-                            {form.processing
-                                ? 'Menyimpan...'
-                                : 'Simpan Perubahan'}
-                        </button>
-                    </div>
-                </form>
-            )}
-        </article>
-    );
-}
-
-// ==========================================
-// MAIN PAGE
+// HALAMAN INDEX
 // ==========================================
 
 export default function Index({
     educations,
     profileExists,
 }: Props) {
+    const [creating, setCreating] =
+        useState(false);
+
+    const [deleting, setDeleting] =
+        useState<Education | null>(null);
+
+    const [deletingBusy, setDeletingBusy] =
+        useState(false);
+
     const { flash } = usePage().props as {
         flash?: {
             success?: string | null;
         };
     };
 
-    const ordered = [...educations].sort(
-        (a, b) =>
-            b.start_year - a.start_year ||
-            b.id - a.id
-    );
+    function destroy() {
+        if (!deleting || deletingBusy) return;
+
+        setDeletingBusy(true);
+
+        router.delete(
+            `/admin/educations/${deleting.id}`,
+            {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    setDeleting(null);
+                },
+
+                onError: () => {
+                    toast.error(
+                        'Pendidikan gagal dihapus.'
+                    );
+                },
+
+                onFinish: () => {
+                    setDeletingBusy(false);
+                },
+            }
+        );
+    }
 
     return (
         <AdminLayout
             title="Pendidikan"
-            description="Kelola riwayat pendidikan yang akan ditampilkan pada website."
+            description="Kelola riwayat pendidikan berdasarkan jenjang dan tahun kelulusan."
+            actions={
+                <button
+                    type="button"
+                    className="pa-edu2-btn pa-edu2-btn--primary"
+                    disabled={!profileExists}
+                    onClick={() => setCreating(true)}
+                >
+                    <Plus size={16} />
+                    Tambah Pendidikan
+                </button>
+            }
         >
             <Head title="Pendidikan · Portfolio Admin" />
 
@@ -672,76 +196,185 @@ export default function Index({
                     className="pa-editor-success"
                     role="status"
                 >
-                    <CheckCircle2
-                        size={18}
-                        aria-hidden="true"
-                    />
-
                     {flash.success}
                 </div>
             )}
 
-            <div className="pa-edu-grid">
-                <CreateEducation
-                    profileExists={profileExists}
-                />
+            {!profileExists && (
+                <div className="pa-edu2-notice">
+                    Informasi Pribadi belum tersedia.
+                    Lengkapi terlebih dahulu melalui
+                    {' '}
+                    <Link href="/admin/profile">
+                        halaman Informasi Pribadi
+                    </Link>.
+                </div>
+            )}
 
-                <section
-                    className="pa-edu-panel pa-edu-list"
-                    aria-label="Daftar riwayat pendidikan"
-                >
-                    <header className="pa-edu-panel__header">
-                        <span className="pa-editor-kicker">
-                            <GraduationCap
-                                size={15}
-                                aria-hidden="true"
-                            />
-                            RIWAYAT PENDIDIKAN
-                        </span>
+            <section className="pa-edu2-card">
+                <div className="pa-edu2-card-header">
+                    <div>
+                        <h2>Daftar Pendidikan</h2>
 
-                        <div className="pa-edu-list__heading">
-                            <div>
-                                <h2>Daftar Pendidikan</h2>
+                        <p>
+                            {educations.length} riwayat pendidikan.
+                            Jenjang tertinggi ditampilkan terlebih
+                            dahulu, kemudian berdasarkan tahun
+                            selesai paling awal.
+                        </p>
+                    </div>
 
-                                <p>
-                                    Riwayat pendidikan diurutkan
-                                    dari tahun mulai terbaru.
-                                </p>
-                            </div>
+                    <span className="pa-edu2-count">
+                        {educations.length} Data
+                    </span>
+                </div>
 
-                            <span className="pa-edu-total">
-                                {educations.length}
+                {educations.length === 0 ? (
+                    <div className="pa-edu2-empty">
+                        <GraduationCap size={32} />
+
+                        <h3>Belum ada pendidikan</h3>
+
+                        <p>
+                            Tambahkan riwayat pendidikan
+                            untuk ditampilkan pada portofolio.
+                        </p>
+
+                        {profileExists && (
+                            <button
+                                type="button"
+                                className="pa-edu2-btn pa-edu2-btn--primary"
+                                onClick={() =>
+                                    setCreating(true)
+                                }
+                            >
+                                <Plus size={16} />
+                                Tambah Pendidikan
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <div className="pa-edu2-table">
+                        <div
+                            className="pa-edu2-row pa-edu2-table-head"
+                            aria-hidden="true"
+                        >
+                            <span>No.</span>
+                            <span>Jenjang</span>
+                            <span>Institusi</span>
+                            <span>Jurusan</span>
+                            <span>Periode</span>
+                            <span className="pa-edu2-right">
+                                Aksi
                             </span>
                         </div>
-                    </header>
 
-                    {ordered.length === 0 ? (
-                        <div className="pa-edu-empty">
-                            <GraduationCap
-                                size={30}
-                                strokeWidth={1.5}
-                                aria-hidden="true"
-                            />
-
-                            <h3>Belum ada pendidikan</h3>
-
-                            <p>
-                                Tambahkan riwayat pendidikan
-                                melalui formulir yang tersedia.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="pa-edu-list__body">
-                            {ordered.map((education) => (
-                                <EducationCard
+                        {educations.map(
+                            (education, index) => (
+                                <div
                                     key={education.id}
-                                    education={education}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </section>
-            </div>
+                                    className="pa-edu2-row"
+                                >
+                                    <span className="pa-edu2-number">
+                                        {index + 1}
+                                    </span>
+
+                                    <span className="pa-edu2-level">
+                                        {education.level}
+                                    </span>
+
+                                    <strong className="pa-edu2-institution">
+                                        {education.institution_name}
+                                    </strong>
+
+                                    <span className="pa-edu2-major">
+                                        {education.major || '—'}
+                                    </span>
+
+                                    <span className="pa-edu2-period">
+                                        {educationPeriod(education)}
+                                    </span>
+
+                                    <div className="pa-edu2-row-actions">
+                                        <Link
+                                            href={`/admin/educations/${education.id}`}
+                                            className="pa-edu2-btn"
+                                        >
+                                            <Eye size={15} />
+                                            Detail
+                                        </Link>
+
+                                        <Link
+                                            href={`/admin/educations/${education.id}/edit`}
+                                            className="pa-edu2-btn"
+                                        >
+                                            <Pencil size={15} />
+                                            Edit
+                                        </Link>
+
+                                        <button
+                                            type="button"
+                                            className="pa-edu2-btn pa-edu2-btn--danger"
+                                            onClick={() =>
+                                                setDeleting(education)
+                                            }
+                                        >
+                                            <Trash2 size={15} />
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
+            </section>
+
+            <CreateEducation
+                open={creating}
+                onClose={() => setCreating(false)}
+            />
+
+            <EducationModal
+                open={!!deleting}
+                onOpenChange={(next) => {
+                    if (!next) setDeleting(null);
+                }}
+                busy={deletingBusy}
+                title="Hapus Pendidikan?"
+                description="Riwayat pendidikan yang dihapus tidak dapat dikembalikan."
+            >
+                <p className="pa-edu2-muted">
+                    Yakin ingin menghapus pendidikan
+                    {' '}
+                    <strong>
+                        {deleting?.institution_name}
+                    </strong>
+                    ?
+                </p>
+
+                <div className="pa-edu2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-edu2-btn"
+                        disabled={deletingBusy}
+                        onClick={() => setDeleting(null)}
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        className="pa-edu2-btn pa-edu2-btn--danger-solid"
+                        disabled={deletingBusy}
+                        onClick={destroy}
+                    >
+                        {deletingBusy
+                            ? 'Menghapus...'
+                            : 'Ya, Hapus'}
+                    </button>
+                </div>
+            </EducationModal>
         </AdminLayout>
     );
 }

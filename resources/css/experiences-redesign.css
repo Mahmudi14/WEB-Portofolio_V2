@@ -1,0 +1,1178 @@
+/* ==========================================
+   PENGALAMAN — REDESIGN
+========================================== */
+
+.porto-admin .pa-exp2-card {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background: #222121;
+    border: 1px solid var(--pa-line);
+    border-radius: 20px;
+}
+
+.porto-admin .pa-exp2-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 23px 26px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-exp2-card-header h2 {
+    margin: 0 0 7px;
+    color: #f6f2ee;
+    font: 650 22px/1.3 'Space Grotesk', Inter, sans-serif;
+    letter-spacing: -.035em;
+}
+
+.porto-admin .pa-exp2-card-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.porto-admin .pa-exp2-saving {
+    color: #f2a06e;
+    font-size: 11px;
+}
+
+/* ==========================================
+   TOMBOL KECIL & SERAGAM
+========================================== */
+
+.pa-exp2-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 36px;
+    padding: 7px 11px;
+    border: 1px solid #574a41;
+    border-radius: 9px;
+    background: transparent;
+    color: #e8dfd8;
+    font: 600 11px/1.4 Inter, sans-serif;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .18s ease;
+}
+
+.pa-exp2-action:hover {
+    background: #342b25;
+    color: #fff;
+}
+
+.pa-exp2-action--add {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.pa-exp2-action--add:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+    color: #fff;
+}
+
+.pa-exp2-action--danger {
+    border-color: rgba(245, 116, 116, .3);
+    color: #f2a2a2;
+}
+
+.pa-exp2-action--danger:hover {
+    background: rgba(245, 116, 116, .1);
+}
+
+.pa-exp2-action--danger-solid {
+    background: #873737;
+    border-color: #aa4444;
+    color: white;
+}
+
+.pa-exp2-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.porto-admin .pa-exp2-page-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ==========================================
+   TABEL DATA COMPACT
+========================================== */
+
+.porto-admin .pa-exp2-table {
+    padding: 10px 15px 17px;
+}
+
+.porto-admin .pa-exp2-row {
+    display: grid;
+    grid-template-columns:
+        27px
+        30px
+        95px
+        minmax(120px, 1fr)
+        minmax(140px, 1fr)
+        115px
+        auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 7px 12px;
+    margin-top: 6px;
+    border: 1px solid rgba(255, 255, 255, .075);
+    border-radius: 10px;
+    background: #272423;
+    position: relative;
+}
+
+.porto-admin .pa-exp2-table-head {
+    min-height: 30px;
+    margin-top: 0;
+    border: none;
+    background: transparent;
+    color: #afa39a;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-exp2-dragging {
+    z-index: 5;
+    opacity: .9;
+    border-color: #df6a27;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+}
+
+.porto-admin .pa-exp2-handle {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 32px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #9d8e84;
+    cursor: grab;
+    touch-action: none;
+}
+
+.porto-admin .pa-exp2-handle:hover {
+    background: #3a2c23;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-exp2-handle:active {
+    cursor: grabbing;
+}
+
+.porto-admin .pa-exp2-no {
+    font-size: 12px;
+    color: #b2a59b;
+}
+
+.porto-admin .pa-exp2-category {
+    display: inline-flex;
+    width: fit-content;
+    padding: 4px 8px;
+    border: 1px solid rgba(223, 106, 39, .24);
+    border-radius: 7px;
+    background: #33271f;
+    color: #eda879;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.porto-admin .pa-exp2-cell {
+    min-width: 0;
+    color: #f6f2ee;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-exp2-period {
+    color: #b8aaa0;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.porto-admin .pa-exp2-row-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.porto-admin .pa-exp2-row-actions .pa-exp2-action {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 11px;
+}
+
+.porto-admin .pa-exp2-right {
+    text-align: right;
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.porto-admin .pa-exp2-empty {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 52px 24px;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-exp2-empty h3 {
+    color: #f6f2ee;
+    font-size: 16px;
+    margin: 0;
+}
+
+.porto-admin .pa-exp2-empty p {
+    color: #aaa29c;
+    font-size: 12px;
+    margin: 0 0 8px;
+}
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.pa-exp2-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, .78);
+    backdrop-filter: blur(4px);
+}
+
+.pa-exp2-modal {
+    position: fixed;
+    z-index: 101;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(650px, calc(100vw - 24px));
+    max-height: 88vh;
+    overflow-y: auto;
+    border: 1px solid #514238;
+    border-radius: 18px;
+    background: #222121;
+    color: #f6f2ee;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .6);
+    font-family: Inter, sans-serif;
+}
+
+.pa-exp2-modal * {
+    box-sizing: border-box;
+}
+
+.pa-exp2-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+}
+
+.pa-exp2-modal-header h2 {
+    margin: 0 0 6px;
+    font-size: 21px;
+    font-weight: 650;
+}
+
+.pa-exp2-modal-header p {
+    margin: 0;
+    color: #aaa29c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.pa-exp2-close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #554940;
+    border-radius: 9px;
+    background: #302a27;
+    color: #eee3db;
+    cursor: pointer;
+}
+
+.pa-exp2-modal-body {
+    padding: 24px;
+}
+
+.pa-exp2-muted {
+    color: #b8aba2;
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+/* ==========================================
+   FORM TAMBAH & EDIT
+========================================== */
+
+.pa-exp2-form,
+.pa-exp2-fields {
+    display: grid;
+    gap: 21px;
+}
+
+.pa-exp2-field {
+    display: grid;
+    gap: 9px;
+    min-width: 0;
+}
+
+.pa-exp2-field > label {
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pa-exp2-field input:not([type="checkbox"]),
+.pa-exp2-field select,
+.pa-exp2-field textarea {
+    width: 100%;
+    min-height: 43px;
+    padding: 11px 13px;
+    border: 1px solid #544840;
+    border-radius: 10px;
+    background: #1d1b1b;
+    color: #f6f2ee;
+    font: 400 13px/1.5 Inter, sans-serif;
+    outline: none;
+}
+
+.pa-exp2-field textarea {
+    resize: vertical;
+}
+
+.pa-exp2-field :is(input, select, textarea):focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 1px;
+}
+
+.pa-exp2-field :is(input, select, textarea):disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.pa-exp2-field small {
+    color: #aaa29c;
+    font-size: 11px;
+}
+
+.pa-exp2-error {
+    margin: 0;
+    color: #ffaaaa;
+    font-size: 11px;
+}
+
+.pa-exp2-years {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.pa-exp2-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #e2d8d0;
+}
+
+.pa-exp2-check input {
+    width: 16px;
+    height: 16px;
+    accent-color: #df6a27;
+}
+
+.pa-exp2-existing-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #b8aba2;
+    font-size: 12px;
+}
+
+.pa-exp2-existing-logo img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border: 1px solid #514238;
+    border-radius: 10px;
+    background: #181818;
+}
+
+.pa-exp2-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+/* Form Edit Full Width */
+
+.porto-admin .pa-exp2-edit-card {
+    width: 100%;
+    max-width: none;
+}
+
+.porto-admin .pa-exp2-edit-form {
+    width: 100%;
+    max-width: none;
+    padding: 28px;
+}
+
+/* ==========================================
+   DETAIL PENGALAMAN
+========================================== */
+
+.porto-admin .pa-exp2-detail {
+    width: 100%;
+}
+
+.porto-admin .pa-exp2-detail-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    padding: 28px;
+    border-bottom: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-exp2-detail-identity h2 {
+    margin: 15px 0 6px;
+    color: #f6f2ee;
+    font: 650 26px/1.3 'Space Grotesk', Inter, sans-serif;
+}
+
+.porto-admin .pa-exp2-detail-identity p {
+    margin: 0;
+    color: #b8aba2;
+    font-size: 13px;
+}
+
+.porto-admin .pa-exp2-detail-logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    border-radius: 13px;
+    background: #181818;
+    border: 1px solid #514238;
+    padding: 8px;
+}
+
+.porto-admin .pa-exp2-detail-content {
+    padding: 28px;
+}
+
+.porto-admin .pa-exp2-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+}
+
+.porto-admin .pa-exp2-info-grid > div {
+    display: grid;
+    gap: 7px;
+}
+
+.porto-admin .pa-exp2-info-grid span {
+    color: #a99e96;
+    font-size: 11px;
+}
+
+.porto-admin .pa-exp2-info-grid strong {
+    color: #f6f2ee;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.porto-admin .pa-exp2-description {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid var(--pa-line);
+}
+
+.porto-admin .pa-exp2-description h3 {
+    margin: 0 0 13px;
+    color: #f6f2ee;
+    font-size: 16px;
+}
+
+.porto-admin .pa-exp2-description p {
+    margin: 0;
+    color: #c5b8ae;
+    font-size: 13px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1150px) {
+    .porto-admin .pa-exp2-table-head {
+        display: none;
+    }
+
+    .porto-admin .pa-exp2-row {
+        grid-template-columns: 28px 35px minmax(0, 1fr);
+    }
+
+    .porto-admin .pa-exp2-row .pa-exp2-category,
+    .porto-admin .pa-exp2-row .pa-exp2-cell,
+    .porto-admin .pa-exp2-row .pa-exp2-period,
+    .porto-admin .pa-exp2-row .pa-exp2-row-actions {
+        grid-column: 3;
+    }
+
+    .porto-admin .pa-exp2-row-actions {
+        justify-content: flex-start;
+    }
+
+    .porto-admin .pa-exp2-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .porto-admin .pa-exp2-card-header,
+    .porto-admin .pa-exp2-detail-top,
+    .porto-admin .pa-exp2-detail-content,
+    .porto-admin .pa-exp2-edit-form {
+        padding: 20px;
+    }
+
+    .porto-admin .pa-exp2-info-grid,
+    .pa-exp2-years {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-exp2-page-actions {
+        width: 100%;
+    }
+
+    .pa-exp2-modal-header,
+    .pa-exp2-modal-body {
+        padding: 19px;
+    }
+
+    .porto-admin .pa-exp2-row {
+        padding: 10px 12px;
+    }
+}
+/* ==========================================
+   GLOBAL ADMIN — TOMBOL TAMBAH
+========================================== */
+
+.porto-admin .pa-skill-action--primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    width: auto;
+    min-height: 36px;
+    padding: 8px 12px;
+    flex: 0 0 auto;
+
+    background: #df6a27;
+    border: 1px solid #df6a27;
+    border-radius: 9px;
+
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+
+    transition: background 0.2s ease;
+}
+
+.porto-admin .pa-skill-action--primary:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+    color: #ffffff;
+}
+/* ==========================================
+   CUSTOM SELECT — PENGALAMAN
+========================================== */
+
+.pa-exp2-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 45px;
+
+    padding: 11px 14px;
+
+    background: #1d1b1b;
+    border: 1px solid #544840;
+    border-radius: 10px;
+
+    color: #f6f2ee;
+    font: 500 13px/1.5 Inter, sans-serif;
+
+    text-align: left;
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.pa-exp2-select-trigger:hover {
+    border-color: #9b5b34;
+    background: #282321;
+}
+
+.pa-exp2-select-trigger:focus-visible,
+.pa-exp2-select-trigger[data-state="open"] {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223, 106, 39, .13);
+}
+
+.pa-exp2-select-trigger[data-placeholder] {
+    color: #9e938b;
+}
+
+.pa-exp2-select-trigger svg {
+    flex-shrink: 0;
+    color: #ee9d69;
+}
+
+.pa-exp2-select-content {
+    z-index: 300;
+
+    width: var(--radix-select-trigger-width);
+    min-width: 180px;
+    max-height: var(--radix-select-content-available-height);
+
+    background: #292524;
+    border: 1px solid #685042;
+    border-radius: 12px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .4);
+
+    overflow: hidden;
+
+    animation: pa-exp2-dropdown-enter .16s ease-out;
+}
+
+.pa-exp2-select-viewport {
+    padding: 6px;
+}
+
+.pa-exp2-select-option {
+    display: grid;
+    grid-template-columns: 20px 1fr 18px;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 43px;
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    color: #eee7e1;
+    font: 500 13px Inter, sans-serif;
+
+    outline: none;
+    cursor: pointer;
+    user-select: none;
+
+    transition: background .15s ease;
+}
+
+.pa-exp2-select-option[data-highlighted] {
+    background: #423026;
+    color: #fff;
+}
+
+.pa-exp2-select-option[data-state="checked"] {
+    color: #f2a06e;
+    background: rgba(223, 106, 39, .09);
+}
+
+.pa-exp2-option-icon {
+    color: #b6a49a;
+}
+
+.pa-exp2-option-check {
+    display: flex;
+    color: #f2a06e;
+}
+
+@keyframes pa-exp2-dropdown-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-5px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================
+   PHOTO UPLOAD & PREVIEW
+========================================== */
+
+.pa-exp2-photo-field {
+    display: grid;
+    gap: 10px;
+}
+
+.pa-exp2-photo-label {
+    color: #f6f2ee;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pa-exp2-photo-label span {
+    color: #978b84;
+    font-weight: 400;
+}
+
+.pa-exp2-photo-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding: 20px;
+
+    background: #211e1d;
+    border: 1px dashed #71503b;
+    border-radius: 14px;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease;
+}
+
+.pa-exp2-photo-box:hover {
+    border-color: #df6a27;
+    background: #26201d;
+}
+
+/* Preview image */
+
+.pa-exp2-photo-preview {
+    display: grid;
+    place-items: center;
+
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    background: #171616;
+    border: 1px solid #473b34;
+    border-radius: 12px;
+}
+
+.pa-exp2-photo-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 7px;
+}
+
+.pa-exp2-photo-placeholder {
+    display: grid;
+    justify-items: center;
+    gap: 9px;
+
+    color: #857469;
+    font-size: 10px;
+    text-align: center;
+}
+
+.pa-exp2-photo-placeholder svg {
+    color: #a56e4e;
+}
+
+.pa-exp2-photo-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+}
+
+.pa-exp2-photo-info strong {
+    color: #f5efea;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.pa-exp2-photo-info p {
+    margin: 0;
+    color: #aaa09b;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.pa-exp2-photo-info small {
+    color: #93867c;
+    font-size: 10px;
+}
+
+.pa-exp2-photo-filename {
+    overflow-wrap: anywhere;
+}
+
+/* Hidden native input */
+
+.pa-exp2-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    opacity: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Action buttons */
+
+.pa-exp2-photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.pa-exp2-upload-button,
+.pa-exp2-remove-button,
+.pa-exp2-restore-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    width: auto;
+    min-height: 34px;
+    padding: 7px 11px;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    font: 600 11px/1.4 Inter, sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease;
+}
+
+.pa-exp2-upload-button {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.pa-exp2-upload-button:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+}
+
+.pa-exp2-file-input:focus-visible
++ .pa-exp2-upload-button {
+    outline: 2px solid #f2a06e;
+    outline-offset: 3px;
+}
+
+.pa-exp2-remove-button {
+    background: rgba(220, 77, 77, .09);
+    border-color: rgba(233, 108, 108, .3);
+    color: #f0a2a2;
+}
+
+.pa-exp2-remove-button:hover {
+    background: rgba(220, 77, 77, .18);
+}
+
+.pa-exp2-restore-button {
+    background: #302923;
+    border-color: #655140;
+    color: #f2b080;
+}
+
+.pa-exp2-restore-button:hover {
+    background: #403126;
+}
+
+.pa-exp2-photo-note {
+    margin: 0;
+    color: #b2a59b;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* Responsive */
+
+@media (max-width: 560px) {
+    .pa-exp2-photo-box {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+    }
+
+    .pa-exp2-photo-preview {
+        width: 100%;
+        height: 155px;
+    }
+
+    .pa-exp2-photo-actions {
+        width: 100%;
+    }
+
+    .pa-exp2-photo-actions > * {
+        flex: 1 1 auto;
+    }
+}
+/* ==========================================
+   FIX DROPDOWN KATEGORI PENGALAMAN
+========================================== */
+
+.porto-admin .pa-exp2-field .pa-exp2-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    height: 46px;
+    min-height: 46px;
+    padding: 0 13px;
+
+    background: #1d1b1b;
+    border: 1px solid #544840;
+    border-radius: 10px;
+
+    color: #f6f2ee;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Konten pilihan */
+.porto-admin .pa-exp2-select-selected {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+
+    font-size: 13px;
+    font-weight: 400;
+    color: #f6f2ee;
+}
+
+/* Ikon kategori */
+.porto-admin .pa-exp2-select-selected > svg {
+    color: #f2a06e;
+    flex-shrink: 0;
+}
+
+/* Panah dropdown */
+.porto-admin .pa-exp2-select-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #a99e96;
+    transition: transform 0.2s ease;
+}
+
+.porto-admin
+.pa-exp2-select-trigger[data-state="open"]
+.pa-exp2-select-arrow {
+    transform: rotate(180deg);
+}
+
+/* Hover */
+.porto-admin .pa-exp2-field .pa-exp2-select-trigger:hover {
+    background: #26211f;
+    border-color: #9b5b34;
+}
+
+/* Fokus dan saat terbuka */
+.porto-admin .pa-exp2-field .pa-exp2-select-trigger:focus-visible,
+.porto-admin .pa-exp2-field .pa-exp2-select-trigger[data-state="open"] {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223, 106, 39, 0.12);
+}
+
+/* Placeholder */
+.porto-admin .pa-exp2-select-trigger[data-placeholder]
+.pa-exp2-select-selected {
+    color: #978b84;
+}
+
+/* ==========================================
+   PENGALAMAN — 2 CATEGORY TABS
+========================================== */
+
+.porto-admin .pa-exp2-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+
+    padding: 18px 22px;
+
+    border-bottom: 1px solid var(--pa-line);
+    background: #222121;
+}
+
+.porto-admin .pa-exp2-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 16px;
+
+    border: 1px solid #51443c;
+    border-radius: 10px;
+
+    background: #292625;
+    color: #bfb2a8;
+
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+}
+
+.porto-admin .pa-exp2-tab:hover {
+    background: #352b25;
+    border-color: #9b5b34;
+    color: #f6f2ee;
+}
+
+.porto-admin .pa-exp2-tab--active {
+    background: rgba(223, 106, 39, .12);
+    border-color: #df6a27;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-exp2-tab--active:hover {
+    background: rgba(223, 106, 39, .17);
+    border-color: #df6a27;
+    color: #f2a06e;
+}
+
+.porto-admin .pa-exp2-tab svg {
+    flex-shrink: 0;
+}
+
+.porto-admin .pa-exp2-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 25px;
+    min-height: 23px;
+    padding: 3px 7px;
+
+    border: 1px solid #59473b;
+    border-radius: 7px;
+
+    background: #352b25;
+    color: #c9b8aa;
+
+    font-size: 10px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.porto-admin
+.pa-exp2-tab--active
+.pa-exp2-tab-count {
+    background: rgba(223, 106, 39, .18);
+    border-color: rgba(223, 106, 39, .35);
+    color: #f2a06e;
+}
+
+/* Keyboard accessibility */
+
+.porto-admin .pa-exp2-tab:focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 3px;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+    .porto-admin .pa-exp2-tabs {
+        gap: 8px;
+        padding: 14px;
+    }
+
+    .porto-admin .pa-exp2-tab {
+        gap: 7px;
+        min-height: 43px;
+        padding: 9px 10px;
+        font-size: 11px;
+    }
+
+    .porto-admin .pa-exp2-tab svg {
+        width: 15px;
+        height: 15px;
+    }
+}

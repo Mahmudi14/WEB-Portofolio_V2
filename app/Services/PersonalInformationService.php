@@ -22,7 +22,9 @@ class PersonalInformationService
     public function update(
         array $data,
         ?UploadedFile $photo = null,
-        ?UploadedFile $logo = null
+        ?UploadedFile $logo = null,
+        bool $removePhoto = false,
+        bool $removeLogo = false
     ): PersonalInformation {
         $newPhotoPath = null;
         $newLogoPath = null;
@@ -31,7 +33,7 @@ class PersonalInformationService
         $oldLogoPath = null;
 
         try {
-            // Simpan file baru menggunakan nama acak Laravel.
+            // Upload foto profil baru
             if ($photo !== null) {
                 $newPhotoPath = $photo->store(
                     'profiles',
@@ -45,6 +47,7 @@ class PersonalInformationService
                 }
             }
 
+            // Upload logo baru
             if ($logo !== null) {
                 $newLogoPath = $logo->store(
                     'branding',
@@ -58,10 +61,13 @@ class PersonalInformationService
                 }
             }
 
+            // Simpan perubahan ke database
             $profile = DB::transaction(function () use (
                 $data,
                 $newPhotoPath,
                 $newLogoPath,
+                $removePhoto,
+                $removeLogo,
                 &$oldPhotoPath,
                 &$oldLogoPath
             ) {
@@ -85,37 +91,39 @@ class PersonalInformationService
                     'whatsapp' => $data['whatsapp'] ?? null,
                 ]);
 
-                // Jika tidak ada upload baru,
-                // gambar lama tetap digunakan.
+                // Foto profil
                 if ($newPhotoPath !== null) {
                     $profile->profile_photo = $newPhotoPath;
+                } elseif ($removePhoto) {
+                    $profile->profile_photo = null;
                 }
 
+                // Logo website
                 if ($newLogoPath !== null) {
                     $profile->logo_path = $newLogoPath;
+                } elseif ($removeLogo) {
+                    $profile->logo_path = null;
                 }
 
                 $profile->save();
 
                 return $profile;
             });
-
         } catch (Throwable $exception) {
-            // Jika proses gagal, bersihkan file
-            // yang baru diunggah.
+            // Jika gagal, hapus file baru
             $this->deleteQuietly($newPhotoPath);
             $this->deleteQuietly($newLogoPath);
 
             throw $exception;
         }
 
-        // Database sudah berhasil disimpan.
-        // Foto/logo lama boleh dibersihkan.
-        if ($newPhotoPath !== null) {
+        // Hapus foto lama setelah database berhasil
+        if ($newPhotoPath !== null || $removePhoto) {
             $this->deleteQuietly($oldPhotoPath);
         }
 
-        if ($newLogoPath !== null) {
+        // Hapus logo lama setelah database berhasil
+        if ($newLogoPath !== null || $removeLogo) {
             $this->deleteQuietly($oldLogoPath);
         }
 

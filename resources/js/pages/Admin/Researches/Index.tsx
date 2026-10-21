@@ -1,346 +1,124 @@
-
 import {
     Head,
+    Link,
     router,
     useForm,
     usePage,
 } from '@inertiajs/react';
 
-import { useState } from 'react';
-import type { FormEvent, ReactNode } from 'react';
+import {
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+
+import type { DragEndEvent } from '@dnd-kit/core';
 
 import {
-    CalendarDays,
-    CheckCircle2,
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+
+import { CSS } from '@dnd-kit/utilities';
+
+import {
+    Eye,
     FlaskConical,
+    GripVertical,
     Pencil,
     Plus,
-    Save,
     Search,
     Trash2,
     X,
 } from 'lucide-react';
 
+import {
+    useEffect,
+    useState,
+} from 'react';
+
+import type { FormEvent } from 'react';
+
+import { toast } from 'sonner';
+
 import AdminLayout from '@/layouts/admin-layout';
 
-// ==========================================
-// TYPES
-// ==========================================
+import {
+    ResearchFields,
+    ResearchFlash,
+    ResearchModal,
+    emptyResearch,
+    sortResearches,
+} from './Shared';
 
-type Research = {
-    id: number;
-    title: string;
-    summary: string;
-    year: number;
-};
+import type {
+    Research,
+    ResearchForm,
+} from './Shared';
 
-type ResearchForm = {
-    title: string;
-    summary: string;
-    year: number | '';
-};
+import '../../../../css/researches-redesign.css';
 
 type Props = {
     researches: Research[];
 };
 
-type ResearchErrors = Partial<
-    Record<keyof ResearchForm, string>
->;
-
-const currentYear = new Date().getFullYear();
-
 // ==========================================
-// REUSABLE FIELD
+// MODAL TAMBAH PENELITIAN
 // ==========================================
 
-function ResearchField({
-    id,
-    label,
-    error,
-    hint,
-    children,
+function CreateResearch({
+    open,
+    onClose,
 }: {
-    id: string;
-    label: string;
-    error?: string;
-    hint?: string;
-    children: ReactNode;
+    open: boolean;
+    onClose: () => void;
 }) {
-    return (
-        <div className="pa-editor-field">
-            <label
-                htmlFor={id}
-                className="pa-editor-label"
-            >
-                {label}
-            </label>
-
-            {children}
-
-            {hint && (
-                <p className="pa-editor-hint">
-                    {hint}
-                </p>
-            )}
-
-            {error && (
-                <p
-                    id={`${id}-error`}
-                    className="pa-editor-error"
-                    role="alert"
-                >
-                    {error}
-                </p>
-            )}
-        </div>
+    const form = useForm<ResearchForm>(
+        emptyResearch()
     );
-}
 
-// ==========================================
-// SHARED RESEARCH FORM FIELDS
-// ==========================================
+    function close() {
+        form.reset();
+        form.clearErrors();
+        onClose();
+    }
 
-function ResearchFields({
-    prefix,
-    data,
-    errors,
-    onChange,
-}: {
-    prefix: string;
-    data: ResearchForm;
-    errors: ResearchErrors;
-    onChange: (
-        patch: Partial<ResearchForm>
-    ) => void;
-}) {
-    return (
-        <div className="pa-res-fields">
-            <ResearchField
-                id={`${prefix}-title`}
-                label="Judul Penelitian"
-                error={errors.title}
-            >
-                <input
-                    id={`${prefix}-title`}
-                    type="text"
-                    className="pa-editor-input"
-                    required
-                    maxLength={255}
-                    value={data.title}
-                    aria-invalid={Boolean(errors.title)}
-                    placeholder="Contoh: Analisis Sentimen Menggunakan Deep Learning"
-                    onChange={(event) =>
-                        onChange({
-                            title: event.target.value,
-                        })
-                    }
-                />
-
-                <span className="pa-res-character-count">
-                    {data.title.length} / 255
-                </span>
-            </ResearchField>
-
-            <ResearchField
-                id={`${prefix}-summary`}
-                label="Ringkasan Penelitian"
-                hint="Tuliskan latar belakang, metode, dan hasil penelitian secara ringkas."
-                error={errors.summary}
-            >
-                <textarea
-                    id={`${prefix}-summary`}
-                    className="pa-editor-textarea"
-                    rows={7}
-                    required
-                    maxLength={15000}
-                    value={data.summary}
-                    aria-invalid={Boolean(errors.summary)}
-                    placeholder="Jelaskan tujuan, metode, dan hasil penelitian..."
-                    onChange={(event) =>
-                        onChange({
-                            summary: event.target.value,
-                        })
-                    }
-                />
-
-                <span className="pa-res-character-count">
-                    {data.summary.length} / 15000
-                </span>
-            </ResearchField>
-
-            <ResearchField
-                id={`${prefix}-year`}
-                label="Tahun Penelitian"
-                hint="Gunakan tahun pelaksanaan penelitian."
-                error={errors.year}
-            >
-                <input
-                    id={`${prefix}-year`}
-                    className="pa-editor-input"
-                    type="number"
-                    inputMode="numeric"
-                    required
-                    min={1900}
-                    max={currentYear}
-                    step={1}
-                    value={data.year}
-                    aria-invalid={Boolean(errors.year)}
-                    placeholder={String(currentYear)}
-                    onChange={(event) =>
-                        onChange({
-                            year:
-                                event.target.value === ''
-                                    ? ''
-                                    : Number(
-                                        event.target.value
-                                    ),
-                        })
-                    }
-                />
-            </ResearchField>
-        </div>
-    );
-}
-
-// ==========================================
-// CREATE RESEARCH
-// ==========================================
-
-function CreateResearch() {
-    const form = useForm<ResearchForm>({
-        title: '',
-        summary: '',
-        year: '',
-    });
-
-    function submit(event: FormEvent<HTMLFormElement>) {
+    function submit(
+        event: FormEvent<HTMLFormElement>
+    ) {
         event.preventDefault();
 
         form.post('/admin/researches', {
             preserveScroll: true,
 
             onSuccess: () => {
-                form.reset();
-                form.clearErrors();
+                close();
             },
         });
     }
 
     return (
-        <section className="pa-res-panel pa-res-create">
-            <header className="pa-res-panel__header">
-                <span className="pa-editor-kicker">
-                    <Plus
-                        size={15}
-                        aria-hidden="true"
-                    />
-                    PENELITIAN BARU
-                </span>
-
-                <h2>Tambah Penelitian</h2>
-
-                <p>
-                    Dokumentasikan karya penelitian
-                    beserta ringkasan dan tahun
-                    pelaksanaannya.
-                </p>
-            </header>
-
-            <form onSubmit={submit}>
-                <div className="pa-res-form">
-                    <ResearchFields
-                        prefix="create-research"
-                        data={form.data}
-                        errors={form.errors}
-                        onChange={(patch) =>
-                            form.setData({
-                                ...form.data,
-                                ...patch,
-                            })
-                        }
-                    />
-                </div>
-
-                <div className="pa-res-form__actions">
-                    <button
-                        type="submit"
-                        className="pa-button pa-button--primary"
-                        disabled={form.processing}
-                    >
-                        <Plus
-                            size={17}
-                            aria-hidden="true"
-                        />
-
-                        {form.processing
-                            ? 'Menambahkan...'
-                            : 'Tambah Penelitian'}
-                    </button>
-                </div>
-            </form>
-        </section>
-    );
-}
-
-// ==========================================
-// EDIT RESEARCH
-// ==========================================
-
-function EditResearch({
-    research,
-    onClose,
-}: {
-    research: Research;
-    onClose: () => void;
-}) {
-    const form = useForm<ResearchForm>({
-        title: research.title,
-        summary: research.summary,
-        year: research.year,
-    });
-
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        form.put(
-            `/admin/researches/${research.id}`,
-            {
-                preserveScroll: true,
-                onSuccess: onClose,
-            }
-        );
-    }
-
-    return (
-        <form onSubmit={submit}>
-            <div className="pa-res-edit__header">
-                <div>
-                    <span className="pa-editor-kicker">
-                        <Pencil
-                            size={15}
-                            aria-hidden="true"
-                        />
-                        EDIT PENELITIAN
-                    </span>
-
-                    <h3>Perbarui Penelitian</h3>
-                </div>
-
-                <button
-                    type="button"
-                    className="pa-res-close"
-                    aria-label="Batalkan edit penelitian"
-                    disabled={form.processing}
-                    onClick={onClose}
-                >
-                    <X size={18} />
-                </button>
-            </div>
-
-            <div className="pa-res-form">
+        <ResearchModal
+            open={open}
+            onOpenChange={(next) => {
+                if (!next) close();
+            }}
+            busy={form.processing}
+            title="Tambah Penelitian"
+            description="Dokumentasikan karya penelitian beserta ringkasan dan tahun pelaksanaannya."
+        >
+            <form
+                className="pa-res2-form"
+                onSubmit={submit}
+            >
                 <ResearchFields
-                    prefix={`edit-research-${research.id}`}
+                    prefix="create-research"
                     data={form.data}
                     errors={form.errors}
                     onChange={(patch) =>
@@ -350,238 +128,347 @@ function EditResearch({
                         })
                     }
                 />
-            </div>
 
-            <div className="pa-res-edit__actions">
-                <button
-                    type="button"
-                    className="pa-res-action"
-                    onClick={onClose}
-                    disabled={form.processing}
-                >
-                    <X size={15} />
-                    Batal
-                </button>
+                <div className="pa-res2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-res2-btn"
+                        disabled={form.processing}
+                        onClick={close}
+                    >
+                        Batal
+                    </button>
 
-                <button
-                    type="submit"
-                    className="pa-button pa-button--primary"
-                    disabled={
-                        form.processing ||
-                        !form.isDirty
-                    }
-                >
-                    <Save size={16} />
-
-                    {form.processing
-                        ? 'Menyimpan...'
-                        : 'Simpan Perubahan'}
-                </button>
-            </div>
-        </form>
+                    <button
+                        type="submit"
+                        className="pa-res2-btn pa-res2-btn--primary"
+                        disabled={form.processing}
+                    >
+                        {form.processing
+                            ? 'Menyimpan...'
+                            : 'Simpan Penelitian'}
+                    </button>
+                </div>
+            </form>
+        </ResearchModal>
     );
 }
 
 // ==========================================
-// RESEARCH CARD
+// SORTABLE TABLE ROW
 // ==========================================
 
-function ResearchCard({
+function ResearchRow({
     research,
+    number,
+    disabled,
+    onDelete,
 }: {
     research: Research;
+    number: number;
+    disabled: boolean;
+    onDelete: (research: Research) => void;
 }) {
-    const [editing, setEditing] =
-        useState(false);
-
-    const [deleting, setDeleting] =
-        useState(false);
-
-    function destroy() {
-        const confirmed = window.confirm(
-            `Hapus penelitian "${research.title}"?`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        router.delete(
-            `/admin/researches/${research.id}`,
-            {
-                preserveScroll: true,
-                onStart: () => setDeleting(true),
-                onFinish: () => setDeleting(false),
-            }
-        );
-    }
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
+        id: research.id,
+        disabled,
+    });
 
     return (
-        <article className="pa-res-item">
-            {editing ? (
-                <EditResearch
-                    research={research}
-                    onClose={() => setEditing(false)}
-                />
-            ) : (
-                <div className="pa-res-item__display">
-                    <div
-                        className="pa-res-item__icon"
-                        aria-hidden="true"
-                    >
-                        <FlaskConical size={23} />
-                    </div>
+        <div
+            ref={setNodeRef}
+            className={
+                'pa-res2-row' +
+                (isDragging
+                    ? ' pa-res2-row--dragging'
+                    : '')
+            }
+            style={{
+                transform: CSS.Transform.toString(
+                    transform
+                ),
+                transition,
+            }}
+        >
+            <button
+                type="button"
+                className="pa-res2-handle"
+                disabled={disabled}
+                title={
+                    disabled
+                        ? 'Kosongkan pencarian untuk mengubah urutan'
+                        : 'Geser untuk mengubah urutan'
+                }
+                aria-label={
+                    `Ubah urutan ${research.title}`
+                }
+                {...attributes}
+                {...listeners}
+            >
+                <GripVertical size={17} />
+            </button>
 
-                    <div className="pa-res-item__content">
-                        <div className="pa-res-item__meta">
-                            <span className="pa-res-item__eyebrow">
-                                PENELITIAN
-                            </span>
+            <span className="pa-res2-no">
+                {number}
+            </span>
 
-                            <span className="pa-res-item__year">
-                                <CalendarDays
-                                    size={13}
-                                    aria-hidden="true"
-                                />
-                                {research.year}
-                            </span>
-                        </div>
+            <strong className="pa-res2-title">
+                {research.title}
+            </strong>
 
-                        <h3>{research.title}</h3>
+            <span className="pa-res2-year">
+                {research.year}
+            </span>
 
-                        <p className="pa-res-item__summary">
-                            {research.summary}
-                        </p>
+            <div className="pa-res2-row-actions">
+                <Link
+                    href={`/admin/researches/${research.id}`}
+                    className="pa-res2-btn"
+                >
+                    <Eye size={15} />
+                    Detail
+                </Link>
 
-                        <div className="pa-res-item__actions">
-                            <button
-                                type="button"
-                                className="pa-res-action"
-                                onClick={() =>
-                                    setEditing(true)
-                                }
-                            >
-                                <Pencil size={15} />
-                                Edit
-                            </button>
+                <Link
+                    href={`/admin/researches/${research.id}/edit`}
+                    className="pa-res2-btn"
+                >
+                    <Pencil size={15} />
+                    Edit
+                </Link>
 
-                            <button
-                                type="button"
-                                className="pa-res-action pa-res-action--danger"
-                                disabled={deleting}
-                                onClick={destroy}
-                            >
-                                <Trash2 size={15} />
-
-                                {deleting
-                                    ? 'Menghapus...'
-                                    : 'Hapus'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </article>
+                <button
+                    type="button"
+                    className="pa-res2-btn pa-res2-btn--danger"
+                    onClick={() =>
+                        onDelete(research)
+                    }
+                >
+                    <Trash2 size={15} />
+                    Hapus
+                </button>
+            </div>
+        </div>
     );
 }
 
 // ==========================================
-// MAIN PAGE
+// MAIN INDEX
 // ==========================================
 
 export default function Index({
     researches,
 }: Props) {
-    const [search, setSearch] = useState('');
-
-    const flash = (
-        usePage().props as unknown as {
-            flash?: {
-                success?: string | null;
-            };
-        }
-    ).flash;
-
-    const ordered = [...researches].sort(
-        (a, b) =>
-            b.year - a.year ||
-            b.id - a.id
+    const [items, setItems] = useState(
+        () => sortResearches(researches)
     );
+
+    const [search, setSearch] =
+        useState('');
+
+    const [creating, setCreating] =
+        useState(false);
+
+    const [deleting, setDeleting] =
+        useState<Research | null>(null);
+
+    const [deletingBusy, setDeletingBusy] =
+        useState(false);
+
+    const [savingOrder, setSavingOrder] =
+        useState(false);
+
+    const { flash } = usePage().props as {
+        flash?: {
+            success?: string | null;
+        };
+    };
+
+    useEffect(() => {
+        setItems(sortResearches(researches));
+    }, [researches]);
 
     const query = search.trim().toLowerCase();
 
-    const filtered = ordered.filter(
-        (research) => {
-            if (!query) {
-                return true;
-            }
-
-            return [
-                research.title,
-                research.summary,
-                String(research.year),
-            ].some((value) =>
-                value.toLowerCase().includes(query)
-            );
-        }
+    const filtered = items.filter(
+        (research) =>
+            !query ||
+            research.title
+                .toLowerCase()
+                .includes(query) ||
+            String(research.year).includes(query)
     );
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 6,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter:
+                sortableKeyboardCoordinates,
+        })
+    );
+
+    // ======================================
+    // SIMPAN DRAG AND DROP
+    // ======================================
+
+    function onDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (
+            query ||
+            savingOrder ||
+            !over ||
+            active.id === over.id
+        ) {
+            return;
+        }
+
+        const oldIndex = items.findIndex(
+            (item) => item.id === active.id
+        );
+
+        const newIndex = items.findIndex(
+            (item) => item.id === over.id
+        );
+
+        if (
+            oldIndex < 0 ||
+            newIndex < 0
+        ) {
+            return;
+        }
+
+        const previous = items;
+
+        const updated = arrayMove(
+            previous,
+            oldIndex,
+            newIndex
+        );
+
+        setItems(updated);
+        setSavingOrder(true);
+
+        router.put(
+            '/admin/researches/reorder',
+            {
+                ids: updated.map(
+                    (item) => item.id
+                ),
+            },
+            {
+                preserveScroll: true,
+
+                onError: () => {
+                    setItems(previous);
+
+                    toast.error(
+                        'Gagal menyimpan urutan penelitian.'
+                    );
+                },
+
+                onFinish: () => {
+                    setSavingOrder(false);
+                },
+            }
+        );
+    }
+
+    // ======================================
+    // HAPUS PENELITIAN
+    // ======================================
+
+    function destroy() {
+        if (
+            !deleting ||
+            deletingBusy
+        ) {
+            return;
+        }
+
+        setDeletingBusy(true);
+
+        router.delete(
+            `/admin/researches/${deleting.id}`,
+            {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    setDeleting(null);
+                },
+
+                onError: () => {
+                    toast.error(
+                        'Penelitian gagal dihapus.'
+                    );
+                },
+
+                onFinish: () => {
+                    setDeletingBusy(false);
+                },
+            }
+        );
+    }
 
     return (
         <AdminLayout
             title="Penelitian"
-            description="Kelola karya penelitian dan ringkasan yang ditampilkan pada website."
+            description="Kelola karya dan dokumentasi penelitian."
+            actions={
+                <button
+                    type="button"
+                    className="pa-res2-btn pa-res2-btn--primary"
+                    onClick={() => setCreating(true)}
+                >
+                    <Plus size={16} />
+                    Tambah Penelitian
+                </button>
+            }
         >
             <Head
                 title="Penelitian · Portfolio Admin"
             />
 
-            {flash?.success && (
-                <div
-                    className="pa-editor-success"
-                    role="status"
-                >
-                    <CheckCircle2
-                        size={18}
-                        aria-hidden="true"
-                    />
+            <ResearchFlash
+                message={flash?.success}
+            />
 
-                    <span>{flash.success}</span>
-                </div>
-            )}
+            <section className="pa-res2-card">
+                <div className="pa-res2-card-header">
+                    <div>
+                        <h2>Daftar Penelitian</h2>
 
-            <div className="pa-res-grid">
-                <CreateResearch />
+                        <p>
+                            {items.length} penelitian terdaftar.
+                            Geser ikon di kiri untuk mengatur urutan.
+                        </p>
+                    </div>
 
-                <section
-                    className="pa-res-panel pa-res-list"
-                    aria-label="Daftar penelitian"
-                >
-                    <header className="pa-res-panel__header">
-                        <span className="pa-editor-kicker">
-                            <FlaskConical
-                                size={15}
-                                aria-hidden="true"
-                            />
-                            ARSIP PENELITIAN
+                    {savingOrder && (
+                        <span
+                            className="pa-res2-saving"
+                            role="status"
+                        >
+                            Menyimpan urutan...
                         </span>
+                    )}
+                </div>
 
-                        <div className="pa-res-list__heading">
-                            <div>
-                                <h2>Daftar Penelitian</h2>
+                {/* PENCARIAN */}
 
-                                <p>
-                                    Penelitian diurutkan
-                                    berdasarkan tahun terbaru.
-                                </p>
-                            </div>
-
-                            <span className="pa-res-total">
-                                {researches.length}
-                            </span>
-                        </div>
-                    </header>
-
-                    <div className="pa-res-search">
+                <div className="pa-res2-search-area">
+                    <div className="pa-res2-search">
                         <Search
                             size={17}
                             aria-hidden="true"
@@ -591,71 +478,177 @@ export default function Index({
                             type="search"
                             value={search}
                             aria-label="Cari penelitian"
-                            placeholder="Cari judul, ringkasan, atau tahun..."
+                            placeholder="Cari judul atau tahun penelitian..."
                             onChange={(event) =>
-                                setSearch(event.target.value)
+                                setSearch(
+                                    event.target.value
+                                )
                             }
                         />
 
                         {search && (
                             <button
                                 type="button"
-                                onClick={() => setSearch('')}
                                 aria-label="Hapus pencarian"
+                                onClick={() =>
+                                    setSearch('')
+                                }
                             >
-                                <X size={17} />
+                                <X size={16} />
                             </button>
                         )}
                     </div>
 
-                    <div
-                        className="pa-res-list__count"
-                        aria-live="polite"
-                    >
-                        Menampilkan {filtered.length} dari{' '}
-                        {researches.length} penelitian
+                    <span className="pa-res2-result-count">
+                        {filtered.length} dari {items.length} data
+                    </span>
+                </div>
+
+                {query && (
+                    <p className="pa-res2-info">
+                        Kosongkan pencarian untuk
+                        mengubah urutan penelitian.
+                    </p>
+                )}
+
+                {/* DATA PENELITIAN */}
+
+                {filtered.length === 0 ? (
+                    <div className="pa-res2-empty">
+                        {query ? (
+                            <Search size={31} />
+                        ) : (
+                            <FlaskConical size={31} />
+                        )}
+
+                        <h3>
+                            {query
+                                ? 'Penelitian tidak ditemukan'
+                                : 'Belum ada penelitian'}
+                        </h3>
+
+                        <p>
+                            {query
+                                ? 'Coba kata kunci lain.'
+                                : 'Tambahkan penelitian pertama untuk mulai mendokumentasikan karya penelitian.'}
+                        </p>
+
+                        {!query && (
+                            <button
+                                type="button"
+                                className="pa-res2-btn pa-res2-btn--primary"
+                                onClick={() =>
+                                    setCreating(true)
+                                }
+                            >
+                                <Plus size={16} />
+                                Tambah Penelitian
+                            </button>
+                        )}
                     </div>
-
-                    {filtered.length === 0 ? (
-                        <div className="pa-res-empty">
-                            {query ? (
-                                <Search
-                                    size={30}
-                                    strokeWidth={1.5}
-                                    aria-hidden="true"
-                                />
-                            ) : (
-                                <FlaskConical
-                                    size={30}
-                                    strokeWidth={1.5}
-                                    aria-hidden="true"
-                                />
-                            )}
-
-                            <h3>
-                                {query
-                                    ? 'Penelitian tidak ditemukan'
-                                    : 'Belum ada penelitian'}
-                            </h3>
-
-                            <p>
-                                {query
-                                    ? 'Coba gunakan kata kunci lain.'
-                                    : 'Tambahkan penelitian pertama melalui formulir yang tersedia.'}
-                            </p>
+                ) : (
+                    <div className="pa-res2-table">
+                        <div
+                            className="pa-res2-row pa-res2-table-head"
+                            aria-hidden="true"
+                        >
+                            <span />
+                            <span>No.</span>
+                            <span>Judul Penelitian</span>
+                            <span>Tahun</span>
+                            <span className="pa-res2-right">
+                                Aksi
+                            </span>
                         </div>
-                    ) : (
-                        <div className="pa-res-list__body">
-                            {filtered.map((research) => (
-                                <ResearchCard
-                                    key={research.id}
-                                    research={research}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </section>
-            </div>
+
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={
+                                closestCenter
+                            }
+                            onDragEnd={onDragEnd}
+                        >
+                            <SortableContext
+                                items={filtered.map(
+                                    (item) => item.id
+                                )}
+                                strategy={
+                                    verticalListSortingStrategy
+                                }
+                            >
+                                {filtered.map(
+                                    (research, index) => (
+                                        <ResearchRow
+                                            key={research.id}
+                                            research={research}
+                                            number={index + 1}
+                                            disabled={
+                                                Boolean(query) ||
+                                                savingOrder
+                                            }
+                                            onDelete={setDeleting}
+                                        />
+                                    )
+                                )}
+                            </SortableContext>
+                        </DndContext>
+                    </div>
+                )}
+            </section>
+
+            {/* MODAL TAMBAH */}
+
+            <CreateResearch
+                open={creating}
+                onClose={() =>
+                    setCreating(false)
+                }
+            />
+
+            {/* MODAL HAPUS */}
+
+            <ResearchModal
+                open={!!deleting}
+                onOpenChange={(next) => {
+                    if (!next) setDeleting(null);
+                }}
+                busy={deletingBusy}
+                title="Hapus Penelitian?"
+                description="Tindakan ini tidak dapat dibatalkan."
+            >
+                <p className="pa-res2-muted">
+                    Yakin ingin menghapus penelitian
+                    {' '}
+                    <strong>
+                        {deleting?.title}
+                    </strong>
+                    ?
+                </p>
+
+                <div className="pa-res2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-res2-btn"
+                        disabled={deletingBusy}
+                        onClick={() =>
+                            setDeleting(null)
+                        }
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        className="pa-res2-btn pa-res2-btn--danger-solid"
+                        disabled={deletingBusy}
+                        onClick={destroy}
+                    >
+                        {deletingBusy
+                            ? 'Menghapus...'
+                            : 'Ya, Hapus'}
+                    </button>
+                </div>
+            </ResearchModal>
         </AdminLayout>
     );
 }

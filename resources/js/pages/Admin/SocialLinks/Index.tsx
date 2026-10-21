@@ -1,645 +1,580 @@
-
-import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
-import type { FormEvent, ReactNode } from 'react';
+import {
+    Head,
+    Link,
+    router,
+    useForm,
+    usePage,
+} from '@inertiajs/react';
 
 import {
-    CheckCircle2,
-    ExternalLink,
-    Globe2,
-    Link2,
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+
+import type { DragEndEvent } from '@dnd-kit/core';
+
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+
+import { CSS } from '@dnd-kit/utilities';
+
+import {
+    Eye,
+    GripVertical,
     Pencil,
     Plus,
-    Save,
     Share2,
     Trash2,
-    X,
 } from 'lucide-react';
+
+import {
+    useEffect,
+    useState,
+} from 'react';
+
+import type { FormEvent } from 'react';
+
+import { toast } from 'sonner';
 
 import AdminLayout from '@/layouts/admin-layout';
 
-// ==========================================
-// TYPES
-// ==========================================
+import {
+    SocialFields,
+    SocialFlash,
+    SocialIdentity,
+    SocialModal,
+} from './Shared';
 
-type SocialLink = {
-    id: number;
-    platform: string;
-    name: string;
-    url: string;
-    sort_order: number;
-};
+import {
+    emptySocialLink,
+    sortSocialLinks,
+} from './types';
 
-type LinkFormData = {
-    platform: string;
-    name: string;
-    url: string;
-    sort_order: number;
-};
+import type {
+    SocialLink,
+    SocialLinkForm,
+} from './types';
+
+import '../../../../css/social-links-redesign.css';
 
 type Props = {
     links: SocialLink[];
 };
 
 // ==========================================
-// REUSABLE FIELD
+// MODAL TAMBAH
 // ==========================================
 
-function SocialField({
-    id,
-    label,
-    hint,
-    error,
-    children,
+function CreateSocialLink({
+    open,
+    onClose,
 }: {
-    id: string;
-    label: string;
-    hint?: string;
-    error?: string;
-    children: ReactNode;
+    open: boolean;
+    onClose: () => void;
 }) {
+    const form = useForm<SocialLinkForm>(
+        emptySocialLink()
+    );
+
+    function close() {
+        form.reset();
+        form.clearErrors();
+        onClose();
+    }
+
+    function submit(
+        event: FormEvent<HTMLFormElement>
+    ) {
+        event.preventDefault();
+
+        form.post('/admin/social-links', {
+            preserveScroll: true,
+
+            onSuccess: () => {
+                close();
+            },
+        });
+    }
+
     return (
-        <div className="pa-editor-field">
-            <label
-                htmlFor={id}
-                className="pa-editor-label"
+        <SocialModal
+            open={open}
+            onOpenChange={(next) => {
+                if (!next) close();
+            }}
+            busy={form.processing}
+            title="Tambah Media Sosial"
+            description="Tambahkan platform, nama tampilan, dan alamat tautan."
+        >
+            <form
+                className="pa-soc2-form"
+                onSubmit={submit}
             >
-                {label}
-            </label>
+                <SocialFields
+                    prefix="create-social"
+                    data={form.data}
+                    errors={form.errors}
+                    onChange={(patch) =>
+                        form.setData({
+                            ...form.data,
+                            ...patch,
+                        })
+                    }
+                />
 
-            {children}
+                <div className="pa-soc2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-soc2-btn"
+                        disabled={form.processing}
+                        onClick={close}
+                    >
+                        Batal
+                    </button>
 
-            {hint && (
-                <p className="pa-editor-hint">
-                    {hint}
-                </p>
-            )}
+                    <button
+                        type="submit"
+                        className="pa-soc2-btn pa-soc2-btn--primary"
+                        disabled={form.processing}
+                    >
+                        {form.processing
+                            ? 'Menyimpan...'
+                            : 'Simpan Media Sosial'}
+                    </button>
+                </div>
+            </form>
+        </SocialModal>
+    );
+}
 
-            {error && (
-                <p
-                    id={`${id}-error`}
-                    className="pa-editor-error"
-                    role="alert"
+// ==========================================
+// BARIS DRAG AND DROP
+// ==========================================
+
+function SocialRow({
+    link,
+    number,
+    disabled,
+    onDelete,
+}: {
+    link: SocialLink;
+    number: number;
+    disabled: boolean;
+    onDelete: (link: SocialLink) => void;
+}) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
+        id: link.id,
+        disabled,
+    });
+
+    return (
+        <div
+            ref={setNodeRef}
+            className={
+                'pa-soc2-row' +
+                (isDragging
+                    ? ' pa-soc2-row--dragging'
+                    : '')
+            }
+            style={{
+                transform: CSS.Transform.toString(
+                    transform
+                ),
+                transition,
+            }}
+        >
+            <button
+                type="button"
+                className="pa-soc2-handle"
+                title="Geser untuk mengubah urutan"
+                aria-label={`Ubah urutan ${link.platform}`}
+                disabled={disabled}
+                {...attributes}
+                {...listeners}
+            >
+                <GripVertical size={17} />
+            </button>
+
+            <span className="pa-soc2-no">
+                {number}
+            </span>
+
+            <SocialIdentity link={link} />
+
+            <span
+                className="pa-soc2-url"
+                title={link.url}
+            >
+                {link.url}
+            </span>
+
+            <div className="pa-soc2-row-actions">
+                <Link
+                    href={`/admin/social-links/${link.id}`}
+                    className="pa-soc2-btn"
                 >
-                    {error}
-                </p>
-            )}
+                    <Eye size={15} />
+                    Detail
+                </Link>
+
+                <Link
+                    href={`/admin/social-links/${link.id}/edit`}
+                    className="pa-soc2-btn"
+                >
+                    <Pencil size={15} />
+                    Edit
+                </Link>
+
+                <button
+                    type="button"
+                    className="pa-soc2-btn pa-soc2-btn--danger"
+                    onClick={() => onDelete(link)}
+                >
+                    <Trash2 size={15} />
+                    Hapus
+                </button>
+            </div>
         </div>
     );
 }
 
 // ==========================================
-// CREATE SOCIAL LINK
-// ==========================================
-
-function CreateLink() {
-    const form = useForm<LinkFormData>({
-        platform: '',
-        name: '',
-        url: '',
-        sort_order: 0,
-    });
-
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        form.post('/admin/social-links', {
-            preserveScroll: true,
-            onSuccess: () => {
-                form.reset();
-                form.clearErrors();
-            },
-        });
-    }
-
-    return (
-        <section className="pa-social-panel pa-social-create">
-            <header className="pa-social-panel__header">
-                <span className="pa-editor-kicker">
-                    <Plus size={15} aria-hidden="true" />
-                    TAMBAH TAUTAN
-                </span>
-
-                <h2>Media Sosial Baru</h2>
-
-                <p>
-                    Tambahkan platform dan tautan yang
-                    ingin ditampilkan pada website.
-                </p>
-            </header>
-
-            <form onSubmit={submit}>
-                <div className="pa-social-form">
-                    <SocialField
-                        id="create-platform"
-                        label="Nama Platform"
-                        error={form.errors.platform}
-                    >
-                        <input
-                            id="create-platform"
-                            type="text"
-                            className="pa-editor-input"
-                            placeholder="Contoh: GitHub"
-                            required
-                            maxLength={100}
-                            aria-invalid={Boolean(
-                                form.errors.platform
-                            )}
-                            value={form.data.platform}
-                            onChange={(event) =>
-                                form.setData(
-                                    'platform',
-                                    event.target.value
-                                )
-                            }
-                        />
-                    </SocialField>
-
-                    <SocialField
-                        id="create-name"
-                        label="Nama / Label"
-                        error={form.errors.name}
-                    >
-                        <input
-                            id="create-name"
-                            type="text"
-                            className="pa-editor-input"
-                            placeholder="Contoh: Profil GitHub"
-                            required
-                            maxLength={100}
-                            aria-invalid={Boolean(
-                                form.errors.name
-                            )}
-                            value={form.data.name}
-                            onChange={(event) =>
-                                form.setData(
-                                    'name',
-                                    event.target.value
-                                )
-                            }
-                        />
-                    </SocialField>
-
-                    <SocialField
-                        id="create-url"
-                        label="URL Media Sosial"
-                        hint="Gunakan alamat lengkap yang diawali https://."
-                        error={form.errors.url}
-                    >
-                        <input
-                            id="create-url"
-                            type="url"
-                            className="pa-editor-input"
-                            placeholder="https://github.com/username"
-                            required
-                            pattern="https://.*"
-                            maxLength={2048}
-                            aria-invalid={Boolean(
-                                form.errors.url
-                            )}
-                            value={form.data.url}
-                            onChange={(event) =>
-                                form.setData(
-                                    'url',
-                                    event.target.value
-                                )
-                            }
-                        />
-                    </SocialField>
-
-                    <SocialField
-                        id="create-sort"
-                        label="Urutan Tampil"
-                        hint="Semakin kecil angkanya, semakin awal ditampilkan."
-                        error={form.errors.sort_order}
-                    >
-                        <input
-                            id="create-sort"
-                            type="number"
-                            className="pa-editor-input"
-                            required
-                            min={0}
-                            max={4294967295}
-                            step={1}
-                            aria-invalid={Boolean(
-                                form.errors.sort_order
-                            )}
-                            value={form.data.sort_order}
-                            onChange={(event) =>
-                                form.setData(
-                                    'sort_order',
-                                    Number(event.target.value || 0)
-                                )
-                            }
-                        />
-                    </SocialField>
-                </div>
-
-                <div className="pa-social-form__actions">
-                    <button
-                        type="submit"
-                        disabled={form.processing}
-                        className="pa-button pa-button--primary"
-                    >
-                        <Plus size={17} aria-hidden="true" />
-
-                        {form.processing
-                            ? 'Menambahkan...'
-                            : 'Tambah Media Sosial'}
-                    </button>
-                </div>
-            </form>
-        </section>
-    );
-}
-
-// ==========================================
-// EXISTING SOCIAL LINK
-// ==========================================
-
-function ExistingLink({
-    link,
-}: {
-    link: SocialLink;
-}) {
-    const [editing, setEditing] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-
-    const form = useForm<LinkFormData>({
-        platform: link.platform,
-        name: link.name,
-        url: link.url,
-        sort_order: link.sort_order,
-    });
-
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        form.put(`/admin/social-links/${link.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                form.setDefaults();
-                setEditing(false);
-            },
-        });
-    }
-
-    function cancel() {
-        form.reset();
-        form.clearErrors();
-        setEditing(false);
-    }
-
-    function destroy() {
-        const confirmed = window.confirm(
-            `Yakin ingin menghapus "${link.platform} — ${link.name}"?`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        router.delete(`/admin/social-links/${link.id}`, {
-            preserveScroll: true,
-            onStart: () => setDeleting(true),
-            onFinish: () => setDeleting(false),
-        });
-    }
-
-    return (
-        <article className="pa-social-item">
-            {!editing ? (
-                <div className="pa-social-item__display">
-                    <div className="pa-social-item__icon">
-                        <Globe2
-                            size={21}
-                            strokeWidth={1.7}
-                            aria-hidden="true"
-                        />
-                    </div>
-
-                    <div className="pa-social-item__content">
-                        <div className="pa-social-item__meta">
-                            <span className="pa-social-item__platform">
-                                {link.platform}
-                            </span>
-
-                            <span className="pa-social-item__order">
-                                Urutan {link.sort_order}
-                            </span>
-                        </div>
-
-                        <h3>{link.name}</h3>
-
-                        <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="pa-social-item__url"
-                        >
-                            <span>{link.url}</span>
-
-                            <ExternalLink
-                                size={14}
-                                aria-hidden="true"
-                            />
-                        </a>
-                    </div>
-
-                    <div className="pa-social-item__actions">
-                        <button
-                            type="button"
-                            className="pa-social-action pa-social-action--edit"
-                            onClick={() => setEditing(true)}
-                            aria-label={`Edit ${link.name}`}
-                        >
-                            <Pencil
-                                size={16}
-                                aria-hidden="true"
-                            />
-                            <span>Edit</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            className="pa-social-action pa-social-action--delete"
-                            onClick={destroy}
-                            disabled={deleting}
-                            aria-label={`Hapus ${link.name}`}
-                        >
-                            <Trash2
-                                size={16}
-                                aria-hidden="true"
-                            />
-                            <span>
-                                {deleting
-                                    ? 'Menghapus...'
-                                    : 'Hapus'}
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            ) : (
-                <form
-                    onSubmit={submit}
-                    className="pa-social-edit"
-                >
-                    <div className="pa-social-edit__header">
-                        <div>
-                            <span className="pa-editor-kicker">
-                                <Pencil
-                                    size={14}
-                                    aria-hidden="true"
-                                />
-                                EDIT TAUTAN
-                            </span>
-
-                            <h3>Edit Media Sosial</h3>
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={cancel}
-                            className="pa-social-close"
-                            aria-label="Tutup editor"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
-
-                    <div className="pa-social-form">
-                        <SocialField
-                            id={`edit-platform-${link.id}`}
-                            label="Nama Platform"
-                            error={form.errors.platform}
-                        >
-                            <input
-                                id={`edit-platform-${link.id}`}
-                                className="pa-editor-input"
-                                required
-                                maxLength={100}
-                                aria-invalid={Boolean(
-                                    form.errors.platform
-                                )}
-                                value={form.data.platform}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'platform',
-                                        event.target.value
-                                    )
-                                }
-                            />
-                        </SocialField>
-
-                        <SocialField
-                            id={`edit-name-${link.id}`}
-                            label="Nama / Label"
-                            error={form.errors.name}
-                        >
-                            <input
-                                id={`edit-name-${link.id}`}
-                                className="pa-editor-input"
-                                required
-                                maxLength={100}
-                                aria-invalid={Boolean(
-                                    form.errors.name
-                                )}
-                                value={form.data.name}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'name',
-                                        event.target.value
-                                    )
-                                }
-                            />
-                        </SocialField>
-
-                        <SocialField
-                            id={`edit-url-${link.id}`}
-                            label="URL Media Sosial"
-                            error={form.errors.url}
-                        >
-                            <input
-                                id={`edit-url-${link.id}`}
-                                type="url"
-                                className="pa-editor-input"
-                                required
-                                pattern="https://.*"
-                                maxLength={2048}
-                                aria-invalid={Boolean(
-                                    form.errors.url
-                                )}
-                                value={form.data.url}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'url',
-                                        event.target.value
-                                    )
-                                }
-                            />
-                        </SocialField>
-
-                        <SocialField
-                            id={`edit-sort-${link.id}`}
-                            label="Urutan Tampil"
-                            error={form.errors.sort_order}
-                        >
-                            <input
-                                id={`edit-sort-${link.id}`}
-                                type="number"
-                                className="pa-editor-input"
-                                required
-                                min={0}
-                                max={4294967295}
-                                step={1}
-                                aria-invalid={Boolean(
-                                    form.errors.sort_order
-                                )}
-                                value={form.data.sort_order}
-                                onChange={(event) =>
-                                    form.setData(
-                                        'sort_order',
-                                        Number(
-                                            event.target.value || 0
-                                        )
-                                    )
-                                }
-                            />
-                        </SocialField>
-                    </div>
-
-                    <div className="pa-social-edit__actions">
-                        <button
-                            type="button"
-                            className="pa-social-action pa-social-action--cancel"
-                            onClick={cancel}
-                            disabled={form.processing}
-                        >
-                            Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            className="pa-button pa-button--primary"
-                            disabled={
-                                form.processing || !form.isDirty
-                            }
-                        >
-                            <Save
-                                size={16}
-                                aria-hidden="true"
-                            />
-                            {form.processing
-                                ? 'Menyimpan...'
-                                : 'Simpan Perubahan'}
-                        </button>
-                    </div>
-                </form>
-            )}
-        </article>
-    );
-}
-
-// ==========================================
-// MAIN PAGE
+// HALAMAN INDEX
 // ==========================================
 
 export default function Index({
     links,
 }: Props) {
+    const [items, setItems] = useState(
+        () => sortSocialLinks(links)
+    );
+
+    const [creating, setCreating] =
+        useState(false);
+
+    const [deleting, setDeleting] =
+        useState<SocialLink | null>(null);
+
+    const [deletingBusy, setDeletingBusy] =
+        useState(false);
+
+    const [savingOrder, setSavingOrder] =
+        useState(false);
+
     const { flash } = usePage().props as {
         flash?: {
             success?: string | null;
         };
     };
 
+    useEffect(() => {
+        setItems(sortSocialLinks(links));
+    }, [links]);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 6,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter:
+                sortableKeyboardCoordinates,
+        })
+    );
+
+    // ======================================
+    // DRAG AND DROP
+    // ======================================
+
+    function onDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (
+            savingOrder ||
+            !over ||
+            active.id === over.id
+        ) {
+            return;
+        }
+
+        const oldIndex = items.findIndex(
+            (item) => item.id === active.id
+        );
+
+        const newIndex = items.findIndex(
+            (item) => item.id === over.id
+        );
+
+        if (
+            oldIndex < 0 ||
+            newIndex < 0
+        ) {
+            return;
+        }
+
+        const previous = items;
+
+        const updated = arrayMove(
+            previous,
+            oldIndex,
+            newIndex
+        );
+
+        setItems(updated);
+        setSavingOrder(true);
+
+        router.put(
+            '/admin/social-links/reorder',
+            {
+                ids: updated.map(
+                    (item) => item.id
+                ),
+            },
+            {
+                preserveScroll: true,
+
+                onError: () => {
+                    setItems(previous);
+
+                    toast.error(
+                        'Urutan media sosial gagal disimpan.'
+                    );
+                },
+
+                onFinish: () => {
+                    setSavingOrder(false);
+                },
+            }
+        );
+    }
+
+    // ======================================
+    // HAPUS MEDIA SOSIAL
+    // ======================================
+
+    function destroy() {
+        if (
+            !deleting ||
+            deletingBusy
+        ) {
+            return;
+        }
+
+        setDeletingBusy(true);
+
+        router.delete(
+            `/admin/social-links/${deleting.id}`,
+            {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    setDeleting(null);
+                },
+
+                onError: () => {
+                    toast.error(
+                        'Media sosial gagal dihapus.'
+                    );
+                },
+
+                onFinish: () => {
+                    setDeletingBusy(false);
+                },
+            }
+        );
+    }
+
     return (
         <AdminLayout
             title="Media Sosial"
-            description="Kelola platform dan tautan media sosial yang ditampilkan pada website."
+            description="Kelola platform dan tautan yang ditampilkan pada website."
+            actions={
+                <button
+                    type="button"
+                    className="pa-soc2-btn pa-soc2-btn--primary"
+                    onClick={() => setCreating(true)}
+                >
+                    <Plus size={16} />
+                    Tambah Media Sosial
+                </button>
+            }
         >
-            <Head title="Media Sosial · Portfolio Admin" />
+            <Head
+                title="Media Sosial · Portfolio Admin"
+            />
 
-            {flash?.success && (
-                <div
-                    className="pa-editor-success"
-                    role="status"
-                >
-                    <CheckCircle2
-                        size={18}
-                        aria-hidden="true"
-                    />
-                    {flash.success}
-                </div>
-            )}
+            <SocialFlash
+                message={flash?.success}
+            />
 
-            <div className="pa-social-grid">
-                <CreateLink />
+            <section
+                className="pa-soc2-card"
+                aria-label="Daftar media sosial"
+            >
+                <div className="pa-soc2-card-header">
+                    <div>
+                        <h2>Daftar Media Sosial</h2>
 
-                <section
-                    className="pa-social-panel pa-social-list"
-                    aria-label="Daftar media sosial"
-                >
-                    <header className="pa-social-panel__header">
-                        <span className="pa-editor-kicker">
-                            <Share2
-                                size={15}
-                                aria-hidden="true"
-                            />
-                            TAUTAN TERDAFTAR
+                        <p>
+                            {items.length} tautan terdaftar.
+                            Geser ikon di sebelah kiri
+                            untuk mengatur urutan.
+                        </p>
+                    </div>
+
+                    {savingOrder && (
+                        <span
+                            className="pa-soc2-saving"
+                            role="status"
+                        >
+                            Menyimpan urutan...
                         </span>
+                    )}
+                </div>
 
-                        <div className="pa-social-list__heading">
-                            <div>
-                                <h2>Daftar Media Sosial</h2>
+                {items.length === 0 ? (
+                    <div className="pa-soc2-empty">
+                        <Share2 size={32} />
 
-                                <p>
-                                    Kelola tautan yang sudah
-                                    ditambahkan.
-                                </p>
-                            </div>
+                        <h3>
+                            Belum ada media sosial
+                        </h3>
 
-                            <span className="pa-social-count">
-                                {links.length}
+                        <p>
+                            Tambahkan platform media sosial
+                            untuk ditampilkan di website
+                            portofolio.
+                        </p>
+
+                        <button
+                            type="button"
+                            className="pa-soc2-btn pa-soc2-btn--primary"
+                            onClick={() =>
+                                setCreating(true)
+                            }
+                        >
+                            <Plus size={16} />
+                            Tambah Media Sosial
+                        </button>
+                    </div>
+                ) : (
+                    <div className="pa-soc2-table">
+                        <div
+                            className="pa-soc2-row pa-soc2-table-head"
+                            aria-hidden="true"
+                        >
+                            <span />
+                            <span>No.</span>
+                            <span>Platform / Label</span>
+                            <span>URL</span>
+                            <span className="pa-soc2-right">
+                                Aksi
                             </span>
                         </div>
-                    </header>
 
-                    {links.length === 0 ? (
-                        <div className="pa-social-empty">
-                            <span className="pa-social-empty__icon">
-                                <Link2
-                                    size={27}
-                                    strokeWidth={1.5}
-                                    aria-hidden="true"
-                                />
-                            </span>
-
-                            <h3>Belum ada media sosial</h3>
-
-                            <p>
-                                Tambahkan tautan pertamamu
-                                menggunakan formulir di samping.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="pa-social-list__items">
-                            {[...links]
-                                .sort(
-                                    (a, b) =>
-                                        a.sort_order - b.sort_order ||
-                                        a.id - b.id
-                                )
-                                .map((link) => (
-                                    <ExistingLink
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={
+                                closestCenter
+                            }
+                            onDragEnd={onDragEnd}
+                        >
+                            <SortableContext
+                                items={items.map(
+                                    (item) => item.id
+                                )}
+                                strategy={
+                                    verticalListSortingStrategy
+                                }
+                            >
+                                {items.map((link, index) => (
+                                    <SocialRow
                                         key={link.id}
                                         link={link}
+                                        number={index + 1}
+                                        disabled={savingOrder}
+                                        onDelete={setDeleting}
                                     />
                                 ))}
-                        </div>
-                    )}
-                </section>
-            </div>
+                            </SortableContext>
+                        </DndContext>
+                    </div>
+                )}
+            </section>
+
+            {/* MODAL TAMBAH */}
+
+            <CreateSocialLink
+                open={creating}
+                onClose={() =>
+                    setCreating(false)
+                }
+            />
+
+            {/* MODAL HAPUS */}
+
+            <SocialModal
+                open={!!deleting}
+                onOpenChange={(next) => {
+                    if (!next) {
+                        setDeleting(null);
+                    }
+                }}
+                busy={deletingBusy}
+                title="Hapus Media Sosial?"
+                description="Tautan yang dihapus tidak akan tampil lagi di website."
+            >
+                <p className="pa-soc2-muted">
+                    Yakin ingin menghapus
+                    {' '}
+                    <strong>
+                        {deleting?.platform}
+                    </strong>
+                    {' '}
+                    — {deleting?.name}?
+                </p>
+
+                <div className="pa-soc2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-soc2-btn"
+                        disabled={deletingBusy}
+                        onClick={() =>
+                            setDeleting(null)
+                        }
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        className="pa-soc2-btn pa-soc2-btn--danger-solid"
+                        disabled={deletingBusy}
+                        onClick={destroy}
+                    >
+                        {deletingBusy
+                            ? 'Menghapus...'
+                            : 'Ya, Hapus'}
+                    </button>
+                </div>
+            </SocialModal>
         </AdminLayout>
     );
 }

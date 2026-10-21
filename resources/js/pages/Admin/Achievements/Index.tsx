@@ -1,623 +1,306 @@
-
 import {
     Head,
+    Link,
     router,
     useForm,
     usePage,
 } from '@inertiajs/react';
-import { useState } from 'react';
-import type { FormEvent, ReactNode } from 'react';
 
 import {
-    Award,
-    CalendarDays,
-    CheckCircle2,
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+
+import type { DragEndEvent } from '@dnd-kit/core';
+
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+
+import { CSS } from '@dnd-kit/utilities';
+
+import {
+    Eye,
+    GripVertical,
     Pencil,
     Plus,
-    Save,
     Trash2,
     Trophy,
-    X,
 } from 'lucide-react';
+
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
+
+import { toast } from 'sonner';
 
 import AdminLayout from '@/layouts/admin-layout';
 
-// ==========================================
-// TYPES
-// ==========================================
+import {
+    AchievementFields,
+    AchievementFlash,
+    AchievementModal,
+    categoryNames,
+    emptyAchievement,
+    sortAchievements,
+} from './Shared';
 
-type AchievementCategory =
-    | 'prestasi'
-    | 'penghargaan'
-    | 'sertifikasi'
-    | 'lainnya';
+import type {
+    Achievement,
+    AchievementCategory,
+    AchievementForm,
+} from './Shared';
 
-type Achievement = {
-    id: number;
-    category: AchievementCategory;
-    title: string;
-    description: string | null;
-    year: number;
-    institution_name: string | null;
-    sort_order: number;
-};
-
-type AchievementForm = {
-    category: AchievementCategory | '';
-    title: string;
-    description: string;
-    year: number | '';
-    institution_name: string;
-    sort_order: number;
-};
+import '../../../../css/achievements-redesign.css';
 
 type Props = {
     achievements: Achievement[];
 };
 
-type FormErrors = Partial<
-    Record<keyof AchievementForm, string>
->;
-
 type Filter = 'semua' | AchievementCategory;
 
-const currentYear = new Date().getFullYear();
-
-const categoryNames: Record<
-    AchievementCategory,
-    string
-> = {
-    prestasi: 'Prestasi',
-    penghargaan: 'Penghargaan',
-    sertifikasi: 'Sertifikasi',
-    lainnya: 'Lainnya',
-};
-
-const categories = Object.entries(
-    categoryNames
-) as [AchievementCategory, string][];
-
-// ==========================================
-// REUSABLE COMPONENTS
-// ==========================================
-
-function Field({
-    id,
-    label,
-    hint,
-    error,
-    children,
-}: {
-    id: string;
+const filters: {
+    value: Filter;
     label: string;
-    hint?: string;
-    error?: string;
-    children: ReactNode;
-}) {
-    return (
-        <div className="pa-editor-field">
-            <label
-                htmlFor={id}
-                className="pa-editor-label"
-            >
-                {label}
-            </label>
+}[] = [
+    { value: 'semua', label: 'Semua' },
+    { value: 'prestasi', label: 'Prestasi' },
+    { value: 'penghargaan', label: 'Penghargaan' },
+    { value: 'sertifikasi', label: 'Sertifikasi' },
+    { value: 'lainnya', label: 'Lainnya' },
+];
 
-            {children}
+// ==========================================
+// TAMBAH PENCAPAIAN
+// ==========================================
 
-            {hint && (
-                <p className="pa-editor-hint">
-                    {hint}
-                </p>
-            )}
-
-            {error && (
-                <p
-                    id={`${id}-error`}
-                    className="pa-editor-error"
-                    role="alert"
-                >
-                    {error}
-                </p>
-            )}
-        </div>
-    );
-}
-
-function AchievementFields({
-    prefix,
-    data,
-    errors,
-    onChange,
+function CreateAchievement({
+    open,
+    onClose,
 }: {
-    prefix: string;
-    data: AchievementForm;
-    errors: FormErrors;
-    onChange: (
-        patch: Partial<AchievementForm>
-    ) => void;
+    open: boolean;
+    onClose: () => void;
 }) {
-    return (
-        <div className="pa-ach-fields">
-            <Field
-                id={`${prefix}-category`}
-                label="Kategori Pencapaian"
-                error={errors.category}
-            >
-                <select
-                    id={`${prefix}-category`}
-                    className="pa-editor-input"
-                    required
-                    value={data.category}
-                    aria-invalid={Boolean(
-                        errors.category
-                    )}
-                    onChange={(event) =>
-                        onChange({
-                            category:
-                                event.target.value as
-                                    AchievementForm['category'],
-                        })
-                    }
-                >
-                    <option value="">
-                        Pilih kategori
-                    </option>
-
-                    {categories.map(([value, label]) => (
-                        <option
-                            key={value}
-                            value={value}
-                        >
-                            {label}
-                        </option>
-                    ))}
-                </select>
-            </Field>
-
-            <Field
-                id={`${prefix}-title`}
-                label="Judul Pencapaian"
-                error={errors.title}
-            >
-                <input
-                    id={`${prefix}-title`}
-                    className="pa-editor-input"
-                    required
-                    maxLength={200}
-                    value={data.title}
-                    aria-invalid={Boolean(
-                        errors.title
-                    )}
-                    placeholder="Contoh: Juara 1 Kompetisi Web Design"
-                    onChange={(event) =>
-                        onChange({
-                            title: event.target.value,
-                        })
-                    }
-                />
-            </Field>
-
-            <Field
-                id={`${prefix}-institution`}
-                label="Penyelenggara / Institusi"
-                hint="Opsional. Nama lembaga atau penyelenggara pencapaian."
-                error={errors.institution_name}
-            >
-                <input
-                    id={`${prefix}-institution`}
-                    className="pa-editor-input"
-                    maxLength={200}
-                    value={data.institution_name}
-                    aria-invalid={Boolean(
-                        errors.institution_name
-                    )}
-                    placeholder="Contoh: Universitas atau penyelenggara"
-                    onChange={(event) =>
-                        onChange({
-                            institution_name:
-                                event.target.value,
-                        })
-                    }
-                />
-            </Field>
-
-            <Field
-                id={`${prefix}-description`}
-                label="Deskripsi Pencapaian"
-                hint="Opsional. Ceritakan pencapaian secara singkat."
-                error={errors.description}
-            >
-                <textarea
-                    id={`${prefix}-description`}
-                    className="pa-editor-textarea"
-                    rows={5}
-                    maxLength={10000}
-                    value={data.description}
-                    aria-invalid={Boolean(
-                        errors.description
-                    )}
-                    placeholder="Jelaskan hasil atau pencapaian yang diraih..."
-                    onChange={(event) =>
-                        onChange({
-                            description:
-                                event.target.value,
-                        })
-                    }
-                />
-
-                <div className="pa-editor-count">
-                    {data.description.length} / 10000
-                </div>
-            </Field>
-
-            <div className="pa-ach-fields__row">
-                <Field
-                    id={`${prefix}-year`}
-                    label="Tahun Pencapaian"
-                    error={errors.year}
-                >
-                    <input
-                        id={`${prefix}-year`}
-                        type="number"
-                        className="pa-editor-input"
-                        required
-                        min={1900}
-                        max={currentYear}
-                        step={1}
-                        value={data.year}
-                        aria-invalid={Boolean(
-                            errors.year
-                        )}
-                        placeholder="2026"
-                        onChange={(event) =>
-                            onChange({
-                                year:
-                                    event.target.value === ''
-                                        ? ''
-                                        : Number(
-                                            event.target.value
-                                        ),
-                            })
-                        }
-                    />
-                </Field>
-
-                <Field
-                    id={`${prefix}-order`}
-                    label="Urutan Tampil"
-                    hint="Angka kecil tampil lebih awal."
-                    error={errors.sort_order}
-                >
-                    <input
-                        id={`${prefix}-order`}
-                        type="number"
-                        className="pa-editor-input"
-                        required
-                        min={0}
-                        max={4294967295}
-                        step={1}
-                        value={data.sort_order}
-                        aria-invalid={Boolean(
-                            errors.sort_order
-                        )}
-                        onChange={(event) =>
-                            onChange({
-                                sort_order: Number(
-                                    event.target.value || 0
-                                ),
-                            })
-                        }
-                    />
-                </Field>
-            </div>
-        </div>
+    const form = useForm<AchievementForm>(
+        emptyAchievement()
     );
-}
 
-// ==========================================
-// CREATE ACHIEVEMENT
-// ==========================================
+    function close() {
+        form.reset();
+        form.clearErrors();
+        onClose();
+    }
 
-function CreateAchievement() {
-    const form = useForm<AchievementForm>({
-        category: '',
-        title: '',
-        description: '',
-        year: '',
-        institution_name: '',
-        sort_order: 0,
-    });
-
-    function submit(event: FormEvent<HTMLFormElement>) {
+    function submit(
+        event: FormEvent<HTMLFormElement>
+    ) {
         event.preventDefault();
 
         form.post('/admin/achievements', {
             preserveScroll: true,
 
             onSuccess: () => {
-                form.reset();
-                form.clearErrors();
+                close();
             },
         });
     }
 
     return (
-        <section className="pa-ach-panel pa-ach-create">
-            <header className="pa-ach-panel__header">
-                <span className="pa-editor-kicker">
-                    <Plus
-                        size={15}
-                        aria-hidden="true"
-                    />
-                    PENCAPAIAN BARU
-                </span>
+        <AchievementModal
+            open={open}
+            onOpenChange={(next) => {
+                if (!next) close();
+            }}
+            busy={form.processing}
+            title="Tambah Pencapaian"
+            description="Tambahkan prestasi, penghargaan, atau sertifikasi baru."
+        >
+            <form
+                className="pa-ach2-form"
+                onSubmit={submit}
+            >
+                <AchievementFields
+                    prefix="create-achievement"
+                    data={form.data}
+                    errors={form.errors}
+                    onChange={(patch) =>
+                        form.setData({
+                            ...form.data,
+                            ...patch,
+                        })
+                    }
+                />
 
-                <h2>Tambah Pencapaian</h2>
+                <div className="pa-ach2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-ach2-btn"
+                        disabled={form.processing}
+                        onClick={close}
+                    >
+                        Batal
+                    </button>
 
-                <p>
-                    Catat prestasi, penghargaan, dan
-                    sertifikasi yang ingin ditampilkan
-                    pada website.
-                </p>
-            </header>
-
-            <form onSubmit={submit}>
-                <div className="pa-ach-form">
-                    <AchievementFields
-                        prefix="create"
-                        data={form.data}
-                        errors={form.errors}
-                        onChange={(patch) =>
-                            form.setData({
-                                ...form.data,
-                                ...patch,
-                            })
-                        }
-                    />
-                </div>
-
-                <div className="pa-ach-form__actions">
                     <button
                         type="submit"
-                        className="pa-button pa-button--primary"
+                        className="pa-ach2-btn pa-ach2-btn--primary"
                         disabled={form.processing}
                     >
-                        <Plus
-                            size={17}
-                            aria-hidden="true"
-                        />
-
                         {form.processing
-                            ? 'Menambahkan...'
-                            : 'Tambah Pencapaian'}
+                            ? 'Menyimpan...'
+                            : 'Simpan Pencapaian'}
                     </button>
                 </div>
             </form>
-        </section>
+        </AchievementModal>
     );
 }
 
 // ==========================================
-// ACHIEVEMENT CARD
+// BARIS DATA
 // ==========================================
 
-function AchievementCard({
+function AchievementRow({
     achievement,
+    number,
+    disabled,
+    onDelete,
 }: {
     achievement: Achievement;
+    number: number;
+    disabled: boolean;
+    onDelete: (achievement: Achievement) => void;
 }) {
-    const [editing, setEditing] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-
-    const form = useForm<AchievementForm>({
-        category: achievement.category,
-        title: achievement.title,
-        description: achievement.description ?? '',
-        year: achievement.year,
-        institution_name:
-            achievement.institution_name ?? '',
-        sort_order: achievement.sort_order,
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
+        id: achievement.id,
+        disabled,
     });
 
-    const endpoint =
-        `/admin/achievements/${achievement.id}`;
-
-    function submit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        form.put(endpoint, {
-            preserveScroll: true,
-
-            onSuccess: () => {
-                form.setDefaults();
-                setEditing(false);
-            },
-        });
-    }
-
-    function cancel() {
-        form.reset();
-        form.clearErrors();
-        setEditing(false);
-    }
-
-    function destroy() {
-        const confirmed = window.confirm(
-            `Hapus pencapaian "${achievement.title}"?`
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        router.delete(endpoint, {
-            preserveScroll: true,
-            onStart: () => setDeleting(true),
-            onFinish: () => setDeleting(false),
-        });
-    }
-
     return (
-        <article className="pa-ach-item">
-            {!editing ? (
-                <div className="pa-ach-item__display">
-                    <div
-                        className="pa-ach-item__icon"
-                        aria-hidden="true"
-                    >
-                        <Trophy size={22} />
-                    </div>
+        <div
+            ref={setNodeRef}
+            className={
+                'pa-ach2-row' +
+                (isDragging
+                    ? ' pa-ach2-row--dragging'
+                    : '')
+            }
+            style={{
+                transform: CSS.Transform.toString(
+                    transform
+                ),
+                transition,
+            }}
+        >
+            <button
+                type="button"
+                className="pa-ach2-handle"
+                aria-label={
+                    `Ubah urutan ${achievement.title}`
+                }
+                title={
+                    disabled
+                        ? 'Pilih filter Semua untuk mengatur urutan'
+                        : 'Geser untuk mengatur urutan'
+                }
+                disabled={disabled}
+                {...attributes}
+                {...listeners}
+            >
+                <GripVertical size={17} />
+            </button>
 
-                    <div className="pa-ach-item__content">
-                        <div className="pa-ach-item__meta">
-                            <span>
-                                {categoryNames[
-                                    achievement.category
-                                ] ?? achievement.category}
-                            </span>
+            <span className="pa-ach2-no">
+                {number}
+            </span>
 
-                            <span className="pa-ach-item__year">
-                                <CalendarDays
-                                    size={13}
-                                    aria-hidden="true"
-                                />
-                                {achievement.year}
-                            </span>
-                        </div>
+            <strong className="pa-ach2-title">
+                {achievement.title}
+            </strong>
 
-                        <h3>{achievement.title}</h3>
+            <span className="pa-ach2-category">
+                {categoryNames[achievement.category]}
+            </span>
 
-                        {achievement.institution_name && (
-                            <strong className="pa-ach-item__institution">
-                                {achievement.institution_name}
-                            </strong>
-                        )}
+            <span className="pa-ach2-institution">
+                {achievement.institution_name || '—'}
+            </span>
 
-                        {achievement.description && (
-                            <p>{achievement.description}</p>
-                        )}
+            <span className="pa-ach2-year">
+                {achievement.year}
+            </span>
 
-                        <span className="pa-ach-item__order">
-                            Urutan {achievement.sort_order}
-                        </span>
+            <div className="pa-ach2-row-actions">
+                <Link
+                    href={`/admin/achievements/${achievement.id}`}
+                    className="pa-ach2-btn"
+                >
+                    <Eye size={15} />
+                    Detail
+                </Link>
 
-                        <div className="pa-ach-item__actions">
-                            <button
-                                type="button"
-                                className="pa-ach-action"
-                                onClick={() =>
-                                    setEditing(true)
-                                }
-                            >
-                                <Pencil
-                                    size={15}
-                                    aria-hidden="true"
-                                />
-                                Edit
-                            </button>
+                <Link
+                    href={`/admin/achievements/${achievement.id}/edit`}
+                    className="pa-ach2-btn"
+                >
+                    <Pencil size={15} />
+                    Edit
+                </Link>
 
-                            <button
-                                type="button"
-                                className="pa-ach-action pa-ach-action--danger"
-                                onClick={destroy}
-                                disabled={deleting}
-                            >
-                                <Trash2
-                                    size={15}
-                                    aria-hidden="true"
-                                />
-
-                                {deleting
-                                    ? 'Menghapus...'
-                                    : 'Hapus'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                <form onSubmit={submit}>
-                    <div className="pa-ach-edit__header">
-                        <div>
-                            <span className="pa-editor-kicker">
-                                <Pencil
-                                    size={15}
-                                    aria-hidden="true"
-                                />
-                                EDIT PENCAPAIAN
-                            </span>
-
-                            <h3>Perbarui Pencapaian</h3>
-                        </div>
-
-                        <button
-                            type="button"
-                            className="pa-ach-close"
-                            onClick={cancel}
-                            disabled={form.processing}
-                            aria-label="Batal edit pencapaian"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
-
-                    <div className="pa-ach-form">
-                        <AchievementFields
-                            prefix={`edit-${achievement.id}`}
-                            data={form.data}
-                            errors={form.errors}
-                            onChange={(patch) =>
-                                form.setData({
-                                    ...form.data,
-                                    ...patch,
-                                })
-                            }
-                        />
-                    </div>
-
-                    <div className="pa-ach-edit__actions">
-                        <button
-                            type="button"
-                            className="pa-ach-action"
-                            onClick={cancel}
-                            disabled={form.processing}
-                        >
-                            Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            className="pa-button pa-button--primary"
-                            disabled={
-                                form.processing ||
-                                !form.isDirty
-                            }
-                        >
-                            <Save
-                                size={16}
-                                aria-hidden="true"
-                            />
-
-                            {form.processing
-                                ? 'Menyimpan...'
-                                : 'Simpan Perubahan'}
-                        </button>
-                    </div>
-                </form>
-            )}
-        </article>
+                <button
+                    type="button"
+                    className="pa-ach2-btn pa-ach2-btn--danger"
+                    onClick={() =>
+                        onDelete(achievement)
+                    }
+                >
+                    <Trash2 size={15} />
+                    Hapus
+                </button>
+            </div>
+        </div>
     );
 }
 
 // ==========================================
-// MAIN PAGE
+// HALAMAN INDEX
 // ==========================================
 
 export default function Index({
     achievements,
 }: Props) {
+    const [items, setItems] = useState(
+        () => sortAchievements(achievements)
+    );
+
     const [filter, setFilter] =
         useState<Filter>('semua');
+
+    const [creating, setCreating] =
+        useState(false);
+
+    const [deleting, setDeleting] =
+        useState<Achievement | null>(null);
+
+    const [deletingBusy, setDeletingBusy] =
+        useState(false);
+
+    const [savingOrder, setSavingOrder] =
+        useState(false);
 
     const { flash } = usePage().props as {
         flash?: {
@@ -625,144 +308,348 @@ export default function Index({
         };
     };
 
-    const ordered = [...achievements].sort(
-        (a, b) =>
-            a.sort_order - b.sort_order ||
-            b.year - a.year ||
-            b.id - a.id
-    );
+    useEffect(() => {
+        setItems(sortAchievements(achievements));
+    }, [achievements]);
 
-    const filtered = ordered.filter(
+    const filtered = items.filter(
         (item) =>
             filter === 'semua' ||
             item.category === filter
     );
 
-    const filters: {
-        value: Filter;
-        label: string;
-    }[] = [
-        { value: 'semua', label: 'Semua' },
-        { value: 'prestasi', label: 'Prestasi' },
-        { value: 'penghargaan', label: 'Penghargaan' },
-        { value: 'sertifikasi', label: 'Sertifikasi' },
-        { value: 'lainnya', label: 'Lainnya' },
-    ];
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 6,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter:
+                sortableKeyboardCoordinates,
+        })
+    );
+
+    // ======================================
+    // DRAG AND DROP
+    // ======================================
+
+    function onDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (
+            filter !== 'semua' ||
+            savingOrder ||
+            !over ||
+            active.id === over.id
+        ) {
+            return;
+        }
+
+        const oldIndex = items.findIndex(
+            (item) => item.id === active.id
+        );
+
+        const newIndex = items.findIndex(
+            (item) => item.id === over.id
+        );
+
+        if (
+            oldIndex === -1 ||
+            newIndex === -1
+        ) {
+            return;
+        }
+
+        const previous = items;
+
+        const updated = arrayMove(
+            previous,
+            oldIndex,
+            newIndex
+        );
+
+        setItems(updated);
+        setSavingOrder(true);
+
+        router.put(
+            '/admin/achievements/reorder',
+            {
+                ids: updated.map(
+                    (item) => item.id
+                ),
+            },
+            {
+                preserveScroll: true,
+
+                onError: () => {
+                    setItems(previous);
+
+                    toast.error(
+                        'Gagal menyimpan urutan pencapaian.'
+                    );
+                },
+
+                onFinish: () => {
+                    setSavingOrder(false);
+                },
+            }
+        );
+    }
+
+    // ======================================
+    // HAPUS
+    // ======================================
+
+    function destroy() {
+        if (
+            !deleting ||
+            deletingBusy
+        ) {
+            return;
+        }
+
+        setDeletingBusy(true);
+
+        router.delete(
+            `/admin/achievements/${deleting.id}`,
+            {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    setDeleting(null);
+                },
+
+                onError: () => {
+                    toast.error(
+                        'Pencapaian gagal dihapus.'
+                    );
+                },
+
+                onFinish: () => {
+                    setDeletingBusy(false);
+                },
+            }
+        );
+    }
 
     return (
         <AdminLayout
             title="Pencapaian"
-            description="Kelola prestasi, penghargaan, dan sertifikasi yang ditampilkan di website."
+            description="Kelola prestasi, penghargaan, dan sertifikasi."
+            actions={
+                <button
+                    type="button"
+                    className="pa-ach2-btn pa-ach2-btn--primary"
+                    onClick={() => setCreating(true)}
+                >
+                    <Plus size={16} />
+                    Tambah Pencapaian
+                </button>
+            }
         >
             <Head
                 title="Pencapaian · Portfolio Admin"
             />
 
-            {flash?.success && (
-                <div
-                    className="pa-editor-success"
-                    role="status"
-                >
-                    <CheckCircle2
-                        size={18}
-                        aria-hidden="true"
-                    />
+            <AchievementFlash
+                message={flash?.success}
+            />
 
-                    <span>{flash.success}</span>
-                </div>
-            )}
+            <section className="pa-ach2-card">
+                <div className="pa-ach2-card-header">
+                    <div>
+                        <h2>Daftar Pencapaian</h2>
 
-            <div className="pa-ach-grid">
-                <CreateAchievement />
-
-                <section
-                    className="pa-ach-panel pa-ach-list"
-                    aria-label="Daftar pencapaian"
-                >
-                    <header className="pa-ach-panel__header">
-                        <span className="pa-editor-kicker">
-                            <Award
-                                size={15}
-                                aria-hidden="true"
-                            />
-                            PENCAPAIAN TERDAFTAR
-                        </span>
-
-                        <div className="pa-ach-list__heading">
-                            <div>
-                                <h2>Daftar Pencapaian</h2>
-
-                                <p>
-                                    Kelola pencapaian yang
-                                    sudah ditambahkan.
-                                </p>
-                            </div>
-
-                            <span className="pa-ach-count">
-                                {achievements.length}
-                            </span>
-                        </div>
-                    </header>
-
-                    <div
-                        className="pa-ach-filters"
-                        role="group"
-                        aria-label="Filter kategori pencapaian"
-                    >
-                        {filters.map((tab) => (
-                            <button
-                                key={tab.value}
-                                type="button"
-                                className={
-                                    'pa-ach-filter' +
-                                    (
-                                        filter === tab.value
-                                            ? ' pa-ach-filter--active'
-                                            : ''
-                                    )
-                                }
-                                aria-pressed={
-                                    filter === tab.value
-                                }
-                                onClick={() =>
-                                    setFilter(tab.value)
-                                }
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
+                        <p>
+                            {items.length} pencapaian terdaftar.
+                            {' '}
+                            Atur urutan melalui drag-and-drop.
+                        </p>
                     </div>
 
-                    {filtered.length === 0 ? (
-                        <div className="pa-ach-empty">
-                            <Trophy
-                                size={30}
-                                strokeWidth={1.5}
-                                aria-hidden="true"
-                            />
-
-                            <h3>
-                                Belum ada pencapaian
-                            </h3>
-
-                            <p>
-                                {filter === 'semua'
-                                    ? 'Tambahkan pencapaian pertama melalui formulir yang tersedia.'
-                                    : `Belum ada pencapaian dalam kategori ${categoryNames[filter]}.`}
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="pa-ach-list__body">
-                            {filtered.map((achievement) => (
-                                <AchievementCard
-                                    key={achievement.id}
-                                    achievement={achievement}
-                                />
-                            ))}
-                        </div>
+                    {savingOrder && (
+                        <span
+                            role="status"
+                            className="pa-ach2-saving"
+                        >
+                            Menyimpan urutan...
+                        </span>
                     )}
-                </section>
-            </div>
+                </div>
+
+                {/* FILTER KATEGORI */}
+
+                <div
+                    className="pa-ach2-filters"
+                    role="group"
+                    aria-label="Filter kategori pencapaian"
+                >
+                    {filters.map((tab) => (
+                        <button
+                            key={tab.value}
+                            type="button"
+                            className={
+                                'pa-ach2-filter' +
+                                (filter === tab.value
+                                    ? ' pa-ach2-filter--active'
+                                    : '')
+                            }
+                            aria-pressed={
+                                filter === tab.value
+                            }
+                            onClick={() =>
+                                setFilter(tab.value)
+                            }
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+
+                {filter !== 'semua' && (
+                    <p className="pa-ach2-filter-note">
+                        Pilih filter Semua untuk
+                        mengubah urutan pencapaian.
+                    </p>
+                )}
+
+                {/* DAFTAR */}
+
+                {filtered.length === 0 ? (
+                    <div className="pa-ach2-empty">
+                        <Trophy size={32} />
+
+                        <h3>
+                            Belum ada pencapaian
+                        </h3>
+
+                        <p>
+                            {filter === 'semua'
+                                ? 'Tambahkan pencapaian pertama.'
+                                : 'Belum ada pencapaian pada kategori ini.'}
+                        </p>
+
+                        {filter === 'semua' && (
+                            <button
+                                type="button"
+                                className="pa-ach2-btn pa-ach2-btn--primary"
+                                onClick={() =>
+                                    setCreating(true)
+                                }
+                            >
+                                <Plus size={16} />
+                                Tambah Pencapaian
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <div className="pa-ach2-table">
+                        <div
+                            className="pa-ach2-row pa-ach2-table-head"
+                            aria-hidden="true"
+                        >
+                            <span />
+                            <span>No.</span>
+                            <span>Judul Pencapaian</span>
+                            <span>Kategori</span>
+                            <span>Institusi</span>
+                            <span>Tahun</span>
+                            <span className="pa-ach2-right">
+                                Aksi
+                            </span>
+                        </div>
+
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={
+                                closestCenter
+                            }
+                            onDragEnd={onDragEnd}
+                        >
+                            <SortableContext
+                                items={filtered.map(
+                                    (item) => item.id
+                                )}
+                                strategy={
+                                    verticalListSortingStrategy
+                                }
+                            >
+                                {filtered.map(
+                                    (achievement, index) => (
+                                        <AchievementRow
+                                            key={achievement.id}
+                                            achievement={achievement}
+                                            number={index + 1}
+                                            disabled={
+                                                filter !== 'semua' ||
+                                                savingOrder
+                                            }
+                                            onDelete={setDeleting}
+                                        />
+                                    )
+                                )}
+                            </SortableContext>
+                        </DndContext>
+                    </div>
+                )}
+            </section>
+
+            {/* MODAL TAMBAH */}
+
+            <CreateAchievement
+                open={creating}
+                onClose={() =>
+                    setCreating(false)
+                }
+            />
+
+            {/* MODAL HAPUS */}
+
+            <AchievementModal
+                open={!!deleting}
+                onOpenChange={(next) => {
+                    if (!next) {
+                        setDeleting(null);
+                    }
+                }}
+                busy={deletingBusy}
+                title="Hapus Pencapaian?"
+                description="Tindakan ini tidak dapat dibatalkan."
+            >
+                <p className="pa-ach2-muted">
+                    Yakin ingin menghapus
+                    {' '}
+                    <strong>
+                        {deleting?.title}
+                    </strong>
+                    ?
+                </p>
+
+                <div className="pa-ach2-form-actions">
+                    <button
+                        type="button"
+                        className="pa-ach2-btn"
+                        disabled={deletingBusy}
+                        onClick={() =>
+                            setDeleting(null)
+                        }
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        className="pa-ach2-btn pa-ach2-btn--danger-solid"
+                        disabled={deletingBusy}
+                        onClick={destroy}
+                    >
+                        {deletingBusy
+                            ? 'Menghapus...'
+                            : 'Ya, Hapus'}
+                    </button>
+                </div>
+            </AchievementModal>
         </AdminLayout>
     );
 }

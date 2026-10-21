@@ -98,9 +98,12 @@ class ProjectService
                 $data,
                 $paths
             ) {
-                $project = Project::create(
-                    $this->projectPayload($data)
-                );
+                $payload = $this->projectPayload($data);
+
+                $payload['sort_order'] =
+                    (int) Project::query()->max('sort_order') + 1;
+
+                $project = Project::create($payload);
 
                 foreach ($paths as $index => $path) {
                     $project->images()->create([
@@ -134,7 +137,7 @@ class ProjectService
         ) {
             throw ValidationException::withMessages([
                 'existing_image_ids' =>
-                    'Urutan gambar mengandung duplikasi.',
+                'Urutan gambar mengandung duplikasi.',
             ]);
         }
 
@@ -143,7 +146,7 @@ class ProjectService
         if ($finalCount < 1 || $finalCount > 5) {
             throw ValidationException::withMessages([
                 'images' =>
-                    'Jumlah akhir gambar harus 1–5.',
+                'Jumlah akhir gambar harus 1–5.',
             ]);
         }
 
@@ -172,7 +175,7 @@ class ProjectService
                     if (! $images->has($id)) {
                         throw ValidationException::withMessages([
                             'existing_image_ids' =>
-                                'Terdapat gambar yang tidak valid.',
+                            'Terdapat gambar yang tidak valid.',
                         ]);
                     }
                 }
@@ -210,9 +213,12 @@ class ProjectService
                     ]);
                 }
 
-                $locked->update(
-                    $this->projectPayload($data)
-                );
+                $payload = $this->projectPayload($data);
+
+                // Posisi proyek hanya berubah melalui drag-and-drop.
+                $payload['sort_order'] = $locked->sort_order;
+
+                $locked->update($payload);
             });
         } catch (Throwable $exception) {
             $this->deleteFiles($paths);
@@ -247,6 +253,43 @@ class ProjectService
 
         $this->deleteFiles($paths);
     }
+    // ==========================================
+    // DRAG AND DROP URUTAN PROYEK
+    // ==========================================
+
+    public function reorderProjects(array $ids): void
+    {
+        DB::transaction(function () use ($ids) {
+            $existing = Project::query()
+                ->lockForUpdate()
+                ->pluck('id')
+                ->map(fn($id) => (int) $id)
+                ->all();
+
+            $submitted = array_map('intval', $ids);
+
+            $sortedExisting = $existing;
+            $sortedSubmitted = $submitted;
+
+            sort($sortedExisting);
+            sort($sortedSubmitted);
+
+            if ($sortedExisting !== $sortedSubmitted) {
+                throw ValidationException::withMessages([
+                    'ids' =>
+                    'Daftar proyek telah berubah. Muat ulang halaman.',
+                ]);
+            }
+
+            foreach ($submitted as $index => $id) {
+                Project::query()
+                    ->whereKey($id)
+                    ->update([
+                        'sort_order' => $index + 1,
+                    ]);
+            }
+        });
+    }
 
     // ======================================
     // HELPERS
@@ -256,7 +299,7 @@ class ProjectService
     {
         return [
             'project_category_id' =>
-                (int) $data['project_category_id'],
+            (int) $data['project_category_id'],
 
             'title' => trim($data['title']),
 

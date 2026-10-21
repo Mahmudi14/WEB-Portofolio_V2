@@ -17,8 +17,31 @@ class EducationService
                 'personal_information_id',
                 self::PERSONAL_INFORMATION_ID
             )
-            ->orderByDesc('start_year')
-            ->orderByDesc('id')
+            ->orderByRaw("
+            CASE level
+                WHEN 'SD'  THEN 1
+                WHEN 'SMP' THEN 2
+                WHEN 'SMA' THEN 3
+                WHEN 'D3'  THEN 4
+                WHEN 'D4'  THEN 5
+                WHEN 'S1'  THEN 5
+                WHEN 'S2'  THEN 6
+                WHEN 'S3'  THEN 7
+                ELSE 99
+            END ASC
+        ")
+            // Yang sudah selesai lebih dahulu.
+            ->orderByRaw("
+            CASE
+                WHEN end_year IS NULL THEN 1
+                ELSE 0
+            END ASC
+        ")
+            // Jika jenjang sama, kelulusan terawal
+            // mendapatkan urutan pertama.
+            ->orderBy('end_year', 'asc')
+            ->orderBy('start_year', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 
@@ -61,7 +84,7 @@ class EducationService
         $education->delete();
     }
 
-    private function ensureOwned(
+    public function ensureOwned(
         Education $education
     ): void {
         abort_unless(
@@ -92,8 +115,8 @@ class EducationService
                 ? null
                 : (
                     isset($data['end_year'])
-                        ? (int) $data['end_year']
-                        : null
+                    ? (int) $data['end_year']
+                    : null
                 ),
 
             'is_current' => $isCurrent,

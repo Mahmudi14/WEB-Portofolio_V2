@@ -12,12 +12,14 @@ class Research extends Model
         'title',
         'summary',
         'year',
+        'sort_order',
     ];
 
     protected function casts(): array
     {
         return [
             'year' => 'integer',
+            'sort_order' => 'integer',
         ];
     }
 }

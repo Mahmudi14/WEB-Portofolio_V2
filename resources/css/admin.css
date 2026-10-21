@@ -1,213 +1,979 @@
 /* Portofolio V2 — Admin UI. Seluruh selector utama di-scope ke .porto-admin */
 .porto-admin {
-  --pa-bg: #151515;
-  --pa-sidebar: #1d1d1d;
-  --pa-card: #222121;
-  --pa-card-hover: #292727;
-  --pa-line: rgba(255, 255, 255, .085);
-  --pa-text: #f6f2ee;
-  --pa-muted: #aaa29c;
-  --pa-accent: #df6a27;
-  --pa-accent-light: #f2a06e;
-  --pa-sidebar-width: 272px;
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: var(--pa-sidebar-width) minmax(0, 1fr);
-  background: var(--pa-bg);
-  color: var(--pa-text);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.5;
+    --pa-bg: #151515;
+    --pa-sidebar: #1d1d1d;
+    --pa-card: #222121;
+    --pa-card-hover: #292727;
+    --pa-line: rgba(255, 255, 255, 0.085);
+    --pa-text: #f6f2ee;
+    --pa-muted: #aaa29c;
+    --pa-accent: #df6a27;
+    --pa-accent-light: #f2a06e;
+    --pa-sidebar-width: 272px;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: var(--pa-sidebar-width) minmax(0, 1fr);
+    background: var(--pa-bg);
+    color: var(--pa-text);
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    line-height: 1.5;
 }
-.porto-admin *, .porto-admin *::before, .porto-admin *::after { box-sizing: border-box; }
-.porto-admin a { color: inherit; text-decoration: none; }
-.porto-admin button { font: inherit; cursor: pointer; }
+.porto-admin *,
+.porto-admin *::before,
+.porto-admin *::after {
+    box-sizing: border-box;
+}
+.porto-admin a {
+    color: inherit;
+    text-decoration: none;
+}
+.porto-admin button {
+    font: inherit;
+    cursor: pointer;
+}
 .porto-admin :is(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--pa-accent-light);
-  outline-offset: 3px;
+    outline: 2px solid var(--pa-accent-light);
+    outline-offset: 3px;
 }
-.porto-admin--collapsed { --pa-sidebar-width: 84px; }
-.pa-skip-link { position: fixed; z-index: 500; left: 14px; top: -80px; padding: 11px 16px; background: var(--pa-accent); color: #151515 !important; border-radius: 10px; }
-.pa-skip-link:focus { top: 12px; }
+.porto-admin--collapsed {
+    --pa-sidebar-width: 84px;
+}
+.pa-skip-link {
+    position: fixed;
+    z-index: 500;
+    left: 14px;
+    top: -80px;
+    padding: 11px 16px;
+    background: var(--pa-accent);
+    color: #151515 !important;
+    border-radius: 10px;
+}
+.pa-skip-link:focus {
+    top: 12px;
+}
 
 /* Sidebar */
 .pa-sidebar {
-  height: 100vh;
-  min-width: 0;
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  display: flex;
-  flex-direction: column;
-  background: var(--pa-sidebar);
-  border-right: 1px solid var(--pa-line);
-  transition: width .24s ease, transform .24s ease;
+    height: 100vh;
+    min-width: 0;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    background: var(--pa-sidebar);
+    border-right: 1px solid var(--pa-line);
+    transition:
+        width 0.24s ease,
+        transform 0.24s ease;
 }
-.pa-sidebar__brand { min-height: 93px; display: flex; align-items: center; justify-content: space-between; padding: 17px 24px; border-bottom: 1px solid var(--pa-line); }
-.pa-brand { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
-.pa-brand__mark { width: 43px; height: 43px; flex: 0 0 43px; display: grid; place-items: center; font: 700 24px 'Space Grotesk', Inter, sans-serif; letter-spacing: -2px; border: 1px solid rgba(223,106,39,.36); border-radius: 13px; color: var(--pa-text); background: linear-gradient(145deg, #423127, #25211f); box-shadow: 0 8px 26px rgba(223, 106, 39, .08); }
-.pa-brand__mark span { color: var(--pa-accent); }
-.pa-brand__name { display: flex; flex-direction: column; min-width: 0; gap: 1px; white-space: nowrap; }
-.pa-brand__name strong { font: 700 13px 'Space Grotesk', Inter, sans-serif; letter-spacing: .16em; }
-.pa-brand__name small { font: 600 10px Inter, sans-serif; letter-spacing: .21em; color: var(--pa-muted); }
-.pa-sidebar__scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 14px 14px; scrollbar-width: thin; scrollbar-color: #3f3b38 transparent; }
-.pa-sidebar__group { margin-bottom: 25px; }
-.pa-sidebar__section-label { padding: 0 14px; margin-bottom: 12px; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #817a75; white-space: nowrap; }
-.pa-sidebar__items { display: grid; gap: 4px; }
-.pa-sidebar__link { position: relative; display: flex; align-items: center; gap: 13px; width: 100%; min-height: 43px; padding: 10px 13px; border-radius: 11px; color: #b6aea9 !important; transition: color .18s, background .18s; white-space: nowrap; }
-.pa-sidebar__link > svg { flex-shrink: 0; }
-.pa-sidebar__link:not(.pa-sidebar__link--disabled):hover { color: #fff !important; background: rgba(255, 255, 255, .045); }
-.pa-sidebar__link--active { color: var(--pa-accent-light) !important; background: rgba(223, 106, 39, .105); font-weight: 650; }
-.pa-sidebar__link--active::before { content: ''; position: absolute; left: 0; height: 22px; width: 3px; border-radius: 0 4px 4px 0; background: var(--pa-accent); }
-.pa-sidebar__link--disabled { color: #746d69 !important; cursor: not-allowed; }
-.pa-sidebar__link-text { font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
-.pa-sidebar__active-dot { width: 5px; height: 5px; margin-left: auto; border-radius: 50%; background: var(--pa-accent); }
-.pa-sidebar__soon { margin-left: auto; font-size: 10px; color: #827972; }
-.pa-sidebar__bottom { border-top: 1px solid var(--pa-line); padding: 14px; }
-.pa-sidebar__hint { display: flex; align-items: center; gap: 10px; padding: 11px 9px 17px; color: #8d837c; font-size: 11px; }
-.pa-sidebar__hint svg { flex-shrink: 0; color: var(--pa-accent); }
-.pa-sidebar__collapse { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 11px; background: transparent; border: 1px solid var(--pa-line); color: #b4aaa3; border-radius: 10px; text-align: left; font-size: 12px !important; }
-.pa-sidebar__collapse:hover { background: rgba(255,255,255,.05); }
-.pa-sidebar__mobile-close { display: none !important; }
-.pa-sidebar-backdrop { display: none; }
-.porto-admin--collapsed .pa-sidebar__brand { padding: 17px 20px; }
-.porto-admin--collapsed .pa-brand__name, .porto-admin--collapsed .pa-sidebar__section-label, .porto-admin--collapsed .pa-sidebar__link-text, .porto-admin--collapsed .pa-sidebar__active-dot, .porto-admin--collapsed .pa-sidebar__soon, .porto-admin--collapsed .pa-sidebar__hint, .porto-admin--collapsed .pa-sidebar__collapse span { display: none; }
-.porto-admin--collapsed .pa-sidebar__link { justify-content: center; padding-inline: 8px; }
-.porto-admin--collapsed .pa-sidebar__bottom { padding: 14px 10px; }
-.porto-admin--collapsed .pa-sidebar__collapse { justify-content: center; }
-.porto-admin--collapsed .pa-sidebar__scroll { padding-inline: 10px; }
-.porto-admin--collapsed .pa-sidebar__group { padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, .045); }
+.pa-sidebar__brand {
+    min-height: 93px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 17px 24px;
+    border-bottom: 1px solid var(--pa-line);
+}
+.pa-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+.pa-brand__mark {
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    display: grid;
+    place-items: center;
+    font:
+        700 24px "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -2px;
+    border: 1px solid rgba(223, 106, 39, 0.36);
+    border-radius: 13px;
+    color: var(--pa-text);
+    background: linear-gradient(145deg, #423127, #25211f);
+    box-shadow: 0 8px 26px rgba(223, 106, 39, 0.08);
+}
+.pa-brand__mark span {
+    color: var(--pa-accent);
+}
+.pa-brand__name {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 1px;
+    white-space: nowrap;
+}
+.pa-brand__name strong {
+    font:
+        700 13px "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: 0.16em;
+}
+.pa-brand__name small {
+    font:
+        600 10px Inter,
+        sans-serif;
+    letter-spacing: 0.21em;
+    color: var(--pa-muted);
+}
+.pa-sidebar__scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 14px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: #3f3b38 transparent;
+}
+.pa-sidebar__group {
+    margin-bottom: 25px;
+}
+.pa-sidebar__section-label {
+    padding: 0 14px;
+    margin-bottom: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #817a75;
+    white-space: nowrap;
+}
+.pa-sidebar__items {
+    display: grid;
+    gap: 4px;
+}
+.pa-sidebar__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    min-height: 43px;
+    padding: 10px 13px;
+    border-radius: 11px;
+    color: #b6aea9 !important;
+    transition:
+        color 0.18s,
+        background 0.18s;
+    white-space: nowrap;
+}
+.pa-sidebar__link > svg {
+    flex-shrink: 0;
+}
+.pa-sidebar__link:not(.pa-sidebar__link--disabled):hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.045);
+}
+.pa-sidebar__link--active {
+    color: var(--pa-accent-light) !important;
+    background: rgba(223, 106, 39, 0.105);
+    font-weight: 650;
+}
+.pa-sidebar__link--active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    height: 22px;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: var(--pa-accent);
+}
+.pa-sidebar__link--disabled {
+    color: #746d69 !important;
+    cursor: not-allowed;
+}
+.pa-sidebar__link-text {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pa-sidebar__active-dot {
+    width: 5px;
+    height: 5px;
+    margin-left: auto;
+    border-radius: 50%;
+    background: var(--pa-accent);
+}
+.pa-sidebar__soon {
+    margin-left: auto;
+    font-size: 10px;
+    color: #827972;
+}
+.pa-sidebar__bottom {
+    border-top: 1px solid var(--pa-line);
+    padding: 14px;
+}
+.pa-sidebar__hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 9px 17px;
+    color: #8d837c;
+    font-size: 11px;
+}
+.pa-sidebar__hint svg {
+    flex-shrink: 0;
+    color: var(--pa-accent);
+}
+.pa-sidebar__collapse {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    padding: 10px 11px;
+    background: transparent;
+    border: 1px solid var(--pa-line);
+    color: #b4aaa3;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 12px !important;
+}
+.pa-sidebar__collapse:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.pa-sidebar__mobile-close {
+    display: none !important;
+}
+.pa-sidebar-backdrop {
+    display: none;
+}
+.porto-admin--collapsed .pa-sidebar__brand {
+    padding: 17px 20px;
+}
+.porto-admin--collapsed .pa-brand__name,
+.porto-admin--collapsed .pa-sidebar__section-label,
+.porto-admin--collapsed .pa-sidebar__link-text,
+.porto-admin--collapsed .pa-sidebar__active-dot,
+.porto-admin--collapsed .pa-sidebar__soon,
+.porto-admin--collapsed .pa-sidebar__hint,
+.porto-admin--collapsed .pa-sidebar__collapse span {
+    display: none;
+}
+.porto-admin--collapsed .pa-sidebar__link {
+    justify-content: center;
+    padding-inline: 8px;
+}
+.porto-admin--collapsed .pa-sidebar__bottom {
+    padding: 14px 10px;
+}
+.porto-admin--collapsed .pa-sidebar__collapse {
+    justify-content: center;
+}
+.porto-admin--collapsed .pa-sidebar__scroll {
+    padding-inline: 10px;
+}
+.porto-admin--collapsed .pa-sidebar__group {
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
 
 /* Main area and topbar */
-.pa-app-body { min-width: 0; }
-.pa-topbar { height: 78px; position: sticky; top: 0; z-index: 20; background: rgba(21,21,21,.91); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-bottom: 1px solid var(--pa-line); display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 clamp(24px, 3.5vw, 53px); }
-.pa-topbar__left, .pa-topbar__right { display: flex; align-items: center; gap: 18px; }
-.pa-topbar__breadcrumb { display: flex; align-items: center; gap: 12px; white-space: nowrap; font-size: 12px; color: #938a84; }
-.pa-topbar__breadcrumb strong { font-weight: 600; color: var(--pa-text); }
-.pa-topbar__slash { color: #5a524d; }
-.pa-topbar__preview { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #b9afa7 !important; transition: color .18s; }
-.pa-topbar__preview:hover { color: var(--pa-accent-light) !important; }
-.pa-topbar__separator { height: 27px; width: 1px; background: var(--pa-line); }
-.pa-topbar__account { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.pa-topbar__avatar { display: grid; place-items: center; width: 35px; height: 35px; flex: 0 0 35px; color: var(--pa-accent-light); font-weight: 700; background: #382b24; border: 1px solid rgba(223, 106, 39, .22); border-radius: 50%; }
-.pa-topbar__account-name { max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 650; }
-.pa-icon-button { display: inline-grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border: 1px solid transparent; background: transparent; border-radius: 10px; color: #b1a8a1; }
-.pa-icon-button:hover { border-color: var(--pa-line); background: rgba(255,255,255,.045); color: var(--pa-text); }
-.pa-topbar__menu { display: none; }
-.pa-main { max-width: 1590px; margin: 0 auto; padding: 43px clamp(24px, 3.5vw, 53px) 24px; outline: none; }
-.pa-page-header { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 30px; }
-.pa-eyebrow { display: flex; align-items: center; gap: 9px; color: var(--pa-accent-light); font-weight: 700; font-size: 10px; letter-spacing: .2em; }
-.pa-eyebrow > span { width: 18px; height: 1px; background: var(--pa-accent); }
-.pa-page-header h1 { margin: 10px 0 5px; color: var(--pa-text); font: 700 clamp(27px, 2.6vw, 36px) 'Space Grotesk', Inter, sans-serif; line-height: 1.2; letter-spacing: -.05em; }
-.pa-page-header p { margin: 0; font-size: 13px; color: var(--pa-muted); }
-.pa-page-header__actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.pa-footer { display: flex; gap: 15px; justify-content: space-between; border-top: 1px solid var(--pa-line); margin-top: 48px; padding-top: 22px; color: #827973; font-size: 11px; }
+.pa-app-body {
+    min-width: 0;
+}
+.pa-topbar {
+    height: 78px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(21, 21, 21, 0.91);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border-bottom: 1px solid var(--pa-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 clamp(24px, 3.5vw, 53px);
+}
+.pa-topbar__left,
+.pa-topbar__right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.pa-topbar__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+    font-size: 12px;
+    color: #938a84;
+}
+.pa-topbar__breadcrumb strong {
+    font-weight: 600;
+    color: var(--pa-text);
+}
+.pa-topbar__slash {
+    color: #5a524d;
+}
+.pa-topbar__preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #b9afa7 !important;
+    transition: color 0.18s;
+}
+.pa-topbar__preview:hover {
+    color: var(--pa-accent-light) !important;
+}
+.pa-topbar__separator {
+    height: 27px;
+    width: 1px;
+    background: var(--pa-line);
+}
+.pa-topbar__account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+.pa-topbar__avatar {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    flex: 0 0 35px;
+    color: var(--pa-accent-light);
+    font-weight: 700;
+    background: #382b24;
+    border: 1px solid rgba(223, 106, 39, 0.22);
+    border-radius: 50%;
+}
+.pa-topbar__account-name {
+    max-width: 135px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 650;
+}
+.pa-icon-button {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: 10px;
+    color: #b1a8a1;
+}
+.pa-icon-button:hover {
+    border-color: var(--pa-line);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--pa-text);
+}
+.pa-topbar__menu {
+    display: none;
+}
+.pa-main {
+    max-width: 1590px;
+    margin: 0 auto;
+    padding: 43px clamp(24px, 3.5vw, 53px) 24px;
+    outline: none;
+}
+.pa-page-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+.pa-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--pa-accent-light);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+}
+.pa-eyebrow > span {
+    width: 18px;
+    height: 1px;
+    background: var(--pa-accent);
+}
+.pa-page-header h1 {
+    margin: 10px 0 5px;
+    color: var(--pa-text);
+    font:
+        700 clamp(27px, 2.6vw, 36px) "Space Grotesk",
+        Inter,
+        sans-serif;
+    line-height: 1.2;
+    letter-spacing: -0.05em;
+}
+.pa-page-header p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--pa-muted);
+}
+.pa-page-header__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.pa-footer {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    border-top: 1px solid var(--pa-line);
+    margin-top: 48px;
+    padding-top: 22px;
+    color: #827973;
+    font-size: 11px;
+}
 
 /* Buttons */
-.pa-button { min-height: 44px; display: inline-flex; justify-content: center; align-items: center; gap: 11px; border-radius: 11px; padding: 11px 17px; font-size: 12px; font-weight: 700; border: 1px solid transparent; transition: transform .18s, background .18s, border-color .18s; }
-.pa-button:hover { transform: translateY(-2px); }
-.pa-button--primary { color: #17110e !important; background: var(--pa-accent); box-shadow: 0 10px 25px rgba(223, 106, 39, .14); }
-.pa-button--primary:hover { background: #ec7b38; }
-.pa-button--outline { border-color: rgba(255,255,255,.2); color: var(--pa-text) !important; background: rgba(255,255,255,.045); }
-.pa-button--outline:hover { border-color: rgba(255,255,255,.35); }
+.pa-button {
+    min-height: 44px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 11px;
+    border-radius: 11px;
+    padding: 11px 17px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition:
+        transform 0.18s,
+        background 0.18s,
+        border-color 0.18s;
+}
+.pa-button:hover {
+    transform: translateY(-2px);
+}
+.pa-button--primary {
+    color: #17110e !important;
+    background: var(--pa-accent);
+    box-shadow: 0 10px 25px rgba(223, 106, 39, 0.14);
+}
+.pa-button--primary:hover {
+    background: #ec7b38;
+}
+.pa-button--outline {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--pa-text) !important;
+    background: rgba(255, 255, 255, 0.045);
+}
+.pa-button--outline:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+}
 
 /* Dashboard */
-.pa-dashboard-hero { display: grid; grid-template-columns: minmax(0,1.34fr) minmax(260px,.78fr); min-height: 320px; overflow: hidden; position: relative; isolation: isolate; border: 1px solid rgba(223,106,39,.20); border-radius: 22px; background: radial-gradient(circle at 81% 53%, rgba(223,106,39,.11), transparent 43%), linear-gradient(115deg, #29221e, #1d1c1b 74%); }
-.pa-dashboard-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .19; background-image: radial-gradient(rgba(255,255,255,.45) .4px, transparent .6px); background-size: 11px 11px; mask-image: linear-gradient(90deg, transparent 35%, #000 100%); z-index: -1; }
-.pa-dashboard-hero__content { padding: clamp(25px, 3.4vw, 47px); align-self: center; z-index: 1; }
-.pa-dashboard-hero__kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: .16em; font-weight: 700; color: var(--pa-accent-light); }
-.pa-dashboard-hero__content h2 { max-width: 640px; margin: 16px 0 11px; font: 650 clamp(25px, 2.8vw, 39px) 'Space Grotesk', Inter, sans-serif; line-height: 1.2; letter-spacing: -.05em; }
-.pa-dashboard-hero__content h2 em { font-style: normal; color: var(--pa-accent-light); }
-.pa-dashboard-hero__content p { max-width: 550px; margin: 0; color: #bdb3ad; font-size: 13px; line-height: 1.8; }
-.pa-dashboard-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 27px; }
-.pa-dashboard-hero__art { min-height: 280px; position: relative; display: grid; place-items: center; }
-.pa-art__orbit { position: absolute; border: 1px solid rgba(223,106,39,.21); border-radius: 50%; }
-.pa-art__orbit--one { width: 220px; height: 220px; transform: rotate(-17deg); }
-.pa-art__orbit--two { width: 295px; height: 295px; border-color: rgba(223,106,39,.10); }
-.pa-art__center { display: grid; place-items: center; width: 138px; height: 138px; border-radius: 37px; font: 700 87px 'Space Grotesk', Inter, sans-serif; letter-spacing: -.12em; color: #f6f2ee; background: linear-gradient(145deg, #463328, #211d1b); border: 1px solid rgba(223,106,39,.33); box-shadow: 0 25px 80px rgba(223, 106, 39, .17); transform: rotate(-11deg); padding-right: 16px; }
-.pa-art__center span { color: var(--pa-accent); }
-.pa-art__floating { position: absolute; background: rgba(41,33,28,.83); color: #d9ad92; font-size: 9px; letter-spacing: .13em; border: 1px solid rgba(223,106,39,.15); padding: 9px 13px; border-radius: 8px; backdrop-filter: blur(5px); }
-.pa-art__floating--top { top: 19%; right: 6%; transform: rotate(6deg); }
-.pa-art__floating--bottom { bottom: 18%; left: 3%; transform: rotate(-7deg); }
-.pa-section-heading { display: flex; align-items: end; justify-content: space-between; margin: 37px 0 17px; }
-.pa-section-heading__eyebrow { color: var(--pa-accent-light); letter-spacing: .17em; font-size: 10px; font-weight: 700; }
-.pa-section-heading h2, .pa-panel h2 { margin: 7px 0 4px; font: 650 21px 'Space Grotesk', Inter, sans-serif; letter-spacing: -.045em; }
-.pa-section-heading p { margin: 0; color: var(--pa-muted); font-size: 12px; }
-.pa-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
-.pa-shortcut { min-width: 0; min-height: 210px; display: flex; flex-direction: column; align-items: flex-start; gap: 19px; padding: 22px; border: 1px solid var(--pa-line); border-radius: 17px; background: var(--pa-card); transition: background .2s, border-color .2s, transform .2s; }
-.pa-shortcut:hover { transform: translateY(-4px); background: var(--pa-card-hover); border-color: rgba(223,106,39,.29); }
-.pa-shortcut__icon { width: 49px; height: 49px; display: grid; place-items: center; border-radius: 13px; background: #362923; border: 1px solid rgba(223,106,39,.18); color: var(--pa-accent-light); }
-.pa-shortcut__body { display: grid; gap: 6px; }
-.pa-shortcut__body strong { font: 650 15px 'Space Grotesk', Inter, sans-serif; }
-.pa-shortcut__body > span { color: var(--pa-muted); line-height: 1.6; font-size: 12px; }
-.pa-shortcut__footer { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; font-size: 11px; font-weight: 700; color: var(--pa-accent-light); }
-.pa-dashboard-bottom { display: grid; grid-template-columns: minmax(0,1.45fr) minmax(0,1fr); gap: 16px; margin-top: 18px; }
-.pa-panel { min-width: 0; padding: 26px; border-radius: 17px; border: 1px solid var(--pa-line); background: var(--pa-card); }
-.pa-panel__header { display: flex; align-items: flex-start; justify-content: space-between; }
-.pa-panel__header > svg { color: #80746e; }
-.pa-steps { margin-top: 17px; }
-.pa-step { display: flex; align-items: start; gap: 15px; padding: 15px 0; border-top: 1px solid var(--pa-line); }
-.pa-step__number { color: var(--pa-accent-light); font: 700 12px 'Space Grotesk', Inter, sans-serif; }
-.pa-step > div { flex: 1; }
-.pa-step strong { font-size: 13px; }
-.pa-step p { color: var(--pa-muted); font-size: 12px; margin: 5px 0 0; }
-.pa-step__status { color: #786d67; }
-.pa-panel__footnote { color: #898078; font-size: 11px; margin: 10px 0 0; }
-.pa-panel--note { background: radial-gradient(circle at 85% 5%, rgba(223,106,39,.08), transparent 47%), #222120; }
-.pa-note__icon { width: 52px; height: 52px; margin-bottom: 19px; display: grid; place-items: center; border: 1px solid rgba(223,106,39,.18); border-radius: 13px; color: var(--pa-accent-light); background: #352922; }
-.pa-panel--note h2 { margin-top: 12px; max-width: 290px; font-size: 24px; }
-.pa-panel--note p { color: var(--pa-muted); font-size: 12px; line-height: 1.75; }
-.pa-note__divider { height: 1px; margin: 20px 0; background: var(--pa-line); }
-.pa-note__detail { display: grid; gap: 11px; font-size: 11px; color: #b7aea8; }
-.pa-note__detail > span { display: flex; align-items: center; gap: 10px; }
-.pa-note__dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--pa-accent); }
+.pa-dashboard-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.34fr) minmax(260px, 0.78fr);
+    min-height: 320px;
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    border: 1px solid rgba(223, 106, 39, 0.2);
+    border-radius: 22px;
+    background:
+        radial-gradient(
+            circle at 81% 53%,
+            rgba(223, 106, 39, 0.11),
+            transparent 43%
+        ),
+        linear-gradient(115deg, #29221e, #1d1c1b 74%);
+}
+.pa-dashboard-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.19;
+    background-image: radial-gradient(
+        rgba(255, 255, 255, 0.45) 0.4px,
+        transparent 0.6px
+    );
+    background-size: 11px 11px;
+    mask-image: linear-gradient(90deg, transparent 35%, #000 100%);
+    z-index: -1;
+}
+.pa-dashboard-hero__content {
+    padding: clamp(25px, 3.4vw, 47px);
+    align-self: center;
+    z-index: 1;
+}
+.pa-dashboard-hero__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    color: var(--pa-accent-light);
+}
+.pa-dashboard-hero__content h2 {
+    max-width: 640px;
+    margin: 16px 0 11px;
+    font:
+        650 clamp(25px, 2.8vw, 39px) "Space Grotesk",
+        Inter,
+        sans-serif;
+    line-height: 1.2;
+    letter-spacing: -0.05em;
+}
+.pa-dashboard-hero__content h2 em {
+    font-style: normal;
+    color: var(--pa-accent-light);
+}
+.pa-dashboard-hero__content p {
+    max-width: 550px;
+    margin: 0;
+    color: #bdb3ad;
+    font-size: 13px;
+    line-height: 1.8;
+}
+.pa-dashboard-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 27px;
+}
+.pa-dashboard-hero__art {
+    min-height: 280px;
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+.pa-art__orbit {
+    position: absolute;
+    border: 1px solid rgba(223, 106, 39, 0.21);
+    border-radius: 50%;
+}
+.pa-art__orbit--one {
+    width: 220px;
+    height: 220px;
+    transform: rotate(-17deg);
+}
+.pa-art__orbit--two {
+    width: 295px;
+    height: 295px;
+    border-color: rgba(223, 106, 39, 0.1);
+}
+.pa-art__center {
+    display: grid;
+    place-items: center;
+    width: 138px;
+    height: 138px;
+    border-radius: 37px;
+    font:
+        700 87px "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.12em;
+    color: #f6f2ee;
+    background: linear-gradient(145deg, #463328, #211d1b);
+    border: 1px solid rgba(223, 106, 39, 0.33);
+    box-shadow: 0 25px 80px rgba(223, 106, 39, 0.17);
+    transform: rotate(-11deg);
+    padding-right: 16px;
+}
+.pa-art__center span {
+    color: var(--pa-accent);
+}
+.pa-art__floating {
+    position: absolute;
+    background: rgba(41, 33, 28, 0.83);
+    color: #d9ad92;
+    font-size: 9px;
+    letter-spacing: 0.13em;
+    border: 1px solid rgba(223, 106, 39, 0.15);
+    padding: 9px 13px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+}
+.pa-art__floating--top {
+    top: 19%;
+    right: 6%;
+    transform: rotate(6deg);
+}
+.pa-art__floating--bottom {
+    bottom: 18%;
+    left: 3%;
+    transform: rotate(-7deg);
+}
+.pa-section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin: 37px 0 17px;
+}
+.pa-section-heading__eyebrow {
+    color: var(--pa-accent-light);
+    letter-spacing: 0.17em;
+    font-size: 10px;
+    font-weight: 700;
+}
+.pa-section-heading h2,
+.pa-panel h2 {
+    margin: 7px 0 4px;
+    font:
+        650 21px "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.045em;
+}
+.pa-section-heading p {
+    margin: 0;
+    color: var(--pa-muted);
+    font-size: 12px;
+}
+.pa-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+.pa-shortcut {
+    min-width: 0;
+    min-height: 210px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 19px;
+    padding: 22px;
+    border: 1px solid var(--pa-line);
+    border-radius: 17px;
+    background: var(--pa-card);
+    transition:
+        background 0.2s,
+        border-color 0.2s,
+        transform 0.2s;
+}
+.pa-shortcut:hover {
+    transform: translateY(-4px);
+    background: var(--pa-card-hover);
+    border-color: rgba(223, 106, 39, 0.29);
+}
+.pa-shortcut__icon {
+    width: 49px;
+    height: 49px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: #362923;
+    border: 1px solid rgba(223, 106, 39, 0.18);
+    color: var(--pa-accent-light);
+}
+.pa-shortcut__body {
+    display: grid;
+    gap: 6px;
+}
+.pa-shortcut__body strong {
+    font:
+        650 15px "Space Grotesk",
+        Inter,
+        sans-serif;
+}
+.pa-shortcut__body > span {
+    color: var(--pa-muted);
+    line-height: 1.6;
+    font-size: 12px;
+}
+.pa-shortcut__footer {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pa-accent-light);
+}
+.pa-dashboard-bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 18px;
+}
+.pa-panel {
+    min-width: 0;
+    padding: 26px;
+    border-radius: 17px;
+    border: 1px solid var(--pa-line);
+    background: var(--pa-card);
+}
+.pa-panel__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.pa-panel__header > svg {
+    color: #80746e;
+}
+.pa-steps {
+    margin-top: 17px;
+}
+.pa-step {
+    display: flex;
+    align-items: start;
+    gap: 15px;
+    padding: 15px 0;
+    border-top: 1px solid var(--pa-line);
+}
+.pa-step__number {
+    color: var(--pa-accent-light);
+    font:
+        700 12px "Space Grotesk",
+        Inter,
+        sans-serif;
+}
+.pa-step > div {
+    flex: 1;
+}
+.pa-step strong {
+    font-size: 13px;
+}
+.pa-step p {
+    color: var(--pa-muted);
+    font-size: 12px;
+    margin: 5px 0 0;
+}
+.pa-step__status {
+    color: #786d67;
+}
+.pa-panel__footnote {
+    color: #898078;
+    font-size: 11px;
+    margin: 10px 0 0;
+}
+.pa-panel--note {
+    background:
+        radial-gradient(
+            circle at 85% 5%,
+            rgba(223, 106, 39, 0.08),
+            transparent 47%
+        ),
+        #222120;
+}
+.pa-note__icon {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 19px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(223, 106, 39, 0.18);
+    border-radius: 13px;
+    color: var(--pa-accent-light);
+    background: #352922;
+}
+.pa-panel--note h2 {
+    margin-top: 12px;
+    max-width: 290px;
+    font-size: 24px;
+}
+.pa-panel--note p {
+    color: var(--pa-muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+.pa-note__divider {
+    height: 1px;
+    margin: 20px 0;
+    background: var(--pa-line);
+}
+.pa-note__detail {
+    display: grid;
+    gap: 11px;
+    font-size: 11px;
+    color: #b7aea8;
+}
+.pa-note__detail > span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.pa-note__dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--pa-accent);
+}
 
 @media (max-width: 1190px) {
-  .pa-dashboard-hero { grid-template-columns: 1fr 275px; }
-  .pa-art__orbit--two { width: 250px; height: 250px; }
-  .pa-art__orbit--one { width: 200px; height: 200px; }
-  .pa-art__center { width: 120px; height: 120px; font-size: 76px; }
+    .pa-dashboard-hero {
+        grid-template-columns: 1fr 275px;
+    }
+    .pa-art__orbit--two {
+        width: 250px;
+        height: 250px;
+    }
+    .pa-art__orbit--one {
+        width: 200px;
+        height: 200px;
+    }
+    .pa-art__center {
+        width: 120px;
+        height: 120px;
+        font-size: 76px;
+    }
 }
 @media (max-width: 900px) {
-  .porto-admin, .porto-admin--collapsed { display: block; --pa-sidebar-width: 272px; }
-  .pa-sidebar { position: fixed; width: 272px; max-width: min(86vw, 300px); transform: translateX(-105%); box-shadow: 20px 0 70px rgba(0,0,0,.3); }
-  .pa-sidebar--mobile-open { transform: translateX(0); }
-  .pa-sidebar-backdrop { position: fixed; z-index: 25; inset: 0; display: block; width: 100%; border: 0; padding: 0; background: rgba(0,0,0,.68); backdrop-filter: blur(2px); }
-  .pa-sidebar__mobile-close { display: inline-grid !important; }
-  .pa-sidebar__collapse { display: none; }
-  .porto-admin--collapsed .pa-brand__name, .porto-admin--collapsed .pa-sidebar__section-label, .porto-admin--collapsed .pa-sidebar__link-text, .porto-admin--collapsed .pa-sidebar__soon, .porto-admin--collapsed .pa-sidebar__hint { display: initial; }
-  .porto-admin--collapsed .pa-brand__name { display: flex; }
-  .porto-admin--collapsed .pa-sidebar__brand { padding: 17px 24px; }
-  .porto-admin--collapsed .pa-sidebar__scroll { padding: 20px 14px 14px; }
-  .porto-admin--collapsed .pa-sidebar__link { justify-content: flex-start; padding: 10px 13px; }
-  .porto-admin--collapsed .pa-sidebar__group { border: 0; padding-top: 0; }
-  .pa-topbar__menu { display: inline-grid; }
-  .pa-topbar { padding-inline: 24px; }
-  .pa-main { padding-inline: 24px; }
-  .pa-shortcuts { gap: 12px; }
+    .porto-admin,
+    .porto-admin--collapsed {
+        display: block;
+        --pa-sidebar-width: 272px;
+    }
+    .pa-sidebar {
+        position: fixed;
+        width: 272px;
+        max-width: min(86vw, 300px);
+        transform: translateX(-105%);
+        box-shadow: 20px 0 70px rgba(0, 0, 0, 0.3);
+    }
+    .pa-sidebar--mobile-open {
+        transform: translateX(0);
+    }
+    .pa-sidebar-backdrop {
+        position: fixed;
+        z-index: 25;
+        inset: 0;
+        display: block;
+        width: 100%;
+        border: 0;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.68);
+        backdrop-filter: blur(2px);
+    }
+    .pa-sidebar__mobile-close {
+        display: inline-grid !important;
+    }
+    .pa-sidebar__collapse {
+        display: none;
+    }
+    .porto-admin--collapsed .pa-brand__name,
+    .porto-admin--collapsed .pa-sidebar__section-label,
+    .porto-admin--collapsed .pa-sidebar__link-text,
+    .porto-admin--collapsed .pa-sidebar__soon,
+    .porto-admin--collapsed .pa-sidebar__hint {
+        display: initial;
+    }
+    .porto-admin--collapsed .pa-brand__name {
+        display: flex;
+    }
+    .porto-admin--collapsed .pa-sidebar__brand {
+        padding: 17px 24px;
+    }
+    .porto-admin--collapsed .pa-sidebar__scroll {
+        padding: 20px 14px 14px;
+    }
+    .porto-admin--collapsed .pa-sidebar__link {
+        justify-content: flex-start;
+        padding: 10px 13px;
+    }
+    .porto-admin--collapsed .pa-sidebar__group {
+        border: 0;
+        padding-top: 0;
+    }
+    .pa-topbar__menu {
+        display: inline-grid;
+    }
+    .pa-topbar {
+        padding-inline: 24px;
+    }
+    .pa-main {
+        padding-inline: 24px;
+    }
+    .pa-shortcuts {
+        gap: 12px;
+    }
 }
 @media (max-width: 700px) {
-  .pa-topbar { height: 67px; padding-inline: 16px; }
-  .pa-topbar__left, .pa-topbar__right { gap: 9px; }
-  .pa-topbar__preview { display: none; }
-  .pa-topbar__separator { display: none; }
-  .pa-topbar__account-name { display: none; }
-  .pa-topbar__breadcrumb { font-size: 11px; gap: 7px; }
-  .pa-main { padding: 28px 16px 20px; }
-  .pa-dashboard-hero { grid-template-columns: 1fr; }
-  .pa-dashboard-hero__content { padding: 26px; }
-  .pa-dashboard-hero__art { min-height: 170px; overflow: hidden; }
-  .pa-art__orbit--one { width: 155px; height: 155px; }
-  .pa-art__orbit--two { width: 220px; height: 220px; }
-  .pa-art__center { width: 100px; height: 100px; border-radius: 25px; font-size: 58px; }
-  .pa-art__floating--top { top: 6%; }
-  .pa-art__floating--bottom { bottom: 12%; }
-  .pa-shortcuts, .pa-dashboard-bottom { grid-template-columns: 1fr; }
-  .pa-shortcut { min-height: 180px; }
-  .pa-page-header { align-items: start; flex-direction: column; }
-  .pa-footer { flex-direction: column; gap: 6px; }
+    .pa-topbar {
+        height: 67px;
+        padding-inline: 16px;
+    }
+    .pa-topbar__left,
+    .pa-topbar__right {
+        gap: 9px;
+    }
+    .pa-topbar__preview {
+        display: none;
+    }
+    .pa-topbar__separator {
+        display: none;
+    }
+    .pa-topbar__account-name {
+        display: none;
+    }
+    .pa-topbar__breadcrumb {
+        font-size: 11px;
+        gap: 7px;
+    }
+    .pa-main {
+        padding: 28px 16px 20px;
+    }
+    .pa-dashboard-hero {
+        grid-template-columns: 1fr;
+    }
+    .pa-dashboard-hero__content {
+        padding: 26px;
+    }
+    .pa-dashboard-hero__art {
+        min-height: 170px;
+        overflow: hidden;
+    }
+    .pa-art__orbit--one {
+        width: 155px;
+        height: 155px;
+    }
+    .pa-art__orbit--two {
+        width: 220px;
+        height: 220px;
+    }
+    .pa-art__center {
+        width: 100px;
+        height: 100px;
+        border-radius: 25px;
+        font-size: 58px;
+    }
+    .pa-art__floating--top {
+        top: 6%;
+    }
+    .pa-art__floating--bottom {
+        bottom: 12%;
+    }
+    .pa-shortcuts,
+    .pa-dashboard-bottom {
+        grid-template-columns: 1fr;
+    }
+    .pa-shortcut {
+        min-height: 180px;
+    }
+    .pa-page-header {
+        align-items: start;
+        flex-direction: column;
+    }
+    .pa-footer {
+        flex-direction: column;
+        gap: 6px;
+    }
 }
 @media (prefers-reduced-motion: reduce) {
-  .porto-admin *, .porto-admin *::before, .porto-admin *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important; }
+    .porto-admin *,
+    .porto-admin *::before,
+    .porto-admin *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 /* ==========================================
@@ -221,7 +987,7 @@
     display: grid;
     grid-template-columns:
         minmax(0, 1.5fr)
-        minmax(320px, .9fr);
+        minmax(320px, 0.9fr);
     align-items: start;
     gap: 24px;
 }
@@ -238,7 +1004,7 @@
 /* CONTENT GROUPS */
 
 .porto-admin .pa-editor-group + .pa-editor-group {
-    border-top: 1px solid rgba(255,255,255,.09);
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .porto-admin .pa-editor-group__header {
@@ -253,7 +1019,7 @@
     color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .16em;
+    letter-spacing: 0.16em;
     line-height: 1.5;
 }
 
@@ -261,11 +1027,10 @@
     margin: 12px 0 7px;
 
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: clamp(21px, 1.65vw, 25px);
     font-weight: 650;
-    letter-spacing: -.04em;
+    letter-spacing: -0.04em;
     line-height: 1.25;
 }
 
@@ -288,8 +1053,7 @@
 
 .porto-admin .pa-editor-two {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 17px;
 }
 
@@ -324,8 +1088,8 @@
     line-height: 1.6;
 
     transition:
-        border-color .18s ease,
-        box-shadow .18s ease;
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 .porto-admin .pa-editor-input::placeholder,
@@ -337,12 +1101,11 @@
 .porto-admin .pa-editor-textarea:focus {
     outline: none;
     border-color: var(--pa-accent);
-    box-shadow:
-        0 0 0 3px rgba(223,106,39,.13);
+    box-shadow: 0 0 0 3px rgba(223, 106, 39, 0.13);
 }
 
-.porto-admin .pa-editor-input[aria-invalid='true'],
-.porto-admin .pa-editor-textarea[aria-invalid='true'] {
+.porto-admin .pa-editor-input[aria-invalid="true"],
+.porto-admin .pa-editor-textarea[aria-invalid="true"] {
     border-color: #e38b85;
 }
 
@@ -403,7 +1166,7 @@
     flex: 0 0 66px;
     overflow: hidden;
 
-    border: 1px solid rgba(223,106,39,.35);
+    border: 1px solid rgba(223, 106, 39, 0.35);
     border-radius: 50%;
 
     background: #392a23;
@@ -454,21 +1217,17 @@
     cursor: pointer;
 
     transition:
-        border-color .18s ease,
-        background .18s ease;
+        border-color 0.18s ease,
+        background 0.18s ease;
 }
 
 .porto-admin .pa-editor-upload:hover,
-.porto-admin .pa-editor-upload:has(
-    + .pa-editor-file-input:focus-visible
-) {
+.porto-admin .pa-editor-upload:has(+ .pa-editor-file-input:focus-visible) {
     border-color: var(--pa-accent);
     background: #33271f;
 }
 
-.porto-admin .pa-editor-upload:has(
-    + .pa-editor-file-input:focus-visible
-) {
+.porto-admin .pa-editor-upload:has(+ .pa-editor-file-input:focus-visible) {
     outline: 2px solid var(--pa-accent-light);
     outline-offset: 3px;
 }
@@ -572,7 +1331,7 @@
 }
 
 .porto-admin .pa-editor-actions .pa-button:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
 }
@@ -585,11 +1344,11 @@
     gap: 11px;
 
     margin-bottom: 20px;
-    border: 1px solid rgba(75,172,109,.28);
+    border: 1px solid rgba(75, 172, 109, 0.28);
     border-radius: 12px;
     padding: 14px 17px;
 
-    background: rgba(75,172,109,.08);
+    background: rgba(75, 172, 109, 0.08);
     color: #a4e6b8;
     font-size: 13px;
 }
@@ -600,12 +1359,12 @@
     position: sticky;
     top: 103px;
 
-    border-color: rgba(223,106,39,.22);
+    border-color: rgba(223, 106, 39, 0.22);
 
     background:
         radial-gradient(
             circle at 80% 0%,
-            rgba(223,106,39,.10),
+            rgba(223, 106, 39, 0.1),
             transparent 55%
         ),
         #22201e;
@@ -627,8 +1386,7 @@
     border-radius: 50%;
 
     background: var(--pa-accent);
-    box-shadow:
-        0 0 16px rgba(223,106,39,.5);
+    box-shadow: 0 0 16px rgba(223, 106, 39, 0.5);
 }
 
 .porto-admin .pa-editor-preview__footer {
@@ -664,7 +1422,7 @@
     overflow: hidden;
     margin: 0 auto 20px;
 
-    border: 2px solid rgba(223,106,39,.39);
+    border: 2px solid rgba(223, 106, 39, 0.39);
     border-radius: 50%;
 
     background: #3a2b24;
@@ -681,18 +1439,17 @@
     color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .16em;
+    letter-spacing: 0.16em;
 }
 
 .porto-admin .pa-profile-preview h3 {
     margin: 10px 0 5px;
 
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 26px;
     font-weight: 650;
-    letter-spacing: -.035em;
+    letter-spacing: -0.035em;
     overflow-wrap: anywhere;
 }
 
@@ -755,7 +1512,7 @@
     color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .15em;
+    letter-spacing: 0.15em;
 }
 
 .porto-admin .pa-hero-preview h3,
@@ -763,11 +1520,10 @@
     margin: 18px 0 14px;
 
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: clamp(23px, 2.3vw, 29px);
     font-weight: 650;
-    letter-spacing: -.04em;
+    letter-spacing: -0.04em;
     line-height: 1.3;
     overflow-wrap: anywhere;
 }
@@ -877,7 +1633,6 @@
     }
 }
 
-
 /* ==========================================
    SOCIAL LINKS ADMIN
 ========================================== */
@@ -885,7 +1640,7 @@
 .porto-admin .pa-social-grid {
     display: grid;
     grid-template-columns:
-        minmax(310px, .85fr)
+        minmax(310px, 0.85fr)
         minmax(0, 1.15fr);
     gap: 22px;
     align-items: start;
@@ -914,10 +1669,10 @@
 .porto-admin .pa-social-panel__header h2 {
     margin: 12px 0 7px;
     color: var(--pa-text);
-    font-family: 'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 23px;
     font-weight: 650;
-    letter-spacing: -.04em;
+    letter-spacing: -0.04em;
     line-height: 1.3;
 }
 
@@ -960,7 +1715,7 @@
     height: 34px;
     padding-inline: 9px;
     flex-shrink: 0;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: var(--pa-accent-light);
@@ -978,14 +1733,14 @@
 
 .porto-admin .pa-social-item {
     min-width: 0;
-    border: 1px solid rgba(255,255,255,.085);
+    border: 1px solid rgba(255, 255, 255, 0.085);
     border-radius: 14px;
     background: #1c1b1b;
-    transition: border-color .18s ease;
+    transition: border-color 0.18s ease;
 }
 
 .porto-admin .pa-social-item:hover {
-    border-color: rgba(223,106,39,.28);
+    border-color: rgba(223, 106, 39, 0.28);
 }
 
 .porto-admin .pa-social-item__display {
@@ -1001,7 +1756,7 @@
     width: 43px;
     height: 43px;
     flex: 0 0 43px;
-    border: 1px solid rgba(223,106,39,.2);
+    border: 1px solid rgba(223, 106, 39, 0.2);
     border-radius: 11px;
     background: #36281f;
     color: var(--pa-accent-light);
@@ -1023,7 +1778,7 @@
     color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .07em;
+    letter-spacing: 0.07em;
 }
 
 .porto-admin .pa-social-item__order {
@@ -1034,7 +1789,7 @@
 .porto-admin .pa-social-item__content h3 {
     margin: 7px 0 6px;
     color: var(--pa-text);
-    font-family: 'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 15px;
     font-weight: 650;
     overflow-wrap: anywhere;
@@ -1085,7 +1840,7 @@
     color: #e8dfd8;
     font-size: 11px;
     font-weight: 600;
-    transition: background .18s ease;
+    transition: background 0.18s ease;
 }
 
 .porto-admin .pa-social-action:hover {
@@ -1093,16 +1848,16 @@
 }
 
 .porto-admin .pa-social-action--delete {
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
     color: #f2a2a2;
 }
 
 .porto-admin .pa-social-action--delete:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 .porto-admin .pa-social-action:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -1119,7 +1874,7 @@
 .porto-admin .pa-social-edit__header h3 {
     margin: 9px 0 0;
     color: var(--pa-text);
-    font-family: 'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 18px;
     font-weight: 650;
 }
@@ -1173,7 +1928,7 @@
     width: 64px;
     height: 64px;
     margin-bottom: 5px;
-    border: 1px solid rgba(223,106,39,.2);
+    border: 1px solid rgba(223, 106, 39, 0.2);
     border-radius: 18px;
     background: #332820;
     color: var(--pa-accent-light);
@@ -1257,7 +2012,7 @@
 .porto-admin .pa-skill-grid {
     display: grid;
     grid-template-columns:
-        minmax(300px, .84fr)
+        minmax(300px, 0.84fr)
         minmax(0, 1.16fr);
     gap: 22px;
     align-items: start;
@@ -1286,9 +2041,11 @@
 .porto-admin .pa-skill-panel__header h2 {
     margin: 12px 0 7px;
     color: var(--pa-text);
-    font: 650 23px/1.3
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.04em;
+    font:
+        650 23px/1.3 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.04em;
 }
 
 .porto-admin .pa-skill-panel__header p {
@@ -1328,7 +2085,7 @@
     height: 34px;
     padding: 0 9px;
     flex: 0 0 auto;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: var(--pa-accent-light);
@@ -1346,7 +2103,7 @@
 
 .porto-admin .pa-skill-category {
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,.085);
+    border: 1px solid rgba(255, 255, 255, 0.085);
     border-radius: 15px;
     background: #1d1c1b;
 }
@@ -1369,15 +2126,17 @@
     color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
 }
 
 .porto-admin .pa-skill-category__main h3 {
     margin: 9px 0 7px;
     color: var(--pa-text);
-    font: 650 19px/1.35
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.035em;
+    font:
+        650 19px/1.35 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.035em;
     overflow-wrap: anywhere;
 }
 
@@ -1392,7 +2151,7 @@
 
 .porto-admin .pa-skill-category__count {
     display: inline-flex;
-    border: 1px solid rgba(223,106,39,.2);
+    border: 1px solid rgba(223, 106, 39, 0.2);
     border-radius: 8px;
     padding: 5px 9px;
     background: #31271f;
@@ -1423,7 +2182,7 @@
     color: #e8dfd8;
     font-size: 11px;
     font-weight: 600;
-    transition: background .18s ease;
+    transition: background 0.18s ease;
 }
 
 .porto-admin .pa-skill-action:hover {
@@ -1432,16 +2191,16 @@
 
 .porto-admin .pa-skill-action:disabled {
     cursor: not-allowed;
-    opacity: .5;
+    opacity: 0.5;
 }
 
 .porto-admin .pa-skill-action--danger {
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
     color: #f2a2a2;
 }
 
 .porto-admin .pa-skill-action--danger:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 /* SKILL ITEMS */
@@ -1489,7 +2248,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
-    border: 1px solid rgba(255,255,255,.075);
+    border: 1px solid rgba(255, 255, 255, 0.075);
     border-radius: 10px;
     padding: 12px;
     background: #272423;
@@ -1525,7 +2284,7 @@
 
 .porto-admin .pa-skill-item-edit {
     border-style: solid;
-    border-color: rgba(223,106,39,.4);
+    border-color: rgba(223, 106, 39, 0.4);
 }
 
 .porto-admin .pa-skill-item-create__fields,
@@ -1545,7 +2304,7 @@
     gap: 7px;
     margin-top: 13px;
     min-height: 38px;
-    border: 1px solid rgba(223,106,39,.32);
+    border: 1px solid rgba(223, 106, 39, 0.32);
     border-radius: 9px;
     padding: 9px 13px;
     background: #3a2b22;
@@ -1560,11 +2319,10 @@
 
 .porto-admin .pa-skill-add-item:disabled {
     cursor: not-allowed;
-    opacity: .5;
+    opacity: 0.5;
 }
 
-.porto-admin .pa-skill-item-edit
-.pa-skill-inline-actions {
+.porto-admin .pa-skill-item-edit .pa-skill-inline-actions {
     justify-content: flex-end;
     margin-top: 13px;
 }
@@ -1586,12 +2344,13 @@
 .porto-admin .pa-skill-category__edit-head h3 {
     margin: 9px 0 0;
     color: #f6f2ee;
-    font: 650 18px
-        'Space Grotesk', Inter, sans-serif;
+    font:
+        650 18px "Space Grotesk",
+        Inter,
+        sans-serif;
 }
 
-.porto-admin .pa-skill-category__edit
-.pa-skill-form {
+.porto-admin .pa-skill-category__edit .pa-skill-form {
     padding: 20px 22px;
 }
 
@@ -1674,8 +2433,7 @@
         padding: 18px 21px;
     }
 
-    .porto-admin
-    .pa-skill-form__actions .pa-button {
+    .porto-admin .pa-skill-form__actions .pa-button {
         width: 100%;
     }
 
@@ -1695,8 +2453,7 @@
         width: 100%;
     }
 
-    .porto-admin
-    .pa-skill-category__actions button {
+    .porto-admin .pa-skill-category__actions button {
         flex: 1;
     }
 
@@ -1705,18 +2462,15 @@
         grid-template-columns: 1fr;
     }
 
-    .porto-admin .pa-skill-item
-    .pa-skill-inline-actions {
+    .porto-admin .pa-skill-item .pa-skill-inline-actions {
         width: 100%;
     }
 
-    .porto-admin .pa-skill-item
-    .pa-skill-inline-actions button {
+    .porto-admin .pa-skill-item .pa-skill-inline-actions button {
         flex: 1;
     }
 
-    .porto-admin
-    .pa-skill-category__edit-actions .pa-button {
+    .porto-admin .pa-skill-category__edit-actions .pa-button {
         flex: 1;
     }
 }
@@ -1728,7 +2482,7 @@
 .porto-admin .pa-edu-grid {
     display: grid;
     grid-template-columns:
-        minmax(300px, .85fr)
+        minmax(300px, 0.85fr)
         minmax(0, 1.15fr);
     gap: 22px;
     align-items: start;
@@ -1757,11 +2511,10 @@
 .porto-admin .pa-edu-panel__header h2 {
     margin: 12px 0 7px;
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 23px;
     font-weight: 650;
-    letter-spacing: -.04em;
+    letter-spacing: -0.04em;
     line-height: 1.3;
 }
 
@@ -1791,8 +2544,7 @@
 
 .porto-admin .pa-edu-year-grid {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
     align-items: start;
 }
@@ -1804,7 +2556,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    border: 1px solid rgba(223,106,39,.21);
+    border: 1px solid rgba(223, 106, 39, 0.21);
     border-radius: 12px;
     background: #2b241f;
     cursor: pointer;
@@ -1836,9 +2588,8 @@
     line-height: 1.6;
 }
 
-.porto-admin .pa-edu-fields
-.pa-editor-input:disabled {
-    opacity: .6;
+.porto-admin .pa-edu-fields .pa-editor-input:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
     background: #252323;
 }
@@ -1890,7 +2641,7 @@
     height: 34px;
     flex-shrink: 0;
     padding-inline: 9px;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: var(--pa-accent-light);
@@ -1909,14 +2660,14 @@
 .porto-admin .pa-edu-item {
     min-width: 0;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,.085);
+    border: 1px solid rgba(255, 255, 255, 0.085);
     border-radius: 15px;
     background: #1d1c1b;
-    transition: border-color .18s ease;
+    transition: border-color 0.18s ease;
 }
 
 .porto-admin .pa-edu-item:hover {
-    border-color: rgba(223,106,39,.27);
+    border-color: rgba(223, 106, 39, 0.27);
 }
 
 .porto-admin .pa-edu-item__display {
@@ -1932,7 +2683,7 @@
     width: 48px;
     height: 48px;
     flex: 0 0 48px;
-    border: 1px solid rgba(223,106,39,.2);
+    border: 1px solid rgba(223, 106, 39, 0.2);
     border-radius: 13px;
     background: #37291f;
     color: var(--pa-accent-light);
@@ -1954,7 +2705,7 @@
     color: var(--pa-accent-light);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: .08em;
+    letter-spacing: 0.08em;
 }
 
 .porto-admin .pa-edu-period {
@@ -1968,11 +2719,10 @@
 .porto-admin .pa-edu-item__content h3 {
     margin: 9px 0 5px;
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 17px;
     font-weight: 650;
-    letter-spacing: -.03em;
+    letter-spacing: -0.03em;
     line-height: 1.4;
     overflow-wrap: anywhere;
 }
@@ -2007,7 +2757,7 @@
     color: #e8dfd8;
     font-size: 11px;
     font-weight: 600;
-    transition: background .18s ease;
+    transition: background 0.18s ease;
 }
 
 .porto-admin .pa-edu-action:hover {
@@ -2015,16 +2765,16 @@
 }
 
 .porto-admin .pa-edu-action--danger {
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
     color: #f2a2a2;
 }
 
 .porto-admin .pa-edu-action--danger:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 .porto-admin .pa-edu-action:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -2041,11 +2791,10 @@
 .porto-admin .pa-edu-edit__header h3 {
     margin: 10px 0 0;
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 18px;
     font-weight: 650;
-    letter-spacing: -.035em;
+    letter-spacing: -0.035em;
 }
 
 .porto-admin .pa-edu-item .pa-edu-form {
@@ -2182,7 +2931,7 @@
 .porto-admin .pa-exp-grid {
     display: grid;
     grid-template-columns:
-        minmax(320px, .85fr)
+        minmax(320px, 0.85fr)
         minmax(0, 1.15fr);
     gap: 22px;
     align-items: start;
@@ -2211,9 +2960,11 @@
 .porto-admin .pa-exp-panel__header h2 {
     margin: 12px 0 7px;
     color: var(--pa-text);
-    font: 650 23px/1.3
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.04em;
+    font:
+        650 23px/1.3 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.04em;
 }
 
 .porto-admin .pa-exp-panel__header p {
@@ -2241,15 +2992,13 @@
 
 .porto-admin .pa-exp-year-grid {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
     gap: 14px;
 }
 
-.porto-admin .pa-exp-fields
-.pa-editor-input:disabled {
-    opacity: .55;
+.porto-admin .pa-exp-fields .pa-editor-input:disabled {
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
@@ -2258,7 +3007,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    border: 1px solid rgba(223,106,39,.22);
+    border: 1px solid rgba(223, 106, 39, 0.22);
     border-radius: 12px;
     background: #2b241f;
     cursor: pointer;
@@ -2311,8 +3060,10 @@
 .porto-admin .pa-exp-logo-section h3 {
     margin: 2px 0 0;
     color: var(--pa-text);
-    font: 650 19px/1.3
-        'Space Grotesk', Inter, sans-serif;
+    font:
+        650 19px/1.3 "Space Grotesk",
+        Inter,
+        sans-serif;
 }
 
 .porto-admin .pa-exp-logo-section > p {
@@ -2394,8 +3145,7 @@
     clip-path: inset(50%);
 }
 
-.porto-admin .pa-exp-upload-wrap:focus-within
-.pa-exp-upload {
+.porto-admin .pa-exp-upload-wrap:focus-within .pa-exp-upload {
     outline: 2px solid var(--pa-accent-light);
     outline-offset: 3px;
 }
@@ -2428,7 +3178,7 @@
     min-width: 34px;
     height: 34px;
     padding: 0 9px;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: var(--pa-accent-light);
@@ -2461,7 +3211,7 @@
 }
 
 .porto-admin .pa-exp-filter--active {
-    border-color: rgba(223,106,39,.38);
+    border-color: rgba(223, 106, 39, 0.38);
     background: #392920;
     color: var(--pa-accent-light);
 }
@@ -2496,7 +3246,7 @@
     height: 50px;
     flex: 0 0 50px;
     overflow: hidden;
-    border: 1px solid rgba(223,106,39,.22);
+    border: 1px solid rgba(223, 106, 39, 0.22);
     border-radius: 12px;
     background: #352820;
     color: var(--pa-accent-light);
@@ -2537,9 +3287,11 @@
 .porto-admin .pa-exp-item__content h3 {
     margin: 10px 0 5px;
     color: var(--pa-text);
-    font: 650 17px/1.4
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.035em;
+    font:
+        650 17px/1.4 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.035em;
     overflow-wrap: anywhere;
 }
 
@@ -2596,16 +3348,16 @@
 }
 
 .porto-admin .pa-exp-action--danger {
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
     color: #f2a2a2;
 }
 
 .porto-admin .pa-exp-action--danger:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 .porto-admin .pa-exp-action:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -2622,8 +3374,10 @@
 .porto-admin .pa-exp-edit__header h3 {
     margin: 10px 0 0;
     color: var(--pa-text);
-    font: 650 18px
-        'Space Grotesk', Inter, sans-serif;
+    font:
+        650 18px "Space Grotesk",
+        Inter,
+        sans-serif;
 }
 
 .porto-admin .pa-exp-item .pa-exp-form {
@@ -2750,7 +3504,7 @@
 .porto-admin .pa-ach-grid {
     display: grid;
     grid-template-columns:
-        minmax(300px, .85fr)
+        minmax(300px, 0.85fr)
         minmax(0, 1.15fr);
     gap: 22px;
     align-items: start;
@@ -2779,9 +3533,11 @@
 .porto-admin .pa-ach-panel__header h2 {
     margin: 12px 0 7px;
     color: var(--pa-text);
-    font: 650 23px/1.3
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.04em;
+    font:
+        650 23px/1.3 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.04em;
 }
 
 .porto-admin .pa-ach-panel__header p {
@@ -2809,8 +3565,7 @@
 
 .porto-admin .pa-ach-fields__row {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
     align-items: start;
 }
@@ -2841,7 +3596,7 @@
     min-width: 34px;
     height: 34px;
     padding-inline: 9px;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: var(--pa-accent-light);
@@ -2869,8 +3624,8 @@
     font-size: 12px;
     font-weight: 600;
     transition:
-        background .18s ease,
-        color .18s ease;
+        background 0.18s ease,
+        color 0.18s ease;
 }
 
 .porto-admin .pa-ach-filter:hover {
@@ -2879,7 +3634,7 @@
 }
 
 .porto-admin .pa-ach-filter--active {
-    border-color: rgba(223,106,39,.38);
+    border-color: rgba(223, 106, 39, 0.38);
     background: #392920;
     color: var(--pa-accent-light);
 }
@@ -2898,11 +3653,11 @@
     border: 1px solid var(--pa-line);
     border-radius: 15px;
     background: #1d1c1b;
-    transition: border-color .18s ease;
+    transition: border-color 0.18s ease;
 }
 
 .porto-admin .pa-ach-item:hover {
-    border-color: rgba(223,106,39,.28);
+    border-color: rgba(223, 106, 39, 0.28);
 }
 
 .porto-admin .pa-ach-item__display {
@@ -2918,7 +3673,7 @@
     width: 48px;
     height: 48px;
     flex: 0 0 48px;
-    border: 1px solid rgba(223,106,39,.23);
+    border: 1px solid rgba(223, 106, 39, 0.23);
     border-radius: 13px;
     background: #37291f;
     color: var(--pa-accent-light);
@@ -2951,9 +3706,11 @@
 .porto-admin .pa-ach-item__content h3 {
     margin: 10px 0 7px;
     color: var(--pa-text);
-    font: 650 17px/1.4
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.035em;
+    font:
+        650 17px/1.4 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.035em;
     overflow-wrap: anywhere;
 }
 
@@ -3010,16 +3767,16 @@
 }
 
 .porto-admin .pa-ach-action--danger {
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
     color: #f2a2a2;
 }
 
 .porto-admin .pa-ach-action--danger:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 .porto-admin .pa-ach-action:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -3036,8 +3793,10 @@
 .porto-admin .pa-ach-edit__header h3 {
     margin: 10px 0 0;
     color: var(--pa-text);
-    font: 650 18px
-        'Space Grotesk', Inter, sans-serif;
+    font:
+        650 18px "Space Grotesk",
+        Inter,
+        sans-serif;
 }
 
 .porto-admin .pa-ach-item .pa-ach-form {
@@ -3177,9 +3936,11 @@
 .porto-admin .pa-prj-panel__heading h2 {
     margin: 12px 0 7px;
     color: #f6f2ee;
-    font: 650 23px/1.3
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.04em;
+    font:
+        650 23px/1.3 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.04em;
 }
 
 .porto-admin .pa-prj-panel__heading p {
@@ -3194,7 +3955,7 @@
 .porto-admin .pa-prj-category-layout {
     display: grid;
     grid-template-columns:
-        minmax(0, .85fr)
+        minmax(0, 0.85fr)
         minmax(0, 1.15fr);
     gap: 24px;
     padding: 25px 28px;
@@ -3229,9 +3990,7 @@
     background: #1c1b1b;
 }
 
-.porto-admin .pa-prj-category-row:has(
-    .pa-prj-category-edit
-) {
+.porto-admin .pa-prj-category-row:has(.pa-prj-category-edit) {
     display: block;
 }
 
@@ -3281,15 +4040,15 @@
 
 .porto-admin .pa-prj-action--danger {
     color: #f2a2a2;
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
 }
 
 .porto-admin .pa-prj-action--danger:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 .porto-admin .pa-prj-action:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -3304,7 +4063,7 @@
 .porto-admin .pa-prj-grid {
     display: grid;
     grid-template-columns:
-        minmax(320px, .85fr)
+        minmax(320px, 0.85fr)
         minmax(0, 1.15fr);
     gap: 22px;
     align-items: start;
@@ -3338,14 +4097,14 @@
 }
 
 .porto-admin .pa-prj-form__actions .pa-button:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
 .porto-admin .pa-prj-notice {
     margin: 18px 28px 0;
     padding: 13px;
-    border: 1px solid rgba(223,106,39,.3);
+    border: 1px solid rgba(223, 106, 39, 0.3);
     border-radius: 10px;
     background: #30251f;
     color: #efb38e;
@@ -3354,9 +4113,9 @@
 
 .porto-admin .pa-prj-message-error {
     padding: 14px 17px;
-    border: 1px solid rgba(245,116,116,.25);
+    border: 1px solid rgba(245, 116, 116, 0.25);
     border-radius: 12px;
-    background: rgba(245,116,116,.08);
+    background: rgba(245, 116, 116, 0.08);
     color: #f2a2a2;
     font-size: 12px;
 }
@@ -3373,8 +4132,10 @@
 .porto-admin .pa-prj-gallery__heading h3 {
     margin: 12px 0 6px;
     color: #f6f2ee;
-    font: 650 19px/1.3
-        'Space Grotesk', Inter, sans-serif;
+    font:
+        650 19px/1.3 "Space Grotesk",
+        Inter,
+        sans-serif;
 }
 
 .porto-admin .pa-prj-gallery__heading p {
@@ -3392,8 +4153,7 @@
 
 .porto-admin .pa-prj-gallery__grid {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
 }
 
@@ -3450,7 +4210,7 @@
 }
 
 .porto-admin .pa-prj-gallery-thumb__actions button:disabled {
-    opacity: .3;
+    opacity: 0.3;
     cursor: not-allowed;
 }
 
@@ -3525,7 +4285,7 @@
     min-width: 34px;
     height: 34px;
     padding: 0 9px;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: #f2a06e;
@@ -3558,7 +4318,7 @@
 
 .porto-admin .pa-prj-filter--active {
     background: #392920;
-    border-color: rgba(223,106,39,.38);
+    border-color: rgba(223, 106, 39, 0.38);
     color: #f2a06e;
 }
 
@@ -3595,7 +4355,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .25s ease;
+    transition: transform 0.25s ease;
 }
 
 .porto-admin .pa-prj-cover:hover > img {
@@ -3610,9 +4370,9 @@
     bottom: 12px;
     right: 12px;
     padding: 8px 11px;
-    border: 1px solid rgba(255,255,255,.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 9px;
-    background: rgba(18,18,18,.82);
+    background: rgba(18, 18, 18, 0.82);
     color: #f6f2ee;
     font-size: 11px;
     font-weight: 600;
@@ -3626,15 +4386,17 @@
     color: #f2a06e;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .09em;
+    letter-spacing: 0.09em;
 }
 
 .porto-admin .pa-prj-card__content h3 {
     margin: 9px 0;
     color: #f6f2ee;
-    font: 650 19px/1.35
-        'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.035em;
+    font:
+        650 19px/1.35 "Space Grotesk",
+        Inter,
+        sans-serif;
+    letter-spacing: -0.035em;
     overflow-wrap: anywhere;
 }
 
@@ -3656,7 +4418,7 @@
 
 .porto-admin .pa-prj-technologies span {
     padding: 6px 9px;
-    border: 1px solid rgba(223,106,39,.22);
+    border: 1px solid rgba(223, 106, 39, 0.22);
     border-radius: 7px;
     background: #30261f;
     color: #e9b090;
@@ -3730,7 +4492,7 @@
     position: fixed;
     z-index: 199;
     inset: 0;
-    background: rgba(0,0,0,.88);
+    background: rgba(0, 0, 0, 0.88);
     backdrop-filter: blur(8px);
 }
 
@@ -3749,7 +4511,7 @@
     border-radius: 18px;
     background: #1b1a19;
     color: #f6f2ee;
-    box-shadow: 0 30px 100px rgba(0,0,0,.7);
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
 }
 
 .pa-prj-modal__header {
@@ -3758,14 +4520,16 @@
     align-items: center;
     gap: 15px;
     padding: 19px 22px;
-    border-bottom: 1px solid rgba(255,255,255,.09);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .pa-prj-modal__title {
     margin: 7px 0 0;
     color: #f6f2ee;
-    font: 650 18px
-        'Space Grotesk', Inter, sans-serif;
+    font:
+        650 18px "Space Grotesk",
+        Inter,
+        sans-serif;
 }
 
 .pa-prj-modal__close {
@@ -3806,9 +4570,9 @@
     place-items: center;
     width: 43px;
     height: 43px;
-    border: 1px solid rgba(255,255,255,.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    background: rgba(0,0,0,.72);
+    background: rgba(0, 0, 0, 0.72);
     color: #fff;
     cursor: pointer;
 }
@@ -3944,7 +4708,7 @@
 .porto-admin .pa-res-grid {
     display: grid;
     grid-template-columns:
-        minmax(300px, .85fr)
+        minmax(300px, 0.85fr)
         minmax(0, 1.15fr);
     gap: 22px;
     align-items: start;
@@ -3973,11 +4737,10 @@
 .porto-admin .pa-res-panel__header h2 {
     margin: 12px 0 7px;
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 23px;
     font-weight: 650;
-    letter-spacing: -.04em;
+    letter-spacing: -0.04em;
     line-height: 1.3;
 }
 
@@ -3999,8 +4762,7 @@
     gap: 23px;
 }
 
-.porto-admin .pa-res-fields
-.pa-editor-textarea {
+.porto-admin .pa-res-fields .pa-editor-textarea {
     display: block;
     width: 100%;
     min-height: 170px;
@@ -4014,16 +4776,14 @@
     font-size: 13px;
     line-height: 1.75;
     outline: none;
-    transition: border-color .18s ease;
+    transition: border-color 0.18s ease;
 }
 
-.porto-admin .pa-res-fields
-.pa-editor-textarea:focus {
+.porto-admin .pa-res-fields .pa-editor-textarea:focus {
     border-color: #df6a27;
 }
 
-.porto-admin .pa-res-fields
-.pa-editor-textarea::placeholder {
+.porto-admin .pa-res-fields .pa-editor-textarea::placeholder {
     color: #857b74;
 }
 
@@ -4047,11 +4807,9 @@
     background: #252322;
 }
 
-.porto-admin .pa-res-form__actions
-.pa-button:disabled,
-.porto-admin .pa-res-edit__actions
-.pa-button:disabled {
-    opacity: .5;
+.porto-admin .pa-res-form__actions .pa-button:disabled,
+.porto-admin .pa-res-edit__actions .pa-button:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -4071,7 +4829,7 @@
     height: 35px;
     flex-shrink: 0;
     padding: 0 9px;
-    border: 1px solid rgba(223,106,39,.25);
+    border: 1px solid rgba(223, 106, 39, 0.25);
     border-radius: 10px;
     background: #35281f;
     color: var(--pa-accent-light);
@@ -4092,7 +4850,7 @@
     border-radius: 11px;
     background: #191919;
     color: #968b83;
-    transition: border-color .18s ease;
+    transition: border-color 0.18s ease;
 }
 
 .porto-admin .pa-res-search:focus-within {
@@ -4150,14 +4908,14 @@
 .porto-admin .pa-res-item {
     min-width: 0;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,.085);
+    border: 1px solid rgba(255, 255, 255, 0.085);
     border-radius: 15px;
     background: #1d1c1b;
-    transition: border-color .18s ease;
+    transition: border-color 0.18s ease;
 }
 
 .porto-admin .pa-res-item:hover {
-    border-color: rgba(223,106,39,.28);
+    border-color: rgba(223, 106, 39, 0.28);
 }
 
 .porto-admin .pa-res-item__display {
@@ -4173,7 +4931,7 @@
     width: 48px;
     height: 48px;
     flex: 0 0 48px;
-    border: 1px solid rgba(223,106,39,.23);
+    border: 1px solid rgba(223, 106, 39, 0.23);
     border-radius: 13px;
     background: #37291f;
     color: var(--pa-accent-light);
@@ -4195,7 +4953,7 @@
     color: var(--pa-accent-light);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .1em;
+    letter-spacing: 0.1em;
 }
 
 .porto-admin .pa-res-item__year {
@@ -4209,11 +4967,10 @@
 .porto-admin .pa-res-item__content h3 {
     margin: 11px 0 12px;
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 18px;
     font-weight: 650;
-    letter-spacing: -.035em;
+    letter-spacing: -0.035em;
     line-height: 1.4;
     overflow-wrap: anywhere;
 }
@@ -4251,7 +5008,7 @@
     color: #e8dfd8;
     font-size: 11px;
     font-weight: 600;
-    transition: background .18s ease;
+    transition: background 0.18s ease;
 }
 
 .porto-admin .pa-res-action:hover {
@@ -4259,16 +5016,16 @@
 }
 
 .porto-admin .pa-res-action--danger {
-    border-color: rgba(245,116,116,.3);
+    border-color: rgba(245, 116, 116, 0.3);
     color: #f2a2a2;
 }
 
 .porto-admin .pa-res-action--danger:hover {
-    background: rgba(245,116,116,.09);
+    background: rgba(245, 116, 116, 0.09);
 }
 
 .porto-admin .pa-res-action:disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -4285,11 +5042,10 @@
 .porto-admin .pa-res-edit__header h3 {
     margin: 10px 0 0;
     color: var(--pa-text);
-    font-family:
-        'Space Grotesk', Inter, sans-serif;
+    font-family: "Space Grotesk", Inter, sans-serif;
     font-size: 18px;
     font-weight: 650;
-    letter-spacing: -.035em;
+    letter-spacing: -0.035em;
 }
 
 .porto-admin .pa-res-item .pa-res-form {
@@ -4417,5 +5173,1066 @@
 
     .porto-admin .pa-res-edit__actions .pa-button {
         flex: 1;
+    }
+}
+/* ==========================================
+   TENTANG SAYA — TYPOGRAPHY REFINEMENT
+========================================== */
+
+/* Konsistensi tampilan kartu */
+.porto-admin .pa-about-editor .pa-editor-card,
+.porto-admin .pa-about-editor .pa-editor-preview {
+    border-radius: 16px;
+}
+
+/* ==========================================
+   EDITOR — KIRI
+========================================== */
+
+/* Header editor */
+.porto-admin .pa-about-editor .pa-editor-group__header {
+    padding: 25px 27px 19px;
+}
+
+/* Label kecil di atas judul */
+.porto-admin .pa-about-editor .pa-editor-kicker {
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.5;
+}
+
+/* Judul Tentang Saya */
+.porto-admin .pa-about-editor .pa-editor-group__header h2 {
+    margin: 10px 0 8px;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.035em;
+
+    color: #f6f2ee;
+}
+
+/* Deskripsi kecil di bawah judul */
+.porto-admin .pa-about-editor .pa-editor-group__header p {
+    max-width: 530px;
+    margin: 0;
+
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.75;
+
+    color: #aaa29c;
+}
+
+/* Area formulir */
+.porto-admin .pa-about-editor .pa-editor-group__body {
+    padding: 5px 27px 27px;
+    gap: 18px;
+}
+
+/* Label textarea */
+.porto-admin .pa-about-editor .pa-editor-label {
+    margin-bottom: 10px;
+
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: #eae2dc;
+}
+
+/* Textarea deskripsi */
+.porto-admin .pa-about-editor .pa-editor-textarea {
+    width: 100%;
+    min-height: 300px;
+
+    padding: 15px 17px;
+
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.85;
+    letter-spacing: 0;
+
+    color: #eee7e1;
+    background: #1b1a1a;
+
+    border: 1px solid #4b423d;
+    border-radius: 11px;
+
+    resize: vertical;
+}
+
+/* Placeholder */
+.porto-admin .pa-about-editor .pa-editor-textarea::placeholder {
+    font-size: 13px;
+    color: #90847c;
+}
+
+/* Fokus saat mengetik */
+.porto-admin .pa-about-editor .pa-editor-textarea:focus {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223, 106, 39, 0.11);
+}
+
+/* Penghitung karakter */
+.porto-admin .pa-about-editor .pa-editor-count {
+    margin-top: 8px;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+
+    color: #a89b92;
+    text-align: right;
+}
+
+/* ==========================================
+   TOMBOL SIMPAN
+========================================== */
+
+.porto-admin .pa-about-editor .pa-editor-actions {
+    padding: 17px 27px;
+    gap: 15px;
+}
+
+/* Status perubahan */
+.porto-admin .pa-about-editor .pa-editor-save-note {
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #b2a59c;
+}
+
+/* Tombol simpan lebih compact */
+.porto-admin .pa-about-editor .pa-editor-actions .pa-button {
+    width: auto;
+    min-height: 38px;
+    padding: 9px 14px;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.4;
+
+    border-radius: 9px;
+}
+
+/* ==========================================
+   LIVE PREVIEW — KANAN
+========================================== */
+
+/* Header preview */
+.porto-admin .pa-about-editor .pa-editor-preview__header {
+    padding: 20px 24px;
+}
+
+/* Label pratinjau */
+.porto-admin .pa-about-editor .pa-editor-preview__header .pa-editor-kicker {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+/* Area konten preview */
+.porto-admin .pa-about-editor .pa-about-preview {
+    padding: 29px 26px 32px;
+}
+
+/* Label TENTANG SAYA */
+.porto-admin .pa-about-editor .pa-about-preview > span {
+    display: block;
+
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+
+    color: #f2a06e;
+}
+
+/* Judul preview */
+.porto-admin .pa-about-editor .pa-about-preview h3 {
+    margin: 13px 0 15px;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(21px, 2vw, 25px);
+    font-weight: 650;
+    line-height: 1.35;
+    letter-spacing: -0.035em;
+
+    color: #f6f2ee;
+}
+
+/* Isi preview — teks utama */
+.porto-admin .pa-about-editor .pa-about-preview p {
+    margin: 0;
+
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.9;
+    letter-spacing: 0;
+
+    color: #c9beb6;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Footer preview */
+.porto-admin .pa-about-editor .pa-editor-preview__footer {
+    padding: 16px 24px;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #aa9e95;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 650px) {
+    .porto-admin .pa-about-editor .pa-editor-group__header {
+        padding: 22px 20px 17px;
+    }
+
+    .porto-admin .pa-about-editor .pa-editor-group__header h2 {
+        font-size: 21px;
+    }
+
+    .porto-admin .pa-about-editor .pa-editor-group__body {
+        padding: 5px 20px 22px;
+    }
+
+    .porto-admin .pa-about-editor .pa-editor-textarea {
+        min-height: 260px;
+        padding: 13px 14px;
+        font-size: 14px;
+    }
+
+    .porto-admin .pa-about-editor .pa-about-preview {
+        padding: 23px 20px 26px;
+    }
+
+    .porto-admin .pa-about-editor .pa-about-preview h3 {
+        font-size: 22px;
+    }
+
+    .porto-admin .pa-about-editor .pa-about-preview p {
+        font-size: 14px;
+        line-height: 1.85;
+    }
+
+    .porto-admin .pa-about-editor .pa-editor-actions {
+        padding: 17px 20px;
+    }
+
+    .porto-admin .pa-about-editor .pa-editor-actions .pa-button {
+        width: 100%;
+    }
+}
+/* ==========================================
+   HERO SECTION — TYPOGRAPHY REFINEMENT
+========================================== */
+
+/* Konsistensi kartu */
+.porto-admin .pa-hero-editor .pa-editor-card,
+.porto-admin .pa-hero-editor .pa-editor-preview {
+    border-radius: 16px;
+}
+
+/* ==========================================
+   EDITOR KIRI
+========================================== */
+
+/* Header editor */
+.porto-admin .pa-hero-editor .pa-editor-group__header {
+    padding: 25px 27px 19px;
+}
+
+/* Label HALAMAN UTAMA */
+.porto-admin .pa-hero-editor .pa-editor-kicker {
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.5;
+}
+
+/* Judul Hero Section */
+.porto-admin .pa-hero-editor .pa-editor-group__header h2 {
+    margin: 10px 0 8px;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.035em;
+
+    color: #f6f2ee;
+}
+
+/* Deskripsi header editor */
+.porto-admin .pa-hero-editor .pa-editor-group__header p {
+    max-width: 530px;
+    margin: 0;
+
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.75;
+
+    color: #aaa29c;
+}
+
+/* Area formulir */
+.porto-admin .pa-hero-editor .pa-editor-group__body {
+    padding: 5px 27px 27px;
+    gap: 20px;
+}
+
+/* Label field */
+.porto-admin .pa-hero-editor .pa-editor-label {
+    margin-bottom: 10px;
+
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: #eae2dc;
+}
+
+/* Input headline */
+.porto-admin .pa-hero-editor .pa-editor-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 15px;
+
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+
+    color: #f6f2ee;
+    background: #1b1a1a;
+
+    border: 1px solid #4b423d;
+    border-radius: 10px;
+}
+
+/* Textarea deskripsi */
+.porto-admin .pa-hero-editor .pa-editor-textarea {
+    width: 100%;
+    min-height: 190px;
+    padding: 15px 17px;
+
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.85;
+    letter-spacing: 0;
+
+    color: #eee7e1;
+    background: #1b1a1a;
+
+    border: 1px solid #4b423d;
+    border-radius: 11px;
+
+    resize: vertical;
+}
+
+/* Placeholder */
+.porto-admin .pa-hero-editor .pa-editor-input::placeholder,
+.porto-admin .pa-hero-editor .pa-editor-textarea::placeholder {
+    color: #90847c;
+    font-size: 13px;
+}
+
+/* Fokus input */
+.porto-admin .pa-hero-editor .pa-editor-input:focus,
+.porto-admin .pa-hero-editor .pa-editor-textarea:focus {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223, 106, 39, 0.11);
+}
+
+/* Penghitung karakter */
+.porto-admin .pa-hero-editor .pa-editor-count {
+    margin-top: 8px;
+
+    color: #a89b92;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+
+    text-align: right;
+}
+
+/* ==========================================
+   TOMBOL SIMPAN
+========================================== */
+
+.porto-admin .pa-hero-editor .pa-editor-actions {
+    padding: 17px 27px;
+    gap: 15px;
+}
+
+.porto-admin .pa-hero-editor .pa-editor-save-note {
+    color: #b2a59c;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* Tombol simpan compact */
+.porto-admin .pa-hero-editor .pa-editor-actions .pa-button {
+    width: auto;
+    min-height: 38px;
+    padding: 9px 14px;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.4;
+
+    border-radius: 9px;
+}
+
+/* ==========================================
+   LIVE PREVIEW KANAN
+========================================== */
+
+/* Header preview */
+.porto-admin .pa-hero-editor .pa-editor-preview__header {
+    padding: 20px 24px;
+}
+
+/* Label pratinjau */
+.porto-admin .pa-hero-editor .pa-editor-preview__header .pa-editor-kicker {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+/* Konten preview */
+.porto-admin .pa-hero-editor .pa-hero-preview {
+    padding: 30px 26px 32px;
+}
+
+/* Label SELAMAT DATANG */
+.porto-admin .pa-hero-editor .pa-hero-preview > span {
+    display: block;
+
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+
+    color: #f2a06e;
+}
+
+/* Headline utama preview */
+.porto-admin .pa-hero-editor .pa-hero-preview h3 {
+    margin: 15px 0 14px;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(24px, 2.2vw, 29px);
+    font-weight: 650;
+    line-height: 1.28;
+    letter-spacing: -0.04em;
+
+    color: #f6f2ee;
+    overflow-wrap: anywhere;
+}
+
+/* Deskripsi hero preview */
+.porto-admin .pa-hero-editor .pa-hero-preview p {
+    margin: 0;
+
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.85;
+    letter-spacing: 0;
+
+    color: #c9beb6;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   TOMBOL PREVIEW
+========================================== */
+
+.porto-admin .pa-hero-editor .pa-hero-preview__buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+
+    margin-top: 24px;
+}
+
+.porto-admin .pa-hero-editor .pa-hero-preview__buttons span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 36px;
+    padding: 9px 13px;
+
+    background: #df6a27;
+    color: #17110e;
+
+    border: 1px solid #df6a27;
+    border-radius: 9px;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* Tombol kedua */
+.porto-admin .pa-hero-editor .pa-hero-preview__buttons span + span {
+    background: transparent;
+    border-color: #645148;
+    color: #f6f2ee;
+}
+
+/* Footer preview */
+.porto-admin .pa-hero-editor .pa-editor-preview__footer {
+    padding: 16px 24px;
+
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+
+    color: #aa9e95;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 650px) {
+    .porto-admin .pa-hero-editor .pa-editor-group__header {
+        padding: 22px 20px 17px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-editor-group__header h2 {
+        font-size: 21px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-editor-group__body {
+        padding: 5px 20px 22px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-editor-input {
+        font-size: 14px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-editor-textarea {
+        min-height: 180px;
+        padding: 13px 14px;
+        font-size: 14px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-hero-preview {
+        padding: 24px 20px 26px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-hero-preview h3 {
+        font-size: 24px;
+        line-height: 1.3;
+    }
+
+    .porto-admin .pa-hero-editor .pa-hero-preview p {
+        font-size: 14px;
+        line-height: 1.85;
+    }
+
+    .porto-admin .pa-hero-editor .pa-editor-actions {
+        padding: 17px 20px;
+    }
+
+    .porto-admin .pa-hero-editor .pa-editor-actions .pa-button {
+        width: 100%;
+    }
+}
+/* ==========================================
+   INFORMASI PRIBADI — TYPOGRAPHY REFINEMENT
+========================================== */
+
+.porto-admin .pa-profile-editor .pa-editor-card,
+.porto-admin .pa-profile-editor .pa-editor-preview {
+    border-radius: 16px;
+}
+
+/* ==========================================
+   EDITOR KIRI
+========================================== */
+
+.porto-admin .pa-profile-editor .pa-editor-group__header {
+    padding: 25px 27px 19px;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-kicker {
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    line-height: 1.5;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-group__header h2 {
+    margin: 10px 0 8px;
+    color: #f6f2ee;
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.035em;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-group__header p {
+    max-width: 530px;
+    margin: 0;
+    color: #aaa29c;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.75;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-group__body {
+    gap: 19px;
+    padding: 5px 27px 27px;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-two {
+    gap: 14px;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-label {
+    margin-bottom: 9px;
+    color: #eae2dc;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-input {
+    width: 100%;
+    min-height: 45px;
+    padding: 11px 14px;
+    border: 1px solid #4b423d;
+    border-radius: 10px;
+    background: #1b1a1a;
+    color: #f6f2ee;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-input::placeholder {
+    color: #90847c;
+    font-size: 13px;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-input:focus {
+    outline: none;
+    border-color: #df6a27;
+    box-shadow: 0 0 0 3px rgba(223, 106, 39, 0.11);
+}
+
+.porto-admin .pa-profile-editor .pa-editor-hint,
+.porto-admin .pa-profile-editor .pa-editor-error {
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   UPLOAD FOTO & LOGO
+========================================== */
+
+.porto-admin .pa-profile-upload {
+    width: 100%;
+}
+
+.porto-admin .pa-profile-upload__box {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+    padding: 18px;
+    border: 1px dashed #71503b;
+    border-radius: 13px;
+    background: #211e1d;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.porto-admin .pa-profile-upload__box:hover {
+    border-color: #df6a27;
+    background: #26201d;
+}
+
+/* Area preview */
+
+.porto-admin .pa-profile-upload__preview {
+    display: grid;
+    place-items: center;
+    flex: 0 0 106px;
+    width: 106px;
+    height: 106px;
+    overflow: hidden;
+    border: 1px solid #514238;
+    border-radius: 12px;
+    background: #171616;
+}
+
+.porto-admin .pa-profile-upload__preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Foto profil mengikuti bentuk avatar */
+
+.porto-admin .pa-profile-upload__preview--photo {
+    border-radius: 50%;
+}
+
+.porto-admin .pa-profile-upload__preview--photo img {
+    object-fit: cover;
+}
+
+/* Logo tidak terpotong */
+
+.porto-admin .pa-profile-upload__preview--logo img {
+    object-fit: contain;
+    padding: 10px;
+}
+
+/* Jika belum ada gambar */
+
+.porto-admin .pa-profile-upload__empty {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 9px;
+    color: #a56e4e;
+    text-align: center;
+}
+
+.porto-admin .pa-profile-upload__empty span {
+    color: #9c8e84;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+/* Informasi upload */
+
+.porto-admin .pa-profile-upload__details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    min-width: 0;
+}
+
+.porto-admin .pa-profile-upload__details strong {
+    color: #f6f2ee;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.porto-admin .pa-profile-upload__details p {
+    margin: 0;
+    color: #b3a79e;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.porto-admin .pa-profile-upload__details small {
+    color: #9f938b;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.porto-admin .pa-profile-upload__filename {
+    max-width: 100%;
+    color: #f2a06e;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+/* Tombol upload */
+
+.porto-admin .pa-profile-upload__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 7px;
+}
+
+.porto-admin .pa-profile-upload__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    opacity: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+}
+
+.porto-admin .pa-profile-upload__choose,
+.porto-admin .pa-profile-upload__remove,
+.porto-admin .pa-profile-upload__restore {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 0 0 auto;
+    min-height: 35px;
+    padding: 8px 11px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.porto-admin .pa-profile-upload__choose {
+    background: #df6a27;
+    border-color: #df6a27;
+    color: #fff;
+}
+
+.porto-admin .pa-profile-upload__choose:hover {
+    background: #ed7b38;
+    border-color: #ed7b38;
+}
+
+.porto-admin
+    .pa-profile-upload__input:focus-visible
+    + .pa-profile-upload__choose {
+    outline: 2px solid #f2a06e;
+    outline-offset: 3px;
+}
+
+.porto-admin .pa-profile-upload__remove {
+    background: rgba(220, 77, 77, 0.09);
+    border-color: rgba(233, 108, 108, 0.3);
+    color: #f0a2a2;
+}
+
+.porto-admin .pa-profile-upload__remove:hover {
+    background: rgba(220, 77, 77, 0.18);
+}
+
+.porto-admin .pa-profile-upload__restore {
+    background: #302923;
+    border-color: #655140;
+    color: #f2b080;
+}
+
+.porto-admin .pa-profile-upload__restore:hover {
+    background: #403126;
+}
+
+/* ==========================================
+   TOMBOL SIMPAN
+========================================== */
+
+.porto-admin .pa-profile-editor .pa-editor-actions {
+    gap: 15px;
+    padding: 17px 27px;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-save-note {
+    color: #b2a59c;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-actions .pa-button {
+    width: auto;
+    min-height: 38px;
+    padding: 9px 14px;
+    border-radius: 9px;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.4;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-actions .pa-button--primary {
+    background: #df6a27;
+    color: #fff !important;
+}
+
+/* ==========================================
+   PREVIEW KANAN
+========================================== */
+
+.porto-admin .pa-profile-editor .pa-editor-preview__header {
+    padding: 20px 24px;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview {
+    padding: 29px 26px 32px;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-avatar {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 20px;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview__eyebrow {
+    color: #f2a06e;
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview h3 {
+    margin: 12px 0 6px;
+    color: #f6f2ee;
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 24px;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.035em;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview > p {
+    color: #c9beb6;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.75;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview__details {
+    gap: 18px;
+    margin-top: 25px;
+    padding-top: 22px;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview__details span {
+    color: #aa9e95;
+    font-size: 11px;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-preview__details strong {
+    color: #eee6df;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.65;
+}
+
+.porto-admin .pa-profile-editor .pa-profile-logo-preview {
+    width: 110px;
+    height: 65px;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.porto-admin .pa-profile-editor .pa-editor-preview__footer {
+    padding: 16px 24px;
+    color: #aa9e95;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 700px) {
+    .porto-admin .pa-profile-upload__box {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+    }
+
+    .porto-admin .pa-profile-upload__preview {
+        width: 106px;
+        height: 106px;
+        flex-basis: 106px;
+    }
+
+    .porto-admin .pa-profile-upload__details {
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+    .porto-admin .pa-profile-editor .pa-editor-group__header {
+        padding: 22px 20px 17px;
+    }
+
+    .porto-admin .pa-profile-editor .pa-editor-group__header h2 {
+        font-size: 21px;
+    }
+
+    .porto-admin .pa-profile-editor .pa-editor-group__body {
+        padding: 5px 20px 22px;
+    }
+
+    .porto-admin .pa-profile-editor .pa-editor-two {
+        grid-template-columns: 1fr;
+    }
+
+    .porto-admin .pa-profile-editor .pa-profile-preview {
+        padding: 24px 20px 26px;
+    }
+
+    .porto-admin .pa-profile-editor .pa-profile-preview h3 {
+        font-size: 22px;
+    }
+
+    .porto-admin .pa-profile-editor .pa-editor-actions {
+        padding: 17px 20px;
+    }
+
+    .porto-admin .pa-profile-editor .pa-editor-actions .pa-button {
+        width: 100%;
     }
 }

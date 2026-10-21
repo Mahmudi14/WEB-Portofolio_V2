@@ -19,8 +19,35 @@ class EducationController extends Controller
             'Admin/Educations/Index',
             [
                 'educations' => $service->all(),
-                'profileExists' =>
-                    $service->profileExists(),
+                'profileExists' => $service->profileExists(),
+            ]
+        );
+    }
+
+    public function show(
+        Education $education,
+        EducationService $service
+    ): Response {
+        $service->ensureOwned($education);
+
+        return Inertia::render(
+            'Admin/Educations/Show',
+            [
+                'education' => $education,
+            ]
+        );
+    }
+
+    public function edit(
+        Education $education,
+        EducationService $service
+    ): Response {
+        $service->ensureOwned($education);
+
+        return Inertia::render(
+            'Admin/Educations/Edit',
+            [
+                'education' => $education,
             ]
         );
     }
@@ -29,9 +56,7 @@ class EducationController extends Controller
         SaveEducationRequest $request,
         EducationService $service
     ): RedirectResponse {
-        $service->create(
-            $request->validated()
-        );
+        $service->create($request->validated());
 
         return to_route('admin.educations.index')
             ->with(
@@ -50,11 +75,13 @@ class EducationController extends Controller
             $request->validated()
         );
 
-        return to_route('admin.educations.index')
-            ->with(
-                'success',
-                'Pendidikan berhasil diperbarui.'
-            );
+        return to_route(
+            'admin.educations.show',
+            $education
+        )->with(
+            'success',
+            'Pendidikan berhasil diperbarui.'
+        );
     }
 
     public function destroy(
