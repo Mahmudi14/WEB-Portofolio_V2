@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 
 import {
     ArrowDown,
@@ -15,13 +15,13 @@ import {
     Menu,
     Microscope,
     X,
-} from 'lucide-react';
+} from "lucide-react";
 
-import { useState } from 'react';
+import { useState } from "react";
 
-import type { ReactNode } from 'react';
-
-import '../../css/landing.css';
+import type { ReactNode } from "react";
+import HeroIdCard from "@/components/landing/hero-id-card";
+import "../../css/landing.css";
 
 // ==========================================
 // TYPES
@@ -128,18 +128,14 @@ type Props = {
 // ==========================================
 
 const navigation = [
-    { label: 'Tentang', href: '#about' },
-    { label: 'Keahlian', href: '#skills' },
-    { label: 'Pengalaman', href: '#experience' },
-    { label: 'Proyek', href: '#projects' },
-    { label: 'Penelitian', href: '#research' },
+    { label: "Tentang", href: "#about" },
+    { label: "Keahlian", href: "#skills" },
+    { label: "Pengalaman", href: "#experience" },
+    { label: "Proyek", href: "#projects" },
+    { label: "Penelitian", href: "#research" },
 ];
 
-function period(
-    start: number,
-    end: number | null,
-    current: boolean
-) {
+function period(start: number, end: number | null, current: boolean) {
     if (current) return `${start} — Sekarang`;
     return end ? `${start} — ${end}` : String(start);
 }
@@ -148,22 +144,12 @@ function safeUrl(url: string): string | null {
     try {
         const parsed = new URL(url);
 
-        return ['https:', 'http:'].includes(parsed.protocol)
+        return ["https:", "http:"].includes(parsed.protocol)
             ? parsed.href
             : null;
     } catch {
         return null;
     }
-}
-
-function getInitials(name: string) {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((part) => part[0] ?? '')
-        .join('')
-        .toUpperCase();
 }
 
 function SectionHeading({
@@ -180,7 +166,9 @@ function SectionHeading({
     return (
         <div className="lp-section-heading">
             <div className="lp-section-heading__top">
-                <span>{index} / {eyebrow}</span>
+                <span>
+                    {index} / {eyebrow}
+                </span>
                 <span className="lp-section-heading__line" />
             </div>
 
@@ -188,18 +176,6 @@ function SectionHeading({
 
             {description && <p>{description}</p>}
         </div>
-    );
-}
-
-function EmptyAvatar({
-    name,
-}: {
-    name: string;
-}) {
-    return (
-        <span className="lp-avatar-fallback">
-            {getInitials(name) || 'P'}
-        </span>
     );
 }
 
@@ -216,13 +192,10 @@ function Section({
         <section
             id={id}
             className={
-                'lp-section' +
-                (alternate ? ' lp-section--alternate' : '')
+                "lp-section" + (alternate ? " lp-section--alternate" : "")
             }
         >
-            <div className="lp-container">
-                {children}
-            </div>
+            <div className="lp-container">{children}</div>
         </section>
     );
 }
@@ -231,13 +204,7 @@ function Section({
 // NAVBAR
 // ==========================================
 
-function Navbar({
-    name,
-    logoUrl,
-}: {
-    name: string;
-    logoUrl: string | null;
-}) {
+function Navbar({ name, logoUrl }: { name: string; logoUrl: string | null }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
@@ -250,10 +217,7 @@ function Navbar({
                 >
                     <span className="lp-brand__mark">
                         {logoUrl ? (
-                            <img
-                                src={logoUrl}
-                                alt=""
-                            />
+                            <img src={logoUrl} alt="" />
                         ) : (
                             <Layers3 size={21} />
                         )}
@@ -267,10 +231,8 @@ function Navbar({
 
                 <nav
                     className={
-                        'lp-navigation' +
-                        (menuOpen
-                            ? ' lp-navigation--open'
-                            : '')
+                        "lp-navigation" +
+                        (menuOpen ? " lp-navigation--open" : "")
                     }
                     aria-label="Navigasi utama"
                 >
@@ -297,19 +259,11 @@ function Navbar({
                 <button
                     type="button"
                     className="lp-menu-toggle"
-                    aria-label={
-                        menuOpen
-                            ? 'Tutup menu'
-                            : 'Buka menu'
-                    }
+                    aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
                     aria-expanded={menuOpen}
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
-                    {menuOpen ? (
-                        <X size={22} />
-                    ) : (
-                        <Menu size={22} />
-                    )}
+                    {menuOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>
             </div>
         </header>
@@ -331,10 +285,7 @@ function HeroSection({
     projectCount: number;
     researchCount: number;
 }) {
-    const name =
-        profile.display_name ||
-        profile.full_name ||
-        'Portofolio';
+    const name = profile.display_name || profile.full_name || "Portofolio";
 
     return (
         <section id="home" className="lp-hero">
@@ -352,12 +303,12 @@ function HeroSection({
 
                     <h1>
                         {hero.headline ||
-                            'Membangun karya melalui ide dan teknologi.'}
+                            "Membangun karya melalui ide dan teknologi."}
                     </h1>
 
                     <p className="lp-hero__description">
                         {hero.description ||
-                            'Selamat datang di portofolio saya. Jelajahi proyek, pengalaman, dan karya yang telah saya kerjakan.'}
+                            "Selamat datang di portofolio saya. Jelajahi proyek, pengalaman, dan karya yang telah saya kerjakan."}
                     </p>
 
                     <div className="lp-hero__actions">
@@ -397,35 +348,15 @@ function HeroSection({
                 </div>
 
                 <div className="lp-hero__visual">
-                    <div className="lp-hero__orbit lp-hero__orbit--one" />
-                    <div className="lp-hero__orbit lp-hero__orbit--two" />
-
-                    <div className="lp-hero__portrait">
-                        {profile.photo_url ? (
-                            <img
-                                src={profile.photo_url}
-                                alt={`Foto profil ${name}`}
-                            />
-                        ) : (
-                            <EmptyAvatar name={name} />
-                        )}
-
-                        <span className="lp-hero__portrait-label">
-                            CREATIVE PORTFOLIO
-                        </span>
-                    </div>
-
-                    <div className="lp-hero__floating">
-                        <span className="lp-hero__floating-dot" />
-                        Explore. Create. Evolve.
-                    </div>
+                    <HeroIdCard
+                        name={name}
+                        photoUrl={profile.photo_url}
+                        logoUrl={profile.logo_url}
+                    />
                 </div>
             </div>
 
-            <a
-                className="lp-scroll-hint"
-                href="#about"
-            >
+            <a className="lp-scroll-hint" href="#about">
                 <ArrowDown size={15} />
                 Scroll untuk menjelajah
             </a>
@@ -449,13 +380,9 @@ export default function Welcome({
     projects,
     researches,
 }: Props) {
-    const name =
-        profile.display_name ||
-        profile.full_name ||
-        'Portofolio';
+    const name = profile.display_name || profile.full_name || "Portofolio";
 
-    const whatsAppNumber =
-        profile.whatsapp?.replace(/\D/g, '') ?? '';
+    const whatsAppNumber = profile.whatsapp?.replace(/\D/g, "") ?? "";
 
     return (
         <div className="lp">
@@ -469,10 +396,7 @@ export default function Welcome({
                 />
             </Head>
 
-            <Navbar
-                name={name}
-                logoUrl={profile.logo_url}
-            />
+            <Navbar name={name} logoUrl={profile.logo_url} />
 
             <main>
                 <HeroSection
@@ -496,13 +420,10 @@ export default function Welcome({
                         <div className="lp-about-content">
                             <p>
                                 {about.description ||
-                                    'Cerita dan latar belakang akan tampil setelah ditambahkan melalui admin.'}
+                                    "Cerita dan latar belakang akan tampil setelah ditambahkan melalui admin."}
                             </p>
 
-                            <a
-                                href="#experience"
-                                className="lp-text-link"
-                            >
+                            <a href="#experience" className="lp-text-link">
                                 Lihat perjalanan saya
                                 <ArrowUpRight size={18} />
                             </a>
@@ -534,9 +455,7 @@ export default function Welcome({
                                     <h3>{category.name}</h3>
 
                                     {category.description && (
-                                        <p>
-                                            {category.description}
-                                        </p>
+                                        <p>{category.description}</p>
                                     )}
 
                                     <div className="lp-tags">
@@ -575,10 +494,9 @@ export default function Welcome({
 
                                     <div className="lp-timeline-item__main">
                                         <span className="lp-overline">
-                                            {experience.category ===
-                                            'pekerjaan'
-                                                ? 'PEKERJAAN'
-                                                : 'ORGANISASI'}
+                                            {experience.category === "pekerjaan"
+                                                ? "PEKERJAAN"
+                                                : "ORGANISASI"}
                                         </span>
 
                                         <h3>{experience.position}</h3>
@@ -594,7 +512,7 @@ export default function Welcome({
                                         {period(
                                             experience.start_year,
                                             experience.end_year,
-                                            experience.is_current
+                                            experience.is_current,
                                         )}
                                     </time>
                                 </article>
@@ -627,9 +545,7 @@ export default function Welcome({
                                         {education.level}
                                     </span>
 
-                                    <h3>
-                                        {education.institution_name}
-                                    </h3>
+                                    <h3>{education.institution_name}</h3>
 
                                     {education.major && (
                                         <p>{education.major}</p>
@@ -639,7 +555,7 @@ export default function Welcome({
                                         {period(
                                             education.start_year,
                                             education.end_year,
-                                            education.is_current
+                                            education.is_current,
                                         )}
                                     </span>
                                 </article>
@@ -682,9 +598,7 @@ export default function Welcome({
                                         )}
 
                                         {achievement.description && (
-                                            <p>
-                                                {achievement.description}
-                                            </p>
+                                            <p>{achievement.description}</p>
                                         )}
                                     </div>
 
@@ -728,7 +642,7 @@ export default function Welcome({
                                         )}
 
                                         <span className="lp-project-card__number">
-                                            {String(index + 1).padStart(2, '0')}
+                                            {String(index + 1).padStart(2, "0")}
                                         </span>
                                     </div>
 
@@ -742,8 +656,8 @@ export default function Welcome({
                                         <p>{project.description}</p>
 
                                         <div className="lp-tags">
-                                            {(project.technologies ?? '')
-                                                .split(',')
+                                            {(project.technologies ?? "")
+                                                .split(",")
                                                 .map((tech) => tech.trim())
                                                 .filter(Boolean)
                                                 .slice(0, 7)
@@ -774,12 +688,14 @@ export default function Welcome({
                                                                 aria-label={`Buka gambar ${imageIndex + 1} dari proyek ${project.title}`}
                                                             >
                                                                 <img
-                                                                    src={image.url}
+                                                                    src={
+                                                                        image.url
+                                                                    }
                                                                     alt={`Galeri ${project.title} ${imageIndex + 1}`}
                                                                     loading="lazy"
                                                                 />
                                                             </a>
-                                                        )
+                                                        ),
                                                     )}
                                                 </div>
                                             )}
@@ -791,7 +707,10 @@ export default function Welcome({
                     ) : (
                         <div className="lp-empty">
                             <BookOpen size={24} />
-                            <p>Proyek akan tampil di sini setelah ditambahkan melalui admin.</p>
+                            <p>
+                                Proyek akan tampil di sini setelah ditambahkan
+                                melalui admin.
+                            </p>
                         </div>
                     )}
                 </Section>
@@ -814,7 +733,7 @@ export default function Welcome({
                                     className="lp-research-item"
                                 >
                                     <div className="lp-research-item__number">
-                                        {String(index + 1).padStart(2, '0')}
+                                        {String(index + 1).padStart(2, "0")}
                                     </div>
 
                                     <div className="lp-research-item__content">
@@ -852,9 +771,8 @@ export default function Welcome({
                         </h2>
 
                         <p>
-                            Terbuka untuk diskusi, kolaborasi,
-                            serta kesempatan untuk membangun
-                            sesuatu yang bermanfaat bersama.
+                            Terbuka untuk diskusi, kolaborasi, serta kesempatan
+                            untuk membangun sesuatu yang bermanfaat bersama.
                         </p>
 
                         <div className="lp-contact__buttons">
@@ -896,7 +814,7 @@ export default function Welcome({
                                             rel="noopener noreferrer"
                                         >
                                             {social.platform.toLowerCase() ===
-                                            'github' ? (
+                                            "github" ? (
                                                 <Github size={16} />
                                             ) : (
                                                 <ExternalLink size={15} />
@@ -917,16 +835,14 @@ export default function Welcome({
 
             <footer className="lp-footer">
                 <div className="lp-container lp-footer__inner">
-                    <a
-                        href="#home"
-                        className="lp-footer__brand"
-                    >
-                        {name}<span>.</span>
+                    <a href="#home" className="lp-footer__brand">
+                        {name}
+                        <span>.</span>
                     </a>
 
                     <p>
-                        © {new Date().getFullYear()} {name}.
-                        Dibangun dengan dedikasi dan kreativitas.
+                        © {new Date().getFullYear()} {name}. Dibangun dengan
+                        dedikasi dan kreativitas.
                     </p>
 
                     <a href="#home">

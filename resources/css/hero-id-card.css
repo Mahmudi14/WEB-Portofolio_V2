@@ -1,0 +1,654 @@
+/* ==========================================
+   HERO ID CARD — PHYSICAL LANYARD
+========================================== */
+
+.lp-id-stage {
+    position: relative;
+    isolation: isolate;
+
+    width: min(100%, 560px);
+    height: 700px;
+    margin-inline: auto;
+    padding-inline: 26px;
+
+    overflow: visible;
+    border-radius: 22px;
+}
+
+.lp-id-stage__glow {
+    position: absolute;
+    z-index: -1;
+
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 440px;
+    height: 440px;
+    max-width: 100%;
+
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(223, 106, 39, 0.14),
+        rgba(223, 106, 39, 0.035) 45%,
+        transparent 72%
+    );
+
+    pointer-events: none;
+}
+
+/* ==========================================
+   ANCHOR / TEMPAT TALI DIGANTUNG
+========================================== */
+
+.lp-id-anchor {
+    position: absolute;
+    z-index: 4;
+
+    top: 10px;
+    left: 50%;
+
+    width: 16px;
+    height: 16px;
+
+    transform: translateX(-50%);
+
+    border: 3px solid #d9a27a;
+    border-radius: 50%;
+
+    background: #2e211a;
+    box-shadow:
+        0 0 0 6px rgba(223, 106, 39, 0.08),
+        0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+/* ==========================================
+   TALI DINAMIS BERBASIS SVG
+========================================== */
+
+/* ==========================================
+   LANYARD BARU
+========================================== */
+
+.lp-id-lanyard {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+    pointer-events: none;
+}
+
+.lp-id-lanyard__shadow,
+.lp-id-lanyard__band,
+.lp-id-lanyard__accent {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.lp-id-lanyard__shadow {
+    stroke: rgba(0, 0, 0, 0.18);
+    stroke-width: 30;
+    filter: blur(0.3px);
+}
+
+.lp-id-lanyard__band {
+    stroke: #f7f5f2;
+    stroke-width: 23;
+}
+
+.lp-id-lanyard__accent {
+    stroke: #2155d6;
+    stroke-width: 8;
+    stroke-dasharray: 24 20 10 18;
+    opacity: 0.9;
+}
+.lp-id-buckle {
+    position: absolute;
+    z-index: 4;
+
+    width: 40px;
+    height: 24px;
+
+    pointer-events: none;
+}
+
+.lp-id-buckle__top,
+.lp-id-buckle__bottom {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 22px;
+    height: 10px;
+
+    border-radius: 5px;
+    background: linear-gradient(180deg, #1f1f1f, #0f0f0f);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.lp-id-buckle__top {
+    top: 0;
+}
+
+.lp-id-buckle__bottom {
+    bottom: 0;
+}
+
+.lp-id-ring {
+    position: absolute;
+    z-index: 4;
+
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid #d0d4db;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.22),
+        0 2px 5px rgba(0, 0, 0, 0.25);
+
+    pointer-events: none;
+}
+
+/* ==========================================
+   KARTU ID
+========================================== */
+
+.lp-id-card {
+    position: absolute;
+    z-index: 3;
+
+    top: 0;
+    left: 0;
+
+    width: min(82%, 300px);
+    max-width: 300px;
+    height: auto;
+
+    padding: 24px 18px 17px;
+
+    border: 1px solid #a06c4a;
+    border-radius: 17px;
+
+    background:
+        radial-gradient(
+            ellipse at 12% 6%,
+            rgba(223, 106, 39, 0.17),
+            transparent 45%
+        ),
+        linear-gradient(156deg, #312720 0%, #211d1b 57%, #171716 100%);
+
+    box-shadow:
+        0 27px 65px rgba(0, 0, 0, 0.52),
+        0 4px 11px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    transform-origin: 50% 18px;
+    transform: translate3d(0, -600px, 0);
+
+    opacity: 0;
+
+    will-change: transform;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    backface-visibility: hidden;
+
+    cursor: grab;
+}
+
+.lp-id-card:hover {
+    border-color: #dd9563;
+}
+
+.lp-id-card--dragging {
+    cursor: grabbing;
+
+    box-shadow:
+        0 38px 80px rgba(0, 0, 0, 0.6),
+        0 6px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.lp-id-card:focus-visible {
+    outline: 2px solid #f2a06e;
+    outline-offset: 5px;
+}
+
+.lp-id-card img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
+/* ==========================================
+   SLOT DAN KLIP LOGAM
+========================================== */
+
+.lp-id-card__slot {
+    display: grid;
+    place-items: center;
+
+    position: absolute;
+    top: 7px;
+    left: 50%;
+
+    width: 36px;
+    height: 11px;
+
+    transform: translateX(-50%);
+
+    border: 1px solid #876b5a;
+    border-radius: 9px;
+    background: #100f0e;
+    box-shadow:
+        inset 0 2px 3px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.lp-id-card__slot span {
+    display: block;
+    width: 25px;
+    height: 3px;
+
+    border-radius: 4px;
+    background: #655349;
+}
+
+.lp-id-card__clip {
+    position: absolute;
+    top: -9px;
+    left: 50%;
+
+    width: 18px;
+    height: 26px;
+
+    transform: translateX(-50%);
+
+    border: 3px solid #c39b7d;
+    border-radius: 7px;
+    background: transparent;
+
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================
+   HEADER KARTU
+========================================== */
+
+.lp-id-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    margin: 11px 0 15px;
+}
+
+.lp-id-card__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.lp-id-card__logo {
+    display: grid;
+    place-items: center;
+    flex: 0 0 37px;
+
+    width: 37px;
+    height: 37px;
+
+    border: 1px solid #875536;
+    border-radius: 9px;
+
+    background: #3c2b20;
+    color: #f3a778;
+}
+
+.lp-id-card__logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    padding: 5px;
+    object-fit: contain;
+}
+
+.lp-id-card__brand > span:last-child {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.lp-id-card__brand strong {
+    color: #fff1e6;
+
+    font:
+        700 14px/1.15 "Space Grotesk",
+        Inter,
+        sans-serif;
+
+    letter-spacing: 0.08em;
+}
+
+.lp-id-card__brand small {
+    color: #bf9e89;
+
+    font:
+        650 8px/1.3 Inter,
+        sans-serif;
+    letter-spacing: 0.11em;
+}
+
+.lp-id-card__index {
+    flex-shrink: 0;
+
+    color: #c6a58c;
+    font:
+        650 9px Inter,
+        sans-serif;
+    letter-spacing: 0.06em;
+}
+
+/* ==========================================
+   FOTO PROFIL
+========================================== */
+
+.lp-id-card__photo {
+    position: relative;
+
+    width: 100%;
+    height: 220px;
+
+    overflow: hidden;
+
+    border: 1px solid #77523b;
+    border-radius: 11px;
+
+    background: linear-gradient(145deg, #584032, #25201c 75%);
+}
+
+.lp-id-card__photo > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center 18%;
+}
+
+.lp-id-card__initials {
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    color: #f3ad80;
+
+    font:
+        700 65px "Space Grotesk",
+        Inter,
+        sans-serif;
+}
+
+.lp-id-card__photo > span {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: block;
+    padding: 12px 8px 9px;
+
+    background: linear-gradient(transparent, rgba(11, 9, 8, 0.9));
+
+    color: #fff1e8;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-align: center;
+}
+
+/* ==========================================
+   NAMA DAN ROLE
+========================================== */
+
+.lp-id-card__information {
+    padding: 17px 0 15px;
+}
+
+.lp-id-card__role {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #f2a06e;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.lp-id-card__information h2 {
+    margin: 0 0 6px;
+
+    color: #fff1e7;
+    font:
+        700 26px/1.15 "Space Grotesk",
+        Inter,
+        sans-serif;
+
+    letter-spacing: -0.045em;
+}
+
+.lp-id-card__information p {
+    margin: 0;
+
+    color: #c4b3a5;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+/* ==========================================
+   FOOTER ID CARD
+========================================== */
+
+.lp-id-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding-top: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lp-id-card__barcode {
+    width: 100px;
+    height: 25px;
+
+    background: repeating-linear-gradient(
+        90deg,
+        #e4c7ae 0 2px,
+        transparent 2px 4px,
+        #e4c7ae 4px 5px,
+        transparent 5px 9px,
+        #e4c7ae 9px 12px,
+        transparent 12px 15px
+    );
+
+    opacity: 0.66;
+}
+
+.lp-id-card__footer > span:last-child {
+    display: grid;
+    gap: 5px;
+    text-align: right;
+}
+
+.lp-id-card__footer small {
+    color: #978479;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+}
+
+.lp-id-card__footer strong {
+    color: #f2b184;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+}
+
+/* ==========================================
+   DRAG HINT
+========================================== */
+
+.lp-id-drag-hint {
+    position: absolute;
+    z-index: 4;
+
+    right: 0;
+    bottom: 12px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    color: #aa9080;
+    font-size: 10px;
+    font-weight: 600;
+
+    pointer-events: none;
+}
+
+.lp-id-drag-hint svg {
+    color: #df8c53;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1100px) {
+    .lp-id-stage {
+        height: 570px;
+    }
+
+    .lp-id-card__photo {
+        height: 185px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* FOTO DI ATAS, TEKS DI BAWAH */
+
+    .lp .lp-hero__grid {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+    }
+
+    .lp .lp-hero__visual {
+        display: grid;
+        place-items: center;
+        position: relative;
+        min-height: 680px;
+        isolation: isolate;
+        overflow: visible;
+    }
+
+    .lp .lp-hero__content {
+        order: 1;
+        width: 100%;
+    }
+
+    .lp .lp-hero {
+        padding-top: 18px;
+    }
+
+    .lp-id-stage {
+        width: 100%;
+        height: 540px;
+        padding-inline: 12px;
+    }
+
+    .lp-id-card {
+        width: min(76%, 250px);
+    }
+
+    .lp-id-card__photo {
+        height: 165px;
+    }
+}
+
+@media (max-width: 600px) {
+    .lp .lp-hero__grid {
+        gap: 17px;
+    }
+
+    .lp .lp-hero {
+        padding-top: 8px;
+    }
+
+    .lp-id-stage {
+        width: 100%;
+        height: 500px;
+        padding-inline: 8px;
+        border-radius: 0;
+    }
+
+    .lp-id-card {
+        width: min(80%, 240px);
+        max-width: 240px;
+        padding: 22px 15px 15px;
+        border-radius: 15px;
+    }
+
+    .lp-id-card__photo {
+        height: 160px;
+    }
+
+    .lp-id-card__information {
+        padding: 13px 0 12px;
+    }
+
+    .lp-id-card__information h2 {
+        font-size: 22px;
+    }
+
+    .lp-id-card__brand strong {
+        font-size: 12px;
+    }
+
+    .lp-id-card__footer {
+        padding-top: 11px;
+    }
+
+    .lp-id-card__barcode {
+        width: 75px;
+        height: 20px;
+    }
+
+    .lp-id-drag-hint {
+        bottom: 6px;
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lp-id-card {
+        transition: none !important;
+    }
+}
