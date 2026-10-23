@@ -415,74 +415,51 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
             }
         };
 
-        const syncMobileScrollFade = () => {
-            const hero = stage.closest<HTMLElement>(".lp-hero");
+        // ==========================================
+        // RESPONSIVE SCROLL FADE
+        // Desktop: fade sebelum About.
+        // Mobile: fade cepat setelah scroll.
+        // ==========================================
 
-            if (!hero) return;
-
-            const isMobile = window.innerWidth <= 900;
-
-            if (!isMobile) {
-                stage.style.setProperty("--lp-mobile-fade", "1");
-                stage.style.setProperty("--lp-mobile-lift", "0px");
-                stage.classList.remove("lp-id-stage--mobile-hidden");
-                stage.style.removeProperty("pointer-events");
-                return;
-            }
-
-            // Seberapa jauh hero sudah tergeser ke atas.
-            const scrolled = Math.max(0, -hero.getBoundingClientRect().top);
-
-            // Fade mulai sedikit setelah user scroll,
-            // lalu cukup cepat menghilang.
-            const fadeStart = 16;
-            const fadeEnd = 165;
-
-            const progress = clamp(
-                (scrolled - fadeStart) / (fadeEnd - fadeStart),
-                0,
-                1,
-            );
-
-            const opacity = 1 - progress;
-            const lift = progress * 24;
-
-            stage.style.setProperty("--lp-mobile-fade", opacity.toFixed(3));
-
-            stage.style.setProperty("--lp-mobile-lift", `${lift.toFixed(1)}px`);
-
-            if (progress > 0.94) {
-                stage.classList.add("lp-id-stage--mobile-hidden");
-                stage.style.pointerEvents = "none";
-            } else {
-                stage.classList.remove("lp-id-stage--mobile-hidden");
-                stage.style.removeProperty("pointer-events");
-            }
-        };
-
-        const syncAnchorWhileScrolling = () => {
+        const syncScrollEffects = () => {
             const state = motionRef.current;
 
             if (!state) return;
 
+            const hero = stage.closest<HTMLElement>(".lp-hero");
+
+            const about = document.getElementById("about");
+
+            if (!hero) return;
+
             const stageBounds = stage.getBoundingClientRect();
             const mountBounds = navbarMount.getBoundingClientRect();
+
+            const heroBounds = hero.getBoundingClientRect();
+
+            // ======================================
+            // 1. SYNC ANCHOR DENGAN NAVBAR
+            // ======================================
 
             const nextX =
                 mountBounds.left + mountBounds.width / 2 - stageBounds.left;
 
             const nextY = mountBounds.bottom - stageBounds.top;
 
-            // Sesuaikan koordinat kartu dan tali saat
-            // Navbar sticky sedangkan Hero bergulir.
             const deltaX = nextX - state.anchorX;
             const deltaY = nextY - state.anchorY;
 
             state.anchorX = nextX;
             state.anchorY = nextY;
 
+            // Pertahankan posisi layar kartu
+            // ketika Navbar menjadi sticky.
             state.x += deltaX;
             state.y += deltaY;
+
+            // ======================================
+            // 2. UPDATE GRADASI LANYARD
+            // ======================================
 
             const endY = nextY + state.length - STRAP_END_Y * state.scale;
 
@@ -496,23 +473,117 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
 
             inkGradientRef.current?.setAttribute("y2", String(endY));
 
-            // Saat Hero sudah tidak terlihat, sembunyikan
-            // pengait agar tidak menggantung sendirian
-            // di halaman-halaman section berikutnya.
-            const hero = stage.closest<HTMLElement>(".lp-hero");
+            // ======================================
+            // 3. HITUNG OPACITY RESPONSIVE
+            // ======================================
 
-            const visible =
-                !hero ||
-                (hero.getBoundingClientRect().bottom >
-                    mountBounds.bottom + 120 &&
-                    hero.getBoundingClientRect().top < window.innerHeight);
+            const isMobile = window.innerWidth <= 900;
+
+            let opacity = 1;
+
+            if (isMobile) {
+                // MOBILE
+                // Hitung jarak scroll dari awal Hero,
+                // termasuk ketika URL dibuka dengan hash.
+
+                const heroDocumentTop = heroBounds.top + window.scrollY;
+
+                const scrollDistance = Math.max(
+                    0,
+                    window.scrollY -
+                        Math.max(0, heroDocumentTop - navbar.offsetHeight),
+                );
+
+                // Mulai memudar hampir langsung.
+                // Hilang seluruhnya sekitar 190px.
+                const fadeStart = 6;
+                const fadeEnd = 190;
+
+                const progress = clamp(
+                    (scrollDistance - fadeStart) / (fadeEnd - fadeStart),
+                    0,
+                    1,
+                );
+
+                // Memudar cepat di awal, kemudian
+                // perlahan mencapai transparan penuh.
+                opacity = Math.pow(1 - progress, 1.8);
+            } else {
+                // DESKTOP / LAPTOP
+                // Kartu tetap terlihat di Hero,
+                // tetapi memudar sebelum About
+                // bergerak ke belakang kartu.
+
+                // Perkiraan batas bawah kartu pada
+                // posisi gantung saat diam.
+                const restingCardBottom =
+                    mountBounds.bottom +
+                    state.length -
+                    state.slotY +
+                    state.cardHeight;
+
+                const aboutTop =
+                    about?.getBoundingClientRect().top ?? heroBounds.bottom;
+
+                // Fade dimulai saat About masih
+                // 220px di bawah batas kartu.
+                const fadeStartAt = restingCardBottom + 220;
+
+                // Hilang ketika About masih
+                // 45px di bawah batas kartu.
+                const fadeEndAt = restingCardBottom + 45;
+
+                const progress = clamp(
+                    (fadeStartAt - aboutTop) / (fadeStartAt - fadeEndAt),
+                    0,
+                    1,
+                );
+
+                // Smoothstep: lembut di awal dan akhir.
+                const eased = progress * progress * (3 - 2 * progress);
+
+                opacity = 1 - eased;
+            }
+
+            // ======================================
+            // 4. BATAS AKHIR SECTION HERO
+            // ======================================
+
+            // Jangan biarkan ID card muncul
+            // setelah Hero sepenuhnya dilewati.
+            if (heroBounds.bottom <= mountBounds.bottom + 80) {
+                opacity = 0;
+            }
+
+            opacity = clamp(opacity, 0, 1);
+
+            // ======================================
+            // 5. TERAPKAN FADE KE SELURUH ID CARD
+            // ======================================
+
+            const fadeValue = opacity.toFixed(3);
+
+            stage.style.setProperty("--lp-scroll-opacity", fadeValue);
+
+            // Pengait Navbar memudar bersama lanyard.
+            navbarMount.style.setProperty("--lp-scroll-opacity", fadeValue);
+
+            const hidden = opacity <= 0.015;
+
+            stage.classList.toggle("lp-id-stage--out-of-view", hidden);
 
             navbarMount.classList.toggle(
                 "lp-header__lanyard-mount--hidden",
-                !visible,
+                hidden,
             );
 
-            stage.classList.toggle("lp-id-stage--out-of-view", !visible);
+            // Saat transparan, card tidak menghalangi
+            // interaksi elemen di belakangnya.
+            if (opacity <= 0.06) {
+                stage.style.pointerEvents = "none";
+            } else {
+                stage.style.removeProperty("pointer-events");
+            }
         };
 
         const draw = (state: Motion) => {
@@ -682,37 +753,50 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
         };
 
         resize();
-        syncAnchorWhileScrolling();
-        syncMobileScrollFade();
+        // ==========================================
+        // INITIALIZE
+        // ==========================================
 
-        const observer = new ResizeObserver(resize);
+        const onResize = () => {
+            resize();
+            syncScrollEffects();
+        };
+
+        onResize();
+
+        const observer = new ResizeObserver(onResize);
 
         observer.observe(stage);
         observer.observe(card);
         observer.observe(navbar);
 
-        window.addEventListener("scroll", syncAnchorWhileScrolling, {
-            passive: true,
-        });
+        // Cukup satu event scroll untuk
+        // posisi anchor dan opacity.
+        window.addEventListener("scroll", syncScrollEffects, { passive: true });
 
-        window.addEventListener("scroll", syncMobileScrollFade, {
-            passive: true,
-        });
-
-        window.addEventListener("resize", syncMobileScrollFade);
+        window.addEventListener("resize", onResize);
 
         frame = requestAnimationFrame(animate);
 
+        // ==========================================
+        // CLEANUP
+        // ==========================================
+
         return () => {
             cancelAnimationFrame(frame);
-
             observer.disconnect();
 
-            window.removeEventListener("scroll", syncAnchorWhileScrolling);
+            window.removeEventListener("scroll", syncScrollEffects);
 
-            window.removeEventListener("scroll", syncMobileScrollFade);
+            window.removeEventListener("resize", onResize);
 
-            window.removeEventListener("resize", syncMobileScrollFade);
+            stage.style.removeProperty("--lp-scroll-opacity");
+
+            stage.style.removeProperty("pointer-events");
+
+            navbarMount.style.removeProperty("--lp-scroll-opacity");
+
+            stage.classList.remove("lp-id-stage--out-of-view");
 
             navbarMount.classList.remove("lp-header__lanyard-mount--hidden");
 
@@ -1086,7 +1170,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                                         href={`#lp-id-${strap.key}-text-path`}
                                         startOffset={strap.offset}
                                     >
-                                        {lanyardText}
+                                        
                                     </textPath>
                                 </text>
 

@@ -926,37 +926,121 @@
     }
 }
 /* ==========================================
-   MOBILE SCROLL FADE
+   RESPONSIVE ID CARD SCROLL FADE
+   MOBILE + DESKTOP
 ========================================== */
 
+/*
+ * Satu nilai opacity mengendalikan:
+ * - kain lanyard
+ * - buckle dan ring
+ * - holder / ID card
+ * - foto
+ * - drag hint
+ * - glow
+ */
+
 .lp .lp-id-stage {
-    --lp-mobile-fade: 1;
-    --lp-mobile-lift: 0px;
+    --lp-scroll-opacity: 1;
+
+    opacity: var(--lp-scroll-opacity);
+
+    overflow: visible;
+
+    /*
+     * Jangan mentransformasi stage.
+     * Posisi SVG dan fisika menghitung
+     * koordinat dari stage sebenarnya.
+     */
+    transform: none;
+
+    transition: opacity 120ms linear;
+
+    will-change: opacity;
 }
+
+/* Ketika ID card sepenuhnya tersembunyi */
+
+.lp .lp-id-stage--out-of-view {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ==========================================
+   NAVBAR MOUNT
+========================================== */
+
+/*
+ * Pengait Navbar memudar bersamaan
+ * dengan seluruh ID card.
+ */
+
+.lp .lp-header__lanyard-mount {
+    --lp-scroll-opacity: 1;
+
+    opacity: var(--lp-scroll-opacity);
+
+    transition: opacity 120ms linear;
+
+    pointer-events: none;
+}
+
+.lp .lp-header__lanyard-mount--hidden {
+    opacity: 0;
+}
+
+/* ==========================================
+   DESKTOP / LAPTOP
+========================================== */
+
+@media (min-width: 901px) {
+    .lp .lp-id-stage {
+        /*
+         * Gerakan opacity lembut ketika
+         * section About mulai mendekat.
+         */
+        transition: opacity 160ms ease-out;
+    }
+
+    .lp .lp-header__lanyard-mount {
+        transition: opacity 160ms ease-out;
+    }
+}
+
+/* ==========================================
+   TABLET & MOBILE
+========================================== */
 
 @media (max-width: 900px) {
     .lp .lp-id-stage {
-        opacity: var(--lp-mobile-fade);
-        transform: translate3d(
-            0,
-            calc(var(--lp-mobile-lift) * -1),
-            0
-        );
-        transform-origin: top center;
-        will-change: opacity, transform;
-        transition:
-            opacity .16s linear,
-            transform .16s linear;
+        /*
+         * Di HP, ikuti progres scroll
+         * dengan lebih responsif.
+         */
+        transition: opacity 70ms linear;
     }
 
-    .lp .lp-id-stage--mobile-hidden {
-        opacity: 0;
+    .lp .lp-header__lanyard-mount {
+        transition: opacity 70ms linear;
     }
 
-    .lp .lp-id-fabric,
-    .lp .lp-id-card,
-    .lp .lp-id-drag-hint,
-    .lp .lp-id-stage__glow {
-        transition: opacity .16s linear;
+    /*
+     * Teks Hero tetap berada pada
+     * lapisan yang jelas.
+     */
+    .lp .lp-hero__content {
+        position: relative;
+        z-index: 6;
+    }
+}
+
+/* ==========================================
+   ACCESSIBILITY
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .lp .lp-id-stage,
+    .lp .lp-header__lanyard-mount {
+        transition: none;
     }
 }
