@@ -87,9 +87,9 @@ const STRAP_STEPS = 36;
 /** Posisi motif kawung di sepanjang tali (0 = atas, 1 = buckle). */
 const MOTIF_AT = [0.66, 0.75, 0.84, 0.93] as const;
 
-/** Warna motif: krem terang di atas teal, emas di atas krem. */
-const INK_TOP = [225, 204, 170] as const;
-const INK_BOTTOM = [184, 146, 101] as const;
+// Warna motif batik: orange terang ke orange pekat.
+const INK_TOP = [255, 152, 82] as const;
+const INK_BOTTOM = [255, 106, 0] as const;
 
 const STRAPS = [
     { side: -1, key: "left", offset: "54%" },
@@ -947,6 +947,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
             >
                 <defs>
                     {/* Kain: teal pekat di atas, memudar ke krem di bawah */}
+                    {/* Black textile with a controlled burnt-orange finish */}
                     <linearGradient
                         ref={fabricGradientRef}
                         id="lp-lny-fabric"
@@ -956,15 +957,16 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="0"
                         y2="220"
                     >
-                        <stop offset="0" stopColor="#111B23" />
-                        <stop offset=".18" stopColor="#1A2932" />
-                        <stop offset=".42" stopColor="#28343C" />
-                        <stop offset=".65" stopColor="#30343A" />
-                        <stop offset=".84" stopColor="#34302D" />
-                        <stop offset="1" stopColor="#211F22" />
+                        <stop offset="0" stopColor="#08090B" />
+                        <stop offset=".18" stopColor="#101114" />
+                        <stop offset=".42" stopColor="#17181C" />
+                        <stop offset=".65" stopColor="#211915" />
+                        <stop offset=".84" stopColor="#49220F" />
+                        <stop offset="1" stopColor="#A74410" />
                     </linearGradient>
 
                     {/* Tinta cetak: krem di atas teal, emas di atas krem */}
+                    {/* Orange ink for the woven strap details */}
                     <linearGradient
                         ref={inkGradientRef}
                         id="lp-lny-ink"
@@ -974,9 +976,9 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="0"
                         y2="220"
                     >
-                        <stop offset="0" stopColor="#E6D1AE" />
-                        <stop offset=".55" stopColor="#D6B58C" />
-                        <stop offset="1" stopColor="#AF8960" />
+                        <stop offset="0" stopColor="#FFB27D" />
+                        <stop offset=".55" stopColor="#FF8A38" />
+                        <stop offset="1" stopColor="#FF6A00" />
                     </linearGradient>
 
                     {/* Serat anyaman halus */}
@@ -1022,9 +1024,9 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="1"
                         y2="1"
                     >
-                        <stop offset="0" stopColor="#f4e2b4" />
-                        <stop offset=".5" stopColor="#bb9052" />
-                        <stop offset="1" stopColor="#7c592b" />
+                        <stop offset="0" stopColor="#FFAE70" />
+                        <stop offset=".5" stopColor="#D95B13" />
+                        <stop offset="1" stopColor="#683015" />
                     </linearGradient>
 
                     <linearGradient
@@ -1046,10 +1048,10 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                         x2="1"
                         y2="0"
                     >
-                        <stop offset="0" stopColor="#252A2E" />
-                        <stop offset=".45" stopColor="#55504A" />
-                        <stop offset=".7" stopColor="#403B37" />
-                        <stop offset="1" stopColor="#20252A" />
+                        <stop offset="0" stopColor="#101114" />
+                        <stop offset=".45" stopColor="#34373D" />
+                        <stop offset=".7" stopColor="#292B30" />
+                        <stop offset="1" stopColor="#0D0E11" />
                     </linearGradient>
 
                     {/* Motif kawung (batik): 4 elips saling bertumpuk */}
@@ -1169,9 +1171,7 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                                     <textPath
                                         href={`#lp-id-${strap.key}-text-path`}
                                         startOffset={strap.offset}
-                                    >
-                                        
-                                    </textPath>
+                                    ></textPath>
                                 </text>
 
                                 {MOTIF_AT.map((t, j) => (

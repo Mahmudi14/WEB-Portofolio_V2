@@ -2998,3 +2998,15 @@
         scroll-behavior: smooth;
     }
 }
+
+/* ==========================================
+   HERO — INITIAL DESKTOP POSITION
+   Konten langsung terlihat saat page load
+========================================== */
+
+@media (min-width: 901px) {
+    .lp .lp-hero__content {
+        align-self: start;
+        margin-top: -18px;
+    }
+}

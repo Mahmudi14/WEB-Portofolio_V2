@@ -1044,3 +1044,464 @@
         transition: none;
     }
 }
+
+/* =====================================================
+   HERO REDESIGN
+   DEEP BLACK / SIGNATURE ORANGE
+   Portfolio V2
+===================================================== */
+
+/* -----------------------------------------------------
+   01. HERO ATMOSPHERE
+----------------------------------------------------- */
+
+.lp .lp-hero {
+    --lp-accent: #ff6a00;
+    --lp-accent-light: #ff9850;
+
+    background:
+        radial-gradient(
+            ellipse at 75% 43%,
+            rgba(255, 106, 0, 0.075) 0%,
+            transparent 49%
+        ),
+        #08090b;
+
+    color: #f3f3f1;
+}
+
+.lp .lp-hero::before {
+    opacity: 0.09;
+    background-size: 20px 20px;
+}
+
+.lp .lp-hero h1 {
+    color: #f5f5f3;
+    font-weight: 700;
+    letter-spacing: -0.06em;
+}
+
+.lp .lp-hero__intro {
+    color: #d0d1d3;
+}
+
+.lp .lp-hero__intro .lp-accent {
+    color: #ff6a00;
+}
+
+.lp .lp-hero__description {
+    color: #a3a6ab;
+    line-height: 1.9;
+}
+
+.lp .lp-hero .lp-eyebrow {
+    color: #ff9850;
+}
+
+.lp .lp-hero .lp-pulse {
+    background: #ff6a00;
+    box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
+
+/* -----------------------------------------------------
+   02. ACTION BUTTONS
+----------------------------------------------------- */
+
+.lp .lp-hero .lp-button--primary {
+    background: #ff6a00;
+    border-color: #ff6a00;
+    color: #0a0b0d !important;
+
+    font-weight: 700;
+    box-shadow: none;
+}
+
+.lp .lp-hero .lp-button--primary:hover {
+    background: #ff8530;
+    border-color: #ff8530;
+}
+
+.lp .lp-hero .lp-button--outline {
+    background: #111215;
+    border-color: #36383d;
+    color: #eeeeee;
+}
+
+.lp .lp-hero .lp-button--outline:hover {
+    background: #191b1f;
+    border-color: #ff6a00;
+}
+
+/* -----------------------------------------------------
+   03. HERO STATS
+----------------------------------------------------- */
+
+.lp .lp-hero__stats {
+    border-top-color: rgba(255, 255, 255, 0.11);
+}
+
+.lp .lp-hero__stats strong {
+    color: #f4f4f2;
+}
+
+.lp .lp-hero__stats > div:first-child strong {
+    color: #ff8939;
+}
+
+.lp .lp-hero__stats span {
+    color: #96999f;
+}
+
+.lp .lp-scroll-hint {
+    color: #777b82;
+}
+
+/* -----------------------------------------------------
+   04. BLACK NAVBAR
+----------------------------------------------------- */
+
+.lp .lp-header {
+    background: rgba(8, 9, 11, 0.96);
+    border-bottom-color: rgba(255, 255, 255, 0.09);
+}
+
+.lp .lp-header .lp-brand__mark {
+    background: #15171a;
+    border-color: rgba(255, 106, 0, 0.32);
+    color: #ff8734;
+}
+
+.lp .lp-header .lp-brand__text b {
+    color: #ff6a00;
+}
+
+.lp .lp-header .lp-navigation > a {
+    color: #c0c2c5;
+}
+
+.lp .lp-header .lp-navigation > a:hover {
+    color: #ff9850;
+}
+
+.lp .lp-header .lp-navigation > .lp-nav-contact {
+    color: #ff9850;
+    border-color: rgba(255, 106, 0, 0.38);
+}
+
+.lp .lp-header .lp-navigation > .lp-nav-contact:hover {
+    background: rgba(255, 106, 0, 0.08);
+}
+
+.lp .lp-header .lp-menu-toggle {
+    background: #15171a;
+    border-color: #34363b;
+}
+
+/* Navbar lanyard connector */
+
+.lp .lp-header__lanyard-eyelet {
+    border-color: #4c5056;
+
+    background: linear-gradient(
+        145deg,
+        #a5a9af 0%,
+        #545861 38%,
+        #24272d 73%,
+        #737780 100%
+    );
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.lp .lp-header__lanyard-eyelet::before {
+    background: #08090b;
+}
+
+.lp .lp-header__lanyard-eyelet::after {
+    background: #ff9047;
+    opacity: 0.8;
+}
+
+/* -----------------------------------------------------
+   05. LANYARD VISUAL DETAILS
+----------------------------------------------------- */
+
+.lp .lp-id-stage__glow {
+    background: radial-gradient(
+        circle at 50% 42%,
+        rgba(255, 106, 0, 0.12) 0%,
+        rgba(255, 106, 0, 0.04) 37%,
+        transparent 70%
+    );
+}
+
+.lp .lp-id-fabric__edge {
+    stroke: rgba(5, 6, 8, 0.58);
+    stroke-width: 3.5;
+}
+
+.lp .lp-id-fabric__lattice {
+    stroke-width: 0.7;
+    opacity: 0.22;
+}
+
+.lp .lp-id-fabric__stitch {
+    stroke-width: 0.95;
+    opacity: 0.72;
+}
+
+.lp .lp-id-fabric__shine {
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 3.5;
+}
+
+.lp .lp-id-fabric__label {
+    fill: #ffad72;
+    stroke: rgba(7, 8, 10, 0.65);
+    stroke-width: 0.45px;
+
+    font-weight: 750;
+    letter-spacing: 1.1px;
+}
+
+/* -----------------------------------------------------
+   06. HOLDER / BLACK LEATHER
+----------------------------------------------------- */
+
+.lp .lp-id-card {
+    --leather: #17191d;
+    --leather-deep: #090a0c;
+    --stitch: rgba(255, 106, 0, 0.3);
+
+    --grain: radial-gradient(
+            rgba(255, 255, 255, 0.035) 0.06em,
+            transparent 0.09em
+        )
+        0 0 / 0.32em 0.32em;
+
+    filter: drop-shadow(0 2.4em 3.2em rgba(0, 0, 0, 0.6))
+        drop-shadow(0 0.5em 0.9em rgba(0, 0, 0, 0.35));
+}
+
+.lp .lp-id-card--dragging {
+    filter: drop-shadow(0 3em 4em rgba(0, 0, 0, 0.66))
+        drop-shadow(0 0.6em 1.2em rgba(0, 0, 0, 0.4));
+}
+
+.lp .lp-id-card:focus-visible {
+    outline-color: #ff8939;
+}
+
+.lp .lp-id-card .lp-id-card__tab {
+    background: var(--grain), linear-gradient(160deg, #202227, #101114);
+}
+
+.lp .lp-id-card .lp-id-card__slot {
+    background: #030405;
+
+    box-shadow:
+        inset 0 0.2em 0.35em rgba(0, 0, 0, 0.9),
+        0 0 0 0.22em #5f636b,
+        0 0 0 0.32em rgba(255, 255, 255, 0.07);
+}
+
+.lp .lp-id-card .lp-id-card__holder {
+    background:
+        var(--grain),
+        linear-gradient(160deg, #202226 0%, #121316 54%, #090a0c 100%);
+}
+
+.lp .lp-id-card .lp-id-card__holder::before {
+    border-color: rgba(255, 106, 0, 0.3);
+}
+
+.lp .lp-id-card .lp-id-card__holder::after {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.055),
+        transparent 40%
+    );
+}
+
+/* -----------------------------------------------------
+   07. ID BADGE / BLACK EDITION
+----------------------------------------------------- */
+
+.lp .lp-id-card .lp-id-card__window {
+    background: #0d0e10;
+
+    box-shadow:
+        0 0 0 0.15em #050608,
+        inset 0 0 0 0.1em rgba(255, 255, 255, 0.08);
+}
+
+.lp .lp-id-card .lp-id-badge {
+    --ink: #f3f3f1;
+    --copper: #ff6a00;
+    --copper-soft: #ff9850;
+
+    background: #111316;
+    color: #f3f3f1;
+}
+
+/* Remove the old beige batik watermark */
+
+.lp .lp-id-card .lp-id-badge::before {
+    background-image: none;
+    opacity: 0;
+}
+
+/* -----------------------------------------------------
+   08. ID BADGE HEADER
+----------------------------------------------------- */
+
+.lp .lp-id-card .lp-id-badge__header {
+    background: #0c0d0f;
+    color: #f4f4f2;
+}
+
+.lp .lp-id-card .lp-id-badge__header::after {
+    height: 0.25em;
+    background: #ff6a00;
+}
+
+.lp .lp-id-card .lp-id-badge__logo {
+    background: #1c1e22;
+    border-color: rgba(255, 106, 0, 0.48);
+    color: #ff8b3c;
+}
+
+.lp .lp-id-card .lp-id-badge__brand strong {
+    color: #f5f5f3;
+}
+
+.lp .lp-id-card .lp-id-badge__brand small {
+    color: #9a9da3;
+}
+
+.lp .lp-id-card .lp-id-badge__index {
+    color: #ff9650;
+}
+
+/* -----------------------------------------------------
+   09. PORTRAIT AREA
+----------------------------------------------------- */
+
+.lp .lp-id-card .lp-id-badge__photo {
+    border-color: rgba(255, 106, 0, 0.4);
+
+    background: linear-gradient(145deg, #272a30, #101114 78%);
+
+    box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.35);
+}
+
+.lp .lp-id-card .lp-id-badge__initials {
+    color: #ff8a38;
+}
+
+.lp .lp-id-card .lp-id-badge__photo > span {
+    color: #f5f5f3;
+
+    background: linear-gradient(transparent, rgba(4, 5, 7, 0.94));
+}
+
+/* -----------------------------------------------------
+   10. NAME / ROLE / DESCRIPTION
+----------------------------------------------------- */
+
+.lp .lp-id-card .lp-id-badge__role {
+    color: #ff8939;
+    font-weight: 750;
+}
+
+.lp .lp-id-card .lp-id-badge__name {
+    color: #f5f5f3;
+    font-weight: 700;
+}
+
+.lp .lp-id-card .lp-id-badge__skills {
+    color: #a5a8ad;
+}
+
+/* -----------------------------------------------------
+   11. BADGE FOOTER
+----------------------------------------------------- */
+
+.lp .lp-id-card .lp-id-badge__footer {
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.lp .lp-id-card .lp-id-badge__barcode {
+    background: repeating-linear-gradient(
+        90deg,
+        #e8e9ea 0 0.2em,
+        transparent 0.2em 0.4em,
+        #e8e9ea 0.4em 0.5em,
+        transparent 0.5em 0.9em,
+        #e8e9ea 0.9em 1.2em,
+        transparent 1.2em 1.5em
+    );
+
+    opacity: 0.65;
+}
+
+.lp .lp-id-card .lp-id-badge__footer small {
+    color: #858990;
+}
+
+.lp .lp-id-card .lp-id-badge__footer strong {
+    color: #ff8939;
+}
+
+/* -----------------------------------------------------
+   12. PLASTIC REFLECTION
+----------------------------------------------------- */
+
+.lp .lp-id-card .lp-id-card__glare {
+    opacity: 0.7;
+}
+
+/* -----------------------------------------------------
+   13. DRAG INSTRUCTION
+----------------------------------------------------- */
+
+.lp .lp-id-drag-hint {
+    color: #81858b;
+}
+
+.lp .lp-id-drag-hint svg {
+    color: #ff8939;
+}
+
+/* -----------------------------------------------------
+   14. MOBILE COLOR REFINEMENTS
+----------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .lp .lp-hero {
+        background:
+            radial-gradient(
+                ellipse at 50% 23%,
+                rgba(255, 106, 0, 0.07),
+                transparent 42%
+            ),
+            #08090b;
+    }
+
+    .lp .lp-header .lp-navigation--open {
+        background: #111215;
+        border-bottom-color: #292b30;
+    }
+}
+
+@media (max-width: 600px) {
+    .lp .lp-hero__stats {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .lp .lp-id-stage__glow {
+        opacity: 0.75;
+    }
+}
