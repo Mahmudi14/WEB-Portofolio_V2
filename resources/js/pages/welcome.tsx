@@ -15,13 +15,19 @@ import {
     Menu,
     Microscope,
     X,
+    ChevronDown,
+    UsersRound,
 } from "lucide-react";
 
 import { useState } from "react";
 
-import type { ReactNode } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import HeroIdCard from "@/components/landing/hero-id-card";
+import AcademicTimeline from "@/components/landing/academic-timeline";
 import "../../css/landing.css";
+import RecognitionGallery from "@/components/landing/recognition-gallery";
+import ProjectShowcase from "@/components/landing/project-showcase";
+import ResearchArchive from "@/components/landing/research-archive";
 
 // ==========================================
 // TYPES
@@ -376,6 +382,358 @@ function HeroSection({
 // LANDING PAGE
 // ==========================================
 
+type ExperienceCategory = "pekerjaan" | "organisasi";
+
+function ExperienceSection({ experiences }: { experiences: Experience[] }) {
+    // Pekerjaan aktif ketika landing page pertama dibuka.
+    const [activeTab, setActiveTab] = useState<ExperienceCategory>("pekerjaan");
+
+    // Semua detail tertutup secara default.
+    const [expandedId, setExpandedId] = useState<number | null>(null);
+
+    const pekerjaan = experiences.filter(
+        (item) => item.category === "pekerjaan",
+    );
+
+    const organisasi = experiences.filter(
+        (item) => item.category === "organisasi",
+    );
+
+    const activeItems = (
+        activeTab === "pekerjaan" ? pekerjaan : organisasi
+    ).sort((a, b) => {
+        // Tahun mulai paling awal terlebih dahulu.
+        if (a.start_year !== b.start_year) {
+            return a.start_year - b.start_year;
+        }
+
+        // Jika tahun mulai sama, yang selesai
+        // lebih awal ditampilkan terlebih dahulu.
+        const endA =
+            a.is_current || a.end_year === null
+                ? Number.MAX_SAFE_INTEGER
+                : a.end_year;
+
+        const endB =
+            b.is_current || b.end_year === null
+                ? Number.MAX_SAFE_INTEGER
+                : b.end_year;
+
+        if (endA !== endB) {
+            return endA - endB;
+        }
+
+        return a.id - b.id;
+    });
+
+    function changeTab(category: ExperienceCategory) {
+        setActiveTab(category);
+        setExpandedId(null);
+    }
+
+    function handleTabKeyDown(
+        event: KeyboardEvent<HTMLButtonElement>,
+        category: ExperienceCategory,
+    ) {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        let next: ExperienceCategory;
+
+        if (event.key === "Home") {
+            next = "pekerjaan";
+        } else if (event.key === "End") {
+            next = "organisasi";
+        } else {
+            next = category === "pekerjaan" ? "organisasi" : "pekerjaan";
+        }
+
+        changeTab(next);
+
+        document.getElementById(`lp-exp-tab-${next}`)?.focus();
+    }
+
+    return (
+        <Section id="experience">
+            <div className="lp-experience-heading">
+                <SectionHeading
+                    index="03"
+                    eyebrow="PERJALANAN"
+                    title="Pengalaman saya."
+                    description="Perjalanan profesional, kepemimpinan, dan kontribusi yang membentuk diri saya."
+                />
+
+                <div className="lp-experience-heading__stat">
+                    <strong>
+                        {String(experiences.length).padStart(2, "0")}
+                    </strong>
+                    <span>Total Pengalaman</span>
+                </div>
+            </div>
+
+            <div className="lp-experience">
+                {/* HEADER + TABS */}
+
+                <div className="lp-experience__toolbar">
+                    <div
+                        className="lp-experience__tabs"
+                        role="tablist"
+                        aria-label="Kategori pengalaman"
+                    >
+                        <button
+                            id="lp-exp-tab-pekerjaan"
+                            type="button"
+                            role="tab"
+                            aria-selected={activeTab === "pekerjaan"}
+                            aria-controls="lp-exp-panel"
+                            tabIndex={activeTab === "pekerjaan" ? 0 : -1}
+                            className={
+                                "lp-experience__tab" +
+                                (activeTab === "pekerjaan"
+                                    ? " lp-experience__tab--active"
+                                    : "")
+                            }
+                            onClick={() => changeTab("pekerjaan")}
+                            onKeyDown={(event) =>
+                                handleTabKeyDown(event, "pekerjaan")
+                            }
+                        >
+                            <BriefcaseBusiness size={17} />
+                            <span>Pekerjaan</span>
+                            <span className="lp-experience__tab-count">
+                                {pekerjaan.length}
+                            </span>
+                        </button>
+
+                        <button
+                            id="lp-exp-tab-organisasi"
+                            type="button"
+                            role="tab"
+                            aria-selected={activeTab === "organisasi"}
+                            aria-controls="lp-exp-panel"
+                            tabIndex={activeTab === "organisasi" ? 0 : -1}
+                            className={
+                                "lp-experience__tab" +
+                                (activeTab === "organisasi"
+                                    ? " lp-experience__tab--active"
+                                    : "")
+                            }
+                            onClick={() => changeTab("organisasi")}
+                            onKeyDown={(event) =>
+                                handleTabKeyDown(event, "organisasi")
+                            }
+                        >
+                            <UsersRound size={17} />
+                            <span>Organisasi</span>
+                            <span className="lp-experience__tab-count">
+                                {organisasi.length}
+                            </span>
+                        </button>
+                    </div>
+
+                    <span className="lp-experience__scroll-hint">
+                        <ArrowDown size={15} />
+                        Scroll untuk menjelajah
+                    </span>
+                </div>
+
+                {/* AREA DAFTAR SCROLL VERTIKAL */}
+
+                <div
+                    id="lp-exp-panel"
+                    role="tabpanel"
+                    aria-labelledby={`lp-exp-tab-${activeTab}`}
+                    tabIndex={0}
+                    className="lp-experience__panel"
+                >
+                    <div
+                        key={activeTab}
+                        className="lp-experience__viewport"
+                        role="region"
+                        aria-label={`Daftar pengalaman ${activeTab}`}
+                        tabIndex={0}
+                    >
+                        {activeItems.length === 0 ? (
+                            <div className="lp-experience__empty">
+                                {activeTab === "pekerjaan" ? (
+                                    <BriefcaseBusiness size={30} />
+                                ) : (
+                                    <UsersRound size={30} />
+                                )}
+                                <h3>Belum ada pengalaman {activeTab}</h3>
+                                <p>
+                                    Pengalaman akan tampil setelah ditambahkan.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="lp-experience__list">
+                                {activeItems.map((experience, index) => {
+                                    const isOpen = expandedId === experience.id;
+
+                                    const detailId = `lp-exp-detail-${experience.id}`;
+
+                                    return (
+                                        <article
+                                            key={experience.id}
+                                            className={
+                                                "lp-experience__item" +
+                                                (isOpen
+                                                    ? " lp-experience__item--open"
+                                                    : "")
+                                            }
+                                        >
+                                            <button
+                                                type="button"
+                                                className="lp-experience__item-button"
+                                                aria-expanded={isOpen}
+                                                aria-controls={detailId}
+                                                onClick={() =>
+                                                    setExpandedId(
+                                                        isOpen
+                                                            ? null
+                                                            : experience.id,
+                                                    )
+                                                }
+                                            >
+                                                {/* NOMOR */}
+
+                                                <span className="lp-experience__number">
+                                                    {String(index + 1).padStart(
+                                                        2,
+                                                        "0",
+                                                    )}
+                                                </span>
+
+                                                {/* LOGO / ICON */}
+
+                                                <span className="lp-experience__logo">
+                                                    {activeTab ===
+                                                    "pekerjaan" ? (
+                                                        <BriefcaseBusiness
+                                                            size={22}
+                                                        />
+                                                    ) : (
+                                                        <UsersRound size={22} />
+                                                    )}
+
+                                                    {experience.logo_url && (
+                                                        <img
+                                                            src={
+                                                                experience.logo_url
+                                                            }
+                                                            alt=""
+                                                            loading="lazy"
+                                                            onError={(
+                                                                event,
+                                                            ) => {
+                                                                event.currentTarget.style.display =
+                                                                    "none";
+                                                            }}
+                                                        />
+                                                    )}
+                                                </span>
+
+                                                {/* INFORMASI UTAMA */}
+
+                                                <span className="lp-experience__item-info">
+                                                    <span className="lp-experience__item-position">
+                                                        {experience.position}
+                                                    </span>
+
+                                                    <span className="lp-experience__item-institution">
+                                                        {
+                                                            experience.institution_name
+                                                        }
+                                                    </span>
+                                                </span>
+
+                                                {/* TAHUN & PANAH */}
+
+                                                <span className="lp-experience__item-end">
+                                                    <span className="lp-experience__period">
+                                                        {period(
+                                                            experience.start_year,
+                                                            experience.end_year,
+                                                            experience.is_current,
+                                                        )}
+                                                    </span>
+
+                                                    <span className="lp-experience__chevron">
+                                                        <ChevronDown
+                                                            size={19}
+                                                        />
+                                                    </span>
+                                                </span>
+                                            </button>
+
+                                            {/* DETAIL ACCORDION */}
+
+                                            <div
+                                                id={detailId}
+                                                className="lp-experience__details"
+                                                aria-hidden={!isOpen}
+                                            >
+                                                <div className="lp-experience__details-inner">
+                                                    <div className="lp-experience__details-content">
+                                                        <span className="lp-experience__detail-label">
+                                                            TENTANG PENGALAMAN
+                                                            INI
+                                                        </span>
+
+                                                        <p>
+                                                            {experience.description?.trim() ||
+                                                                "Deskripsi pengalaman belum tersedia."}
+                                                        </p>
+
+                                                        <div className="lp-experience__detail-meta">
+                                                            <span>
+                                                                <span className="lp-experience__meta-dot" />
+                                                                {experience.is_current
+                                                                    ? "Sedang berlangsung"
+                                                                    : "Riwayat pengalaman"}
+                                                            </span>
+
+                                                            <span>
+                                                                {period(
+                                                                    experience.start_year,
+                                                                    experience.end_year,
+                                                                    experience.is_current,
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* FOOTER */}
+
+                <div className="lp-experience__footer">
+                    <div className="lp-experience__footer-left">
+                        <span className="lp-experience__footer-dot" />
+                        <span>
+                            {activeItems.length} pengalaman {activeTab}
+                        </span>
+                    </div>
+
+                    <span className="lp-experience__footer-note">
+                        Klik untuk membuka detail
+                    </span>
+                </div>
+            </div>
+        </Section>
+    );
+}
+
 export default function Welcome({
     profile,
     hero,
@@ -482,51 +840,7 @@ export default function Welcome({
                 {/* PENGALAMAN */}
 
                 {experiences.length > 0 && (
-                    <Section id="experience">
-                        <SectionHeading
-                            index="03"
-                            eyebrow="PERJALANAN"
-                            title="Pengalaman saya."
-                            description="Peran, organisasi, dan pengalaman yang membentuk perjalanan saya."
-                        />
-
-                        <div className="lp-timeline">
-                            {experiences.map((experience) => (
-                                <article
-                                    key={experience.id}
-                                    className="lp-timeline-item"
-                                >
-                                    <div className="lp-timeline-item__marker">
-                                        <BriefcaseBusiness size={19} />
-                                    </div>
-
-                                    <div className="lp-timeline-item__main">
-                                        <span className="lp-overline">
-                                            {experience.category === "pekerjaan"
-                                                ? "PEKERJAAN"
-                                                : "ORGANISASI"}
-                                        </span>
-
-                                        <h3>{experience.position}</h3>
-
-                                        <strong>
-                                            {experience.institution_name}
-                                        </strong>
-
-                                        <p>{experience.description}</p>
-                                    </div>
-
-                                    <time className="lp-timeline-item__date">
-                                        {period(
-                                            experience.start_year,
-                                            experience.end_year,
-                                            experience.is_current,
-                                        )}
-                                    </time>
-                                </article>
-                            ))}
-                        </div>
-                    </Section>
+                    <ExperienceSection experiences={experiences} />
                 )}
 
                 {/* PENDIDIKAN */}
@@ -539,36 +853,7 @@ export default function Welcome({
                             title="Perjalanan akademik."
                         />
 
-                        <div className="lp-education-grid">
-                            {educations.map((education) => (
-                                <article
-                                    key={education.id}
-                                    className="lp-education-card"
-                                >
-                                    <div className="lp-education-card__icon">
-                                        <GraduationCap size={23} />
-                                    </div>
-
-                                    <span className="lp-overline">
-                                        {education.level}
-                                    </span>
-
-                                    <h3>{education.institution_name}</h3>
-
-                                    {education.major && (
-                                        <p>{education.major}</p>
-                                    )}
-
-                                    <span className="lp-education-card__year">
-                                        {period(
-                                            education.start_year,
-                                            education.end_year,
-                                            education.is_current,
-                                        )}
-                                    </span>
-                                </article>
-                            ))}
-                        </div>
+                        <AcademicTimeline educations={educations} />
                     </Section>
                 )}
 
@@ -580,42 +865,10 @@ export default function Welcome({
                             index="05"
                             eyebrow="PENCAPAIAN"
                             title="Pencapaian & apresiasi."
+                            description="Pengakuan, penghargaan, dan jejak kontribusi dalam perjalanan saya."
                         />
 
-                        <div className="lp-achievements">
-                            {achievements.map((achievement) => (
-                                <article
-                                    key={achievement.id}
-                                    className="lp-achievement-item"
-                                >
-                                    <div className="lp-achievement-item__icon">
-                                        <Award size={20} />
-                                    </div>
-
-                                    <div>
-                                        <span className="lp-overline">
-                                            {achievement.category}
-                                        </span>
-
-                                        <h3>{achievement.title}</h3>
-
-                                        {achievement.institution_name && (
-                                            <p>
-                                                {achievement.institution_name}
-                                            </p>
-                                        )}
-
-                                        {achievement.description && (
-                                            <p>{achievement.description}</p>
-                                        )}
-                                    </div>
-
-                                    <span className="lp-achievement-item__year">
-                                        {achievement.year}
-                                    </span>
-                                </article>
-                            ))}
-                        </div>
+                        <RecognitionGallery achievements={achievements} />
                     </Section>
                 )}
 
@@ -626,101 +879,10 @@ export default function Welcome({
                         index="06"
                         eyebrow="KARYA PILIHAN"
                         title="Proyek yang saya kerjakan."
-                        description="Dokumentasi karya dan solusi digital yang telah dikembangkan."
+                        description="Eksplorasi ide, pengembangan produk digital, dan solusi yang saya bangun."
                     />
 
-                    {projects.length > 0 ? (
-                        <div className="lp-project-grid">
-                            {projects.map((project, index) => (
-                                <article
-                                    key={project.id}
-                                    className="lp-project-card"
-                                >
-                                    <div className="lp-project-card__image">
-                                        {project.images[0] ? (
-                                            <img
-                                                src={project.images[0].url}
-                                                alt={`Cover proyek ${project.title}`}
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            <div className="lp-project-card__placeholder">
-                                                <Layers3 size={45} />
-                                            </div>
-                                        )}
-
-                                        <span className="lp-project-card__number">
-                                            {String(index + 1).padStart(2, "0")}
-                                        </span>
-                                    </div>
-
-                                    <div className="lp-project-card__body">
-                                        <span className="lp-overline">
-                                            {project.category}
-                                        </span>
-
-                                        <h3>{project.title}</h3>
-
-                                        <p>{project.description}</p>
-
-                                        <div className="lp-tags">
-                                            {(project.technologies ?? "")
-                                                .split(",")
-                                                .map((tech) => tech.trim())
-                                                .filter(Boolean)
-                                                .slice(0, 7)
-                                                .map((tech, i) => (
-                                                    <span key={`${tech}-${i}`}>
-                                                        {tech}
-                                                    </span>
-                                                ))}
-                                        </div>
-
-                                        <details className="lp-project-details">
-                                            <summary>
-                                                Detail proyek
-                                                <ArrowUpRight size={16} />
-                                            </summary>
-
-                                            <p>{project.description}</p>
-
-                                            {project.images.length > 1 && (
-                                                <div className="lp-project-gallery">
-                                                    {project.images.map(
-                                                        (image, imageIndex) => (
-                                                            <a
-                                                                key={image.id}
-                                                                href={image.url}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                aria-label={`Buka gambar ${imageIndex + 1} dari proyek ${project.title}`}
-                                                            >
-                                                                <img
-                                                                    src={
-                                                                        image.url
-                                                                    }
-                                                                    alt={`Galeri ${project.title} ${imageIndex + 1}`}
-                                                                    loading="lazy"
-                                                                />
-                                                            </a>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            )}
-                                        </details>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="lp-empty">
-                            <BookOpen size={24} />
-                            <p>
-                                Proyek akan tampil di sini setelah ditambahkan
-                                melalui admin.
-                            </p>
-                        </div>
-                    )}
+                    <ProjectShowcase projects={projects} />
                 </Section>
 
                 {/* PENELITIAN */}
@@ -729,37 +891,12 @@ export default function Welcome({
                     <Section id="research">
                         <SectionHeading
                             index="07"
-                            eyebrow="RISET"
-                            title="Penelitian & eksplorasi."
-                            description="Topik dan gagasan yang saya teliti lebih dalam."
+                            eyebrow="PENELITIAN"
+                            title="Penelitian."
+                            description="Dokumentasi topik, proses, dan hasil penelitian saya."
                         />
 
-                        <div className="lp-research-list">
-                            {researches.map((research, index) => (
-                                <article
-                                    key={research.id}
-                                    className="lp-research-item"
-                                >
-                                    <div className="lp-research-item__number">
-                                        {String(index + 1).padStart(2, "0")}
-                                    </div>
-
-                                    <div className="lp-research-item__content">
-                                        <span className="lp-overline">
-                                            PENELITIAN · {research.year}
-                                        </span>
-
-                                        <h3>{research.title}</h3>
-
-                                        <p>{research.summary}</p>
-                                    </div>
-
-                                    <div className="lp-research-item__icon">
-                                        <Microscope size={21} />
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
+                        <ResearchArchive researches={researches} />
                     </Section>
                 )}
 
