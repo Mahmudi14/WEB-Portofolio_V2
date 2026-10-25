@@ -1,0 +1,1111 @@
+/* ======================================================
+   PERSONAL ORBIT — CIRCULAR PORTRAIT
+   Black / Orange / Graphite
+
+   Photo in the center
+   Wordmark behind the photo
+   Orbiting disciplines pass behind the portrait
+====================================================== */
+
+/* ======================================================
+   01. HERO OVERRIDES
+====================================================== */
+
+.lp main > section.lp-hero.po-hero {
+    position: relative;
+    min-height: 0;
+
+    padding-top: clamp(52px, 5vw, 78px);
+    padding-bottom: clamp(48px, 5vw, 70px);
+
+    background:
+        radial-gradient(
+            ellipse at 77% 45%,
+            rgba(255, 106, 0, 0.045),
+            transparent 47%
+        ),
+        #08090b;
+}
+
+.lp .po-hero .lp-hero__grid {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.04fr)
+        minmax(0, 1fr);
+
+    align-items: center;
+    gap: clamp(22px, 3vw, 50px);
+}
+
+.lp .po-hero .lp-hero__content {
+    align-self: center;
+    margin-top: 0;
+    min-width: 0;
+}
+
+.lp .po-hero .lp-hero__visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 0;
+    min-height: 0;
+    overflow: visible;
+}
+
+.lp .po-hero h1 {
+    font-size: clamp(42px, 4.6vw, 68px);
+    line-height: 1.1;
+    letter-spacing: -0.06em;
+}
+
+.lp .po-hero .lp-hero__stats {
+    margin-top: 45px;
+}
+
+/* Hide the old ID card lanyard mount */
+
+.lp .lp-header .lp-header__lanyard-mount {
+    display: none;
+}
+
+/* ======================================================
+   02. VISUAL CONTAINER
+====================================================== */
+
+.lp .po-visual {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    min-width: 0;
+}
+
+.lp .po-visual__top,
+.lp .po-visual__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    color: #82868d;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.13em;
+}
+
+.lp .po-visual__top {
+    padding: 10px 0;
+}
+
+.lp .po-visual__bottom {
+    padding: 13px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lp .po-visual__serial {
+    color: #b1b4ba;
+}
+
+.lp .po-visual__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.lp .po-visual__live-dot {
+    flex: 0 0 6px;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+    background: #ff6a00;
+    box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
+
+/* ======================================================
+   03. ORBIT STAGE
+====================================================== */
+
+.lp .po-stage {
+    --po-radius: clamp(145px, 15vw, 203px);
+    --po-duration: 64s;
+    --po-shift-x: 0px;
+    --po-shift-y: 0px;
+
+    position: relative;
+    isolation: isolate;
+
+    width: 100%;
+    height: 540px;
+    overflow: visible;
+}
+
+.lp .po-stage::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    inset: 12%;
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(255, 106, 0, 0.065),
+        rgba(255, 106, 0, 0.02) 40%,
+        transparent 72%
+    );
+
+    pointer-events: none;
+}
+
+/* ======================================================
+   04. ORBIT RINGS
+====================================================== */
+
+.lp .po-ring {
+    position: absolute;
+    z-index: 0;
+
+    top: 50%;
+    left: 50%;
+
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.lp .po-ring--outer {
+    width: calc(var(--po-radius) * 2);
+    height: calc(var(--po-radius) * 2);
+
+    transform: translate(-50%, -50%);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lp .po-ring--inner {
+    width: 330px;
+    height: 330px;
+
+    transform: translate(-50%, -50%);
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.lp .po-ring--detail {
+    width: 455px;
+    height: 455px;
+
+    border: 1px dashed rgba(255, 106, 0, 0.13);
+
+    animation: po-ring-rotate 96s linear infinite;
+}
+
+@keyframes po-ring-rotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ======================================================
+   05. WORDMARK BEHIND THE PHOTO
+====================================================== */
+
+.lp .po-wordmark {
+    position: absolute;
+    z-index: 1;
+
+    top: 50%;
+    left: 50%;
+
+    width: 100%;
+    max-width: 620px;
+
+    text-align: center;
+    pointer-events: none;
+
+    transform: translate(-50%, -50%);
+
+    animation: po-wordmark-drift 9s ease-in-out infinite alternate;
+}
+
+.lp .po-wordmark__primary {
+    display: block;
+
+    color: rgba(255, 255, 255, 0.13);
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+
+    font-size: clamp(65px, 7.8vw, 112px);
+    font-weight: 750;
+    line-height: 1;
+    letter-spacing: -0.085em;
+
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.lp .po-wordmark__secondary {
+    display: block;
+    margin-top: 13px;
+
+    color: rgba(255, 106, 0, 0.65);
+
+    font-family: Inter, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    white-space: nowrap;
+}
+
+@keyframes po-wordmark-drift {
+    from {
+        transform: translate(calc(-50% - 6px), -50%);
+    }
+
+    to {
+        transform: translate(calc(-50% + 6px), -50%);
+    }
+}
+
+/* ======================================================
+   06. CIRCULAR PROFILE PHOTO
+====================================================== */
+
+.lp .po-portrait {
+    position: absolute;
+    z-index: 5;
+
+    top: 50%;
+    left: 50%;
+
+    width: clamp(220px, 19vw, 275px);
+    aspect-ratio: 1 / 1;
+
+    transform: translate(
+        calc(-50% + var(--po-shift-x)),
+        calc(-50% + var(--po-shift-y))
+    );
+
+    transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Thin orange circular outline */
+
+.lp .po-portrait::before {
+    content: "";
+    position: absolute;
+
+    inset: -12px;
+
+    border: 1px solid rgba(255, 106, 0, 0.43);
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+/* Inner photo clipping */
+
+.lp .po-portrait__frame {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+
+    background: #17191d;
+
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.42),
+        0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.lp .po-portrait__image {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+    border-radius: inherit;
+
+    background: linear-gradient(145deg, #292c33, #121316 86%);
+
+    animation: po-image-reveal 1.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.lp .po-portrait__image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center 22%;
+
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.lp .po-portrait__fallback {
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 76px;
+    font-weight: 700;
+    letter-spacing: -0.07em;
+
+    color: #ff8639;
+}
+
+.lp .po-portrait__shade {
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.025),
+        transparent 35%,
+        rgba(5, 6, 8, 0.1) 70%,
+        rgba(5, 6, 8, 0.46) 100%
+    );
+
+    pointer-events: none;
+}
+
+/* Minimal photo reflection */
+
+.lp .po-portrait__frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: radial-gradient(
+        circle at 30% 20%,
+        rgba(255, 255, 255, 0.075),
+        transparent 43%
+    );
+
+    pointer-events: none;
+}
+
+.lp .po-portrait__accent {
+    position: absolute;
+    z-index: 2;
+
+    left: 50%;
+    bottom: 15px;
+
+    width: 69px;
+    height: 3px;
+
+    border-radius: 999px;
+    background: #ff6a00;
+
+    transform: translateX(-50%);
+}
+
+@keyframes po-image-reveal {
+    from {
+        opacity: 0.35;
+        clip-path: inset(100% 0 0 0);
+    }
+
+    to {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* ======================================================
+   07. MOVING ORBIT LABELS
+====================================================== */
+
+/*
+   Depth ordering:
+   Rings       z-index: 0
+   Wordmark    z-index: 1
+   Disciplines z-index: 3
+   Portrait    z-index: 5
+
+   Because the portrait is above the disciplines,
+   moving text is naturally hidden by the photograph
+   when it crosses the central circle.
+*/
+
+.lp .po-disciplines {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+
+    pointer-events: none;
+}
+
+/*
+   Node rotates around center.
+   Track pushes label outward.
+   Face counter-rotates to keep its text upright.
+*/
+
+.lp .po-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 0;
+    height: 0;
+
+    animation: po-orbit-spin var(--po-duration) linear infinite;
+}
+
+.lp .po-node__track {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 0;
+    height: 0;
+
+    transform: translateX(var(--po-radius));
+}
+
+.lp .po-node__face {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    animation: po-orbit-counter var(--po-duration) linear infinite;
+
+    pointer-events: auto;
+}
+
+/* Five nodes, separated by 72 degrees */
+
+.lp .po-node--development {
+    --po-angle: -142deg;
+    --po-counter: 142deg;
+}
+
+.lp .po-node--research {
+    --po-angle: -70deg;
+    --po-counter: 70deg;
+}
+
+.lp .po-node--ai {
+    --po-angle: 2deg;
+    --po-counter: -2deg;
+}
+
+.lp .po-node--data {
+    --po-angle: 74deg;
+    --po-counter: -74deg;
+}
+
+.lp .po-node--iot {
+    --po-angle: 146deg;
+    --po-counter: -146deg;
+}
+
+@keyframes po-orbit-spin {
+    from {
+        transform: rotate(var(--po-angle));
+    }
+
+    to {
+        transform: rotate(calc(var(--po-angle) + 360deg));
+    }
+}
+
+@keyframes po-orbit-counter {
+    from {
+        transform: translate(-50%, -50%) rotate(var(--po-counter));
+    }
+
+    to {
+        transform: translate(-50%, -50%)
+            rotate(calc(var(--po-counter) - 360deg));
+    }
+}
+
+/* ======================================================
+   08. DISCIPLINE LABEL DESIGN
+====================================================== */
+
+.lp .po-node__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    width: max-content;
+    max-width: 230px;
+    min-height: 43px;
+
+    padding: 7px 10px 7px 7px;
+
+    background: rgba(20, 22, 26, 0.97);
+    border: 1px solid #393c42;
+    border-radius: 9px;
+
+    color: #e9eaec;
+
+    box-shadow:
+        0 9px 25px rgba(0, 0, 0, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    white-space: nowrap;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        scale 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    animation: po-chip-appear 0.7s ease-out both;
+}
+
+.lp .po-node__icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 29px;
+
+    width: 29px;
+    height: 29px;
+
+    border-radius: 6px;
+
+    background: rgba(255, 106, 0, 0.12);
+    color: #ff944e;
+}
+
+.lp .po-node__label {
+    font-family: Inter, sans-serif;
+    font-size: 10.5px;
+    font-weight: 650;
+    letter-spacing: -0.005em;
+}
+
+.lp .po-node__number {
+    margin-left: 3px;
+
+    color: #797e85;
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+/* Hover highlight */
+
+.lp .po-node__chip:hover {
+    scale: 1.045;
+
+    border-color: rgba(255, 106, 0, 0.65);
+    background: #1e2024;
+}
+
+/* Stagger entrance */
+
+.lp .po-node--development .po-node__chip {
+    animation-delay: 0.2s;
+}
+
+.lp .po-node--research .po-node__chip {
+    animation-delay: 0.29s;
+}
+
+.lp .po-node--ai .po-node__chip {
+    animation-delay: 0.38s;
+}
+
+.lp .po-node--data .po-node__chip {
+    animation-delay: 0.47s;
+}
+
+.lp .po-node--iot .po-node__chip {
+    animation-delay: 0.56s;
+}
+
+@keyframes po-chip-appear {
+    from {
+        opacity: 0;
+        scale: 0.88;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+/* Pause rotation when visitor examines the visual */
+
+@media (hover: hover) {
+    .lp .po-stage:hover .po-node,
+    .lp .po-stage:hover .po-node__face,
+    .lp .po-stage:hover .po-ring--detail {
+        animation-play-state: paused;
+    }
+}
+
+/* ======================================================
+   09. SMALL DECORATIVE DETAILS
+====================================================== */
+
+.lp .po-stage__coordinate {
+    position: absolute;
+    z-index: 0;
+
+    color: #6d727a;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.13em;
+
+    pointer-events: none;
+}
+
+.lp .po-stage__coordinate--top {
+    top: 24px;
+    left: 0;
+}
+
+.lp .po-stage__coordinate--bottom {
+    right: 0;
+    bottom: 25px;
+}
+
+/* ======================================================
+   10. SMALL DESKTOP
+====================================================== */
+
+@media (min-width: 901px) and (max-width: 1150px) {
+    .lp .po-hero .lp-hero__grid {
+        gap: 20px;
+    }
+
+    .lp .po-hero h1 {
+        font-size: clamp(39px, 4.3vw, 54px);
+    }
+
+    .lp .po-stage {
+        --po-radius: clamp(132px, 13.2vw, 153px);
+        height: 520px;
+    }
+
+    .lp .po-portrait {
+        width: clamp(205px, 21vw, 235px);
+    }
+
+    .lp .po-wordmark__primary {
+        font-size: clamp(59px, 7.1vw, 80px);
+    }
+
+    .lp .po-ring--inner {
+        width: 270px;
+        height: 270px;
+    }
+
+    .lp .po-ring--detail {
+        width: 355px;
+        height: 355px;
+    }
+
+    .lp .po-node__label {
+        font-size: 10px;
+    }
+
+    .lp .po-node__chip {
+        gap: 7px;
+        padding-right: 8px;
+    }
+}
+
+/* ======================================================
+   11. TABLET
+   Stop full 360 orbit to avoid overlapping labels.
+   Each field floats subtly around the circular photo.
+====================================================== */
+
+@media (max-width: 900px) {
+    .lp main > section.lp-hero.po-hero {
+        padding-top: 55px;
+        padding-bottom: 65px;
+    }
+
+    .lp .po-hero .lp-hero__grid {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 30px;
+    }
+
+    .lp .po-hero .lp-hero__content {
+        order: 0;
+        width: 100%;
+        align-self: auto;
+        margin-top: 0;
+    }
+
+    .lp .po-hero .lp-hero__visual {
+        order: 1;
+        width: 100%;
+        min-height: 0;
+    }
+
+    .lp .po-visual {
+        max-width: 620px;
+        margin-inline: auto;
+    }
+
+    .lp .po-stage {
+        height: 525px;
+    }
+
+    .lp .po-portrait {
+        width: clamp(195px, 37vw, 260px);
+    }
+
+    .lp .po-ring--outer {
+        width: 380px;
+        height: 380px;
+    }
+
+    .lp .po-ring--detail {
+        width: 445px;
+        height: 445px;
+    }
+
+    /*
+       Position nodes independently.
+       This keeps the labels readable on touch screens.
+    */
+
+    .lp .po-node {
+        top: var(--po-mobile-y);
+        left: var(--po-mobile-x);
+        animation: none;
+        transform: none;
+    }
+
+    .lp .po-node__track {
+        transform: none;
+    }
+
+    .lp .po-node__face {
+        animation: po-mobile-float 5.2s ease-in-out infinite alternate;
+    }
+
+    .lp .po-node--development {
+        --po-mobile-x: 27%;
+        --po-mobile-y: 14%;
+    }
+
+    .lp .po-node--research {
+        --po-mobile-x: 74%;
+        --po-mobile-y: 16%;
+    }
+
+    .lp .po-node--ai {
+        --po-mobile-x: 70%;
+        --po-mobile-y: 76%;
+    }
+
+    .lp .po-node--iot {
+        --po-mobile-x: 24%;
+        --po-mobile-y: 78%;
+    }
+
+    .lp .po-node--data {
+        --po-mobile-x: 51%;
+        --po-mobile-y: 91%;
+    }
+
+    .lp .po-node--research .po-node__face {
+        animation-delay: -1.2s;
+    }
+
+    .lp .po-node--ai .po-node__face {
+        animation-delay: -2.5s;
+    }
+
+    .lp .po-node--data .po-node__face {
+        animation-delay: -3.6s;
+    }
+
+    .lp .po-node--iot .po-node__face {
+        animation-delay: -0.8s;
+    }
+}
+
+@keyframes po-mobile-float {
+    from {
+        transform: translate(-50%, -50%) translate3d(-3px, 5px, 0);
+    }
+
+    to {
+        transform: translate(-50%, -50%) translate3d(4px, -6px, 0);
+    }
+}
+
+/* ======================================================
+   12. SMARTPHONE
+====================================================== */
+
+@media (max-width: 600px) {
+    .lp main > section.lp-hero.po-hero {
+        padding-top: 35px;
+        padding-bottom: 52px;
+    }
+
+    .lp .po-hero .lp-hero__grid {
+        gap: 22px;
+    }
+
+    .lp .po-hero h1 {
+        font-size: clamp(36px, 9vw, 48px);
+    }
+
+    .lp .po-hero .lp-hero__stats {
+        margin-top: 35px;
+    }
+
+    .lp .po-stage {
+        height: 490px;
+    }
+
+    .lp .po-portrait {
+        width: clamp(175px, 53vw, 220px);
+    }
+
+    .lp .po-portrait::before {
+        inset: -9px;
+    }
+
+    .lp .po-wordmark__primary {
+        font-size: clamp(55px, 15vw, 73px);
+    }
+
+    .lp .po-wordmark__secondary {
+        font-size: 8px;
+        letter-spacing: 0.15em;
+    }
+
+    .lp .po-ring--inner {
+        width: 230px;
+        height: 230px;
+    }
+
+    .lp .po-ring--outer {
+        width: 305px;
+        height: 305px;
+    }
+
+    .lp .po-ring--detail {
+        width: 345px;
+        height: 345px;
+    }
+
+    .lp .po-node__chip {
+        gap: 6px;
+
+        min-height: 36px;
+        padding: 5px 8px 5px 5px;
+
+        border-radius: 8px;
+    }
+
+    .lp .po-node__icon {
+        flex: 0 0 24px;
+
+        width: 24px;
+        height: 24px;
+    }
+
+    .lp .po-node__icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .lp .po-node__label {
+        font-size: 9px;
+    }
+
+    .lp .po-node__number {
+        display: none;
+    }
+
+    .lp .po-node--development {
+        --po-mobile-x: 29%;
+        --po-mobile-y: 14%;
+    }
+
+    .lp .po-node--research {
+        --po-mobile-x: 76%;
+        --po-mobile-y: 15%;
+    }
+
+    .lp .po-node--ai {
+        --po-mobile-x: 70%;
+        --po-mobile-y: 76%;
+    }
+
+    .lp .po-node--iot {
+        --po-mobile-x: 23%;
+        --po-mobile-y: 80%;
+    }
+
+    .lp .po-node--data {
+        --po-mobile-x: 53%;
+        --po-mobile-y: 92%;
+    }
+
+    .lp .po-visual__top,
+    .lp .po-visual__bottom {
+        font-size: 8px;
+    }
+
+    .lp .po-stage__coordinate {
+        font-size: 8px;
+    }
+}
+
+/* ======================================================
+   13. REDUCED MOTION
+====================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .lp .po-node,
+    .lp .po-node__face,
+    .lp .po-ring--detail,
+    .lp .po-wordmark,
+    .lp .po-portrait__image,
+    .lp .po-node__chip {
+        animation: none !important;
+    }
+
+    .lp .po-node {
+        transform: rotate(var(--po-angle));
+    }
+
+    .lp .po-node__face {
+        transform: translate(-50%, -50%) rotate(var(--po-counter));
+    }
+
+    .lp .po-wordmark {
+        transform: translate(-50%, -50%);
+    }
+
+    .lp .po-portrait {
+        transform: translate(-50%, -50%);
+        transition: none;
+    }
+
+    .lp .po-node__chip {
+        opacity: 1;
+        scale: 1;
+        transition: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 900px) {
+    .lp .po-node {
+        transform: none;
+    }
+
+    .lp .po-node__face {
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* ======================================================
+   DESKTOP HERO — ALIGNED BOTTOM DIVIDERS
+
+   Align:
+   - Left statistics divider
+   - Right orbit footer divider
+
+   Keep portrait proportions and animations intact.
+====================================================== */
+
+@media (min-width: 901px) {
+    .lp .po-hero {
+        --po-bottom-row-height: 96px;
+    }
+
+    /* Kedua kolom mengikuti tinggi grid yang sama */
+    .lp .po-hero .lp-hero__grid {
+        align-items: stretch;
+    }
+
+    /* Kolom kiri */
+    .lp .po-hero .lp-hero__content {
+        display: flex;
+        flex-direction: column;
+
+        align-self: stretch;
+        margin-top: 0;
+    }
+
+    /* Jaga jarak tombol dengan statistik */
+    .lp .po-hero .lp-hero__actions {
+        margin-bottom: 34px;
+    }
+
+    /* Statistik ditempatkan pada bagian bawah kolom */
+    .lp .po-hero .lp-hero__stats {
+        flex-shrink: 0;
+
+        width: 100%;
+        height: var(--po-bottom-row-height);
+        min-height: var(--po-bottom-row-height);
+
+        margin-top: auto;
+        padding: 26px 0 0;
+
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Kolom kanan mengikuti tinggi grid */
+    .lp .po-hero .lp-hero__visual {
+        align-items: stretch;
+    }
+
+    .lp .po-hero .po-visual {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Ukuran dan perhitungan orbit tidak berubah */
+    .lp .po-hero .po-stage {
+        flex-shrink: 0;
+    }
+
+    /* Footer orbit: tinggi sama dengan statistik */
+    .lp .po-hero .po-visual__bottom {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        flex-shrink: 0;
+
+        width: 100%;
+        height: var(--po-bottom-row-height);
+        min-height: var(--po-bottom-row-height);
+
+        margin-top: auto;
+        padding: 0 0 14px;
+
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+}

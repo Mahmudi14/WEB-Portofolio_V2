@@ -1,24 +1,36 @@
-import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
-import HeroIdCard from "./hero-id-card";
+
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+
+import HeroOrbit from "./hero-orbit";
 import type { Hero, Profile } from "./landing-types";
+
+type HeroSectionProps = {
+    profile: Profile;
+    hero: Hero;
+    projectCount: number;
+    researchCount: number;
+};
 
 export default function HeroSection({
     profile,
     hero,
     projectCount,
     researchCount,
-}: {
-    profile: Profile;
-    hero: Hero;
-    projectCount: number;
-    researchCount: number;
-}) {
-    const name = profile.display_name || profile.full_name || "Portofolio";
+}: HeroSectionProps) {
+    const name =
+        profile.display_name ||
+        profile.full_name ||
+        "Portofolio";
 
     return (
-        <section id="home" className="lp-hero">
+        <section
+            id="home"
+            className="lp-hero po-hero"
+            aria-labelledby="po-hero-title"
+        >
             <div className="lp-container lp-hero__grid">
-                <div className="lp-hero__content">
+                {/* LEFT — INTRODUCTION */}
+                <div className="lp-hero__content po-hero__content">
                     <span className="lp-eyebrow">
                         <span className="lp-pulse" />
                         PERSONAL PORTFOLIO
@@ -29,7 +41,7 @@ export default function HeroSection({
                         <span className="lp-accent">.</span>
                     </p>
 
-                    <h1>
+                    <h1 id="po-hero-title">
                         {hero.headline ||
                             "Membangun karya melalui ide dan teknologi."}
                     </h1>
@@ -75,11 +87,11 @@ export default function HeroSection({
                     </div>
                 </div>
 
-                <div className="lp-hero__visual">
-                    <HeroIdCard
+                {/* RIGHT — INTERACTIVE CIRCULAR PORTRAIT */}
+                <div className="lp-hero__visual po-hero__visual">
+                    <HeroOrbit
                         name={name}
                         photoUrl={profile.photo_url}
-                        logoUrl={profile.logo_url}
                     />
                 </div>
             </div>

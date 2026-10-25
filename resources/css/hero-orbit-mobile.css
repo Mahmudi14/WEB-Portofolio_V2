@@ -1,0 +1,505 @@
+/* ======================================================
+   PERSONAL ORBIT — MOBILE
+   Same concept as desktop, proportionally scaled.
+
+   - Circular portrait
+   - Name behind portrait
+   - Five labels orbiting 360 degrees
+   - Upright moving labels
+   - Black and orange styling
+====================================================== */
+
+/* Mobile-only elements from previous design stay hidden */
+
+.lp .po-mobile-satellites,
+.lp .po-mobile-expertise {
+    display: none !important;
+}
+
+/* ======================================================
+   TABLET AND MOBILE
+====================================================== */
+
+@media (max-width: 900px) {
+    /* HERO */
+
+    .lp main > section.lp-hero.po-hero {
+        min-height: 0;
+        padding-top: 48px;
+        padding-bottom: 58px;
+    }
+
+    .lp .po-hero .lp-hero__grid {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 22px;
+    }
+
+    .lp .po-hero .lp-hero__content {
+        order: 0;
+        align-self: auto;
+        width: 100%;
+        margin-top: 0;
+    }
+
+    .lp .po-hero .lp-hero__visual {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    .lp .po-visual {
+        width: 100%;
+        max-width: 620px;
+        min-width: 0;
+        margin-inline: auto;
+    }
+
+    /*
+       Stage uses the same internal 500px composition
+       as desktop, scaled as a complete unit.
+
+       Text, portrait, and orbital movement
+       therefore preserve their relative positions.
+    */
+
+    .lp .po-stage {
+        --po-radius: 145px;
+        --po-duration: 64s;
+
+        position: relative;
+        left: 50%;
+
+        width: 500px;
+        height: 500px;
+
+        margin: 0 0 -30px;
+
+        overflow: visible;
+
+        transform: translateX(-50%) scale(0.94);
+        transform-origin: center top;
+    }
+
+    /* Restore the desktop orbit */
+    .lp .po-disciplines {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .lp .po-node {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 0;
+        height: 0;
+
+        transform: rotate(var(--po-angle));
+
+        animation: po-orbit-spin var(--po-duration) linear infinite;
+    }
+
+    .lp .po-node__track {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        transform: translateX(var(--po-radius));
+    }
+
+    .lp .po-node__face {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        animation: po-orbit-counter var(--po-duration) linear infinite;
+    }
+
+    /* Fully readable labels */
+
+    .lp .po-node__chip {
+        gap: 9px;
+        min-height: 45px;
+
+        padding: 7px 11px 7px 7px;
+
+        border: 1px solid #414349;
+        border-radius: 9px;
+
+        background: rgba(20, 22, 26, 0.98);
+    }
+
+    .lp .po-node__icon {
+        flex: 0 0 30px;
+        width: 30px;
+        height: 30px;
+
+        border-radius: 7px;
+        color: #ff9148;
+    }
+
+    .lp .po-node__label {
+        font-size: 15px;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .lp .po-node__number {
+        display: none;
+    }
+
+    /* Portrait remains circular and above the orbit */
+
+    .lp .po-portrait {
+        position: absolute;
+        z-index: 5;
+
+        top: 50%;
+        left: 50%;
+
+        width: 250px;
+        height: 250px;
+        aspect-ratio: 1;
+
+        transform: translate(-50%, -50%);
+    }
+
+    .lp .po-portrait::before,
+    .lp .po-portrait__frame {
+        border-radius: 50%;
+    }
+
+    .lp .po-portrait::before {
+        inset: -11px;
+    }
+
+    .lp .po-portrait__image img {
+        object-fit: cover;
+        object-position: center 22%;
+    }
+
+    /* Large editorial wordmark behind the photo */
+
+    .lp .po-wordmark {
+        position: absolute;
+        z-index: 1;
+
+        top: 50%;
+        left: 50%;
+
+        width: 500px;
+        max-width: none;
+
+        text-align: center;
+
+        transform: translate(-50%, -50%);
+
+        animation: po-wordmark-drift 9s ease-in-out infinite alternate;
+    }
+
+    .lp .po-wordmark__primary {
+        font-size: 95px;
+        font-weight: 750;
+        line-height: 1;
+
+        color: rgba(255, 255, 255, 0.15);
+        letter-spacing: -0.085em;
+
+        white-space: nowrap;
+    }
+
+    .lp .po-wordmark__secondary {
+        margin-top: 10px;
+
+        color: rgba(255, 106, 0, 0.55);
+        font-size: 12px;
+    }
+
+    /* Orbit rings */
+
+    .lp .po-ring--inner {
+        width: 245px;
+        height: 245px;
+    }
+
+    .lp .po-ring--outer {
+        width: 290px;
+        height: 290px;
+    }
+
+    .lp .po-ring--detail {
+        width: 360px;
+        height: 360px;
+
+        animation: po-ring-rotate 96s linear infinite;
+    }
+
+    .lp .po-stage__coordinate {
+        display: none;
+    }
+
+    .lp .po-visual__top,
+    .lp .po-visual__bottom {
+        display: flex;
+    }
+}
+
+/* ======================================================
+   MEDIUM MOBILE — 481 TO 600 PX
+====================================================== */
+
+@media (min-width: 481px) and (max-width: 600px) {
+    .lp .po-stage {
+        transform: translateX(-50%) scale(0.83);
+        margin-bottom: -85px;
+    }
+
+    .lp .po-node__label {
+        font-size: 16px;
+    }
+}
+
+/* ======================================================
+   MOBILE — 421 TO 480 PX
+====================================================== */
+
+@media (min-width: 421px) and (max-width: 480px) {
+    .lp .po-stage {
+        transform: translateX(-50%) scale(0.72);
+        margin-bottom: -140px;
+    }
+
+    .lp .po-node__label {
+        font-size: 16px;
+    }
+}
+
+/* ======================================================
+   MOBILE — 381 TO 420 PX
+====================================================== */
+
+@media (min-width: 381px) and (max-width: 420px) {
+    .lp .po-stage {
+        transform: translateX(-50%) scale(0.65);
+        margin-bottom: -175px;
+    }
+
+    .lp .po-node__label {
+        font-size: 16px;
+    }
+}
+
+/* ======================================================
+   SMALL MOBILE — 380 PX AND BELOW
+   Optimized for 360px screens.
+====================================================== */
+
+@media (max-width: 380px) {
+    .lp main > section.lp-hero.po-hero {
+        padding-top: 36px;
+        padding-bottom: 46px;
+    }
+
+    .lp .po-hero .lp-hero__grid {
+        gap: 18px;
+    }
+
+    .lp .po-stage {
+        --po-radius: 140px;
+
+        transform: translateX(-50%) scale(0.62);
+        margin-bottom: -190px;
+    }
+
+    .lp .po-node__label {
+        font-size: 16px;
+    }
+
+    .lp .po-node__chip {
+        gap: 8px;
+        min-height: 45px;
+        padding: 7px 10px 7px 7px;
+    }
+
+    .lp .po-wordmark__primary {
+        font-size: 92px;
+    }
+
+    .lp .po-wordmark__secondary {
+        display: none;
+    }
+
+    .lp .po-hero .lp-hero__stats {
+        margin-top: 32px;
+    }
+}
+
+/* ======================================================
+   REDUCED MOTION
+====================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .lp .po-node {
+        animation: none !important;
+        transform: rotate(var(--po-angle));
+    }
+
+    .lp .po-node__face {
+        animation: none !important;
+
+        transform: translate(-50%, -50%) rotate(var(--po-counter));
+    }
+
+    .lp .po-ring--detail,
+    .lp .po-wordmark {
+        animation: none !important;
+    }
+
+    .lp .po-wordmark {
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* ==========================================
+   FIX MOBILE ORBIT LAYER & SPACING
+========================================== */
+
+@media (max-width: 900px) {
+    /* Nama besar tetap berada di belakang foto */
+    .lp .po-stage .po-wordmark {
+        z-index: 1;
+    }
+
+    /* Foto berada di tengah */
+    .lp .po-stage .po-portrait {
+        z-index: 4;
+    }
+
+    /* Label orbit tampil di depan foto */
+    .lp .po-stage .po-disciplines {
+        z-index: 7;
+    }
+
+    /* Perbesar radius agar label tidak terlalu rapat */
+    .lp .po-stage {
+        --po-radius: 180px;
+    }
+
+    /* Sesuaikan lingkaran dengan lintasan */
+    .lp .po-stage .po-ring--outer {
+        width: calc(var(--po-radius) * 2);
+        height: calc(var(--po-radius) * 2);
+    }
+}
+
+/* Samsung A55 dan smartphone kecil */
+@media (max-width: 380px) {
+    .lp .po-stage {
+        --po-radius: 178px;
+    }
+
+    /* Foto sedikit lebih kecil agar ada ruang */
+    .lp .po-stage .po-portrait {
+        width: 210px;
+        height: 210px;
+    }
+
+    /* Label lebih proporsional */
+    .lp .po-stage .po-node__chip {
+        min-height: 38px;
+        gap: 6px;
+        padding: 5px 7px 5px 5px;
+    }
+
+    .lp .po-stage .po-node__icon {
+        flex: 0 0 25px;
+        width: 25px;
+        height: 25px;
+    }
+
+    .lp .po-stage .po-node__label {
+        font-size: 13px;
+    }
+}
+
+
+/* ==========================================
+   FINAL FIX — VERTICAL CENTER ORBIT FOOTER
+========================================== */
+
+@media (max-width: 600px) {
+
+    /* Hilangkan ruang tambahan di bawah footer */
+    .lp main > section.lp-hero.po-hero {
+        padding-bottom: 0;
+    }
+
+    /* Seluruh area footer menjadi satu ruang seimbang */
+    .lp .po-visual__bottom {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        width: 100%;
+        height: 96px;
+        min-height: 96px;
+
+        margin: 0;
+        padding: 0;
+
+        border-top: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    /* Kedua tulisan tepat di tengah */
+    .lp .po-visual__bottom > span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+
+        margin: 0;
+        padding: 0 5px;
+
+        color: #a5a9b0;
+        font-size: 8px;
+        font-weight: 650;
+        line-height: 1.2;
+        letter-spacing: 0.04em;
+
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Garis pemisah hanya setinggi area teks */
+    .lp .po-visual__bottom > span:first-child {
+        position: relative;
+        border-right: none;
+    }
+
+    .lp .po-visual__bottom > span:first-child::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+
+        width: 1px;
+        height: 27px;
+
+        background: rgba(255, 106, 0, 0.35);
+        transform: translateY(-50%);
+    }
+
+    .lp .po-visual__bottom > span:last-child {
+        border: none;
+    }
+}
