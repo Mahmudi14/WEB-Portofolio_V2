@@ -1,0 +1,1107 @@
+
+/* ======================================================
+   THE THINKING PROCESS — ABOUT SECTION
+   Portfolio V2
+
+   Theme:
+   Deep black    #0B0D10
+   Signature     #FF6A00
+   Graphite      #15181C
+====================================================== */
+
+/* ======================================================
+   01. SECTION FOUNDATION
+====================================================== */
+
+.lp main > section.lp-section.tp-section {
+    --tp-orange: #ff6a00;
+    --tp-orange-light: #ff944d;
+    --tp-white: #f4f4f2;
+    --tp-muted: #a5a9b0;
+    --tp-border: rgba(255, 255, 255, .095);
+    --tp-progress: 0;
+
+    position: relative;
+    isolation: isolate;
+
+    padding: 98px 0 105px;
+
+    background: #0b0d10;
+    border-top: 1px solid var(--tp-border);
+    overflow: hidden;
+}
+
+.lp .tp-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 49.95%,
+            rgba(255, 255, 255, .018) 50%,
+            transparent 50.05%
+        );
+
+    pointer-events: none;
+}
+
+/* ======================================================
+   02. SECTION INDEX
+====================================================== */
+
+.lp .tp-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--tp-border);
+}
+
+.lp .tp-topbar__identity {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+
+    color: var(--tp-orange-light);
+
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .17em;
+}
+
+.lp .tp-topbar__index {
+    color: var(--tp-white);
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 13px;
+    letter-spacing: -.02em;
+}
+
+.lp .tp-topbar__rule {
+    display: block;
+
+    width: 39px;
+    height: 1px;
+
+    background: var(--tp-orange);
+    transform-origin: left;
+}
+
+.lp .tp-topbar__meta {
+    color: #777c84;
+
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+}
+
+/* ======================================================
+   03. MAIN HEADING
+====================================================== */
+
+.lp .tp-heading {
+    max-width: 1000px;
+
+    padding-top: clamp(40px, 5vw, 65px);
+}
+
+.lp .tp-heading__eyebrow {
+    display: inline-block;
+
+    margin-bottom: 21px;
+
+    color: #999ea6;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .17em;
+}
+
+.lp .tp-heading h2 {
+    margin: 0;
+
+    color: var(--tp-white);
+
+    font-family:
+        "Space Grotesk",
+        Inter,
+        sans-serif;
+
+    font-size: clamp(44px, 5.6vw, 78px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -.065em;
+}
+
+.lp .tp-heading__accent {
+    display: block;
+    color: var(--tp-orange);
+}
+
+.lp .tp-heading__dot {
+    color: var(--tp-white);
+}
+
+.lp .tp-heading > p {
+    max-width: 620px;
+
+    margin: 23px 0 0;
+
+    color: var(--tp-muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+/* ======================================================
+   04. TWO-COLUMN LAYOUT
+====================================================== */
+
+.lp .tp-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.12fr)
+        minmax(0, .88fr);
+
+    align-items: start;
+    gap: clamp(40px, 6vw, 90px);
+
+    margin-top: clamp(43px, 5.5vw, 70px);
+}
+
+/* ======================================================
+   05. BIOGRAPHY
+====================================================== */
+
+.lp .tp-biography {
+    min-width: 0;
+    padding-top: 7px;
+}
+
+.lp .tp-biography__heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    margin-bottom: 28px;
+
+    color: #d7dade;
+
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .13em;
+}
+
+.lp .tp-biography__number {
+    color: var(--tp-orange);
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 12px;
+}
+
+.lp .tp-biography__content {
+    max-width: 660px;
+}
+
+.lp .tp-biography__content p {
+    margin: 0 0 21px;
+
+    color: #b7bbc1;
+
+    font-size: clamp(14px, 1.1vw, 15.5px);
+    font-weight: 400;
+    line-height: 2;
+
+    letter-spacing: -.008em;
+    white-space: pre-line;
+    overflow-wrap: break-word;
+}
+
+.lp .tp-biography__content p:first-child {
+    color: #e4e6e8;
+}
+
+.lp .tp-biography__content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Call to action */
+
+.lp .tp-biography__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 19px;
+
+    margin-top: 31px;
+    padding: 0 0 11px;
+
+    border-bottom: 1px solid rgba(255, 106, 0, .55);
+
+    color: var(--tp-orange-light) !important;
+
+    font-size: 12px;
+    font-weight: 650;
+
+    transition:
+        border-color .25s ease,
+        color .25s ease;
+}
+
+.lp .tp-biography__link svg {
+    flex-shrink: 0;
+
+    transition:
+        transform .3s cubic-bezier(.2, .8, .2, 1);
+}
+
+.lp .tp-biography__link:hover {
+    color: #ffb27f !important;
+    border-color: #ffb27f;
+}
+
+.lp .tp-biography__link:hover svg {
+    transform: translate(4px, -4px);
+}
+
+/* ======================================================
+   06. PROCESS DIAGRAM PANEL
+====================================================== */
+
+.lp .tp-process {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+
+    padding: clamp(22px, 2.6vw, 32px);
+
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 4px;
+
+    background: #15181c;
+}
+
+.lp .tp-process::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 38px;
+    height: 2px;
+
+    background: var(--tp-orange);
+}
+
+.lp .tp-process__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.lp .tp-process__eyebrow {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #92979f;
+
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .14em;
+}
+
+.lp .tp-process__header h3 {
+    margin: 0;
+
+    color: #eceef0;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(17px, 1.8vw, 22px);
+    font-weight: 650;
+    line-height: 1.35;
+    letter-spacing: -.035em;
+}
+
+.lp .tp-process__serial {
+    padding-top: 2px;
+
+    color: #777d85;
+
+    font-size: 10px;
+    font-weight: 650;
+
+    white-space: nowrap;
+}
+
+/* Diagram canvas */
+
+.lp .tp-process__diagram {
+    position: relative;
+
+    width: 100%;
+    margin-top: 14px;
+
+    background-image: radial-gradient(
+        rgba(255,255,255,.075) .7px,
+        transparent .7px
+    );
+
+    background-size: 18px 18px;
+
+    background-position: center;
+}
+
+.lp .tp-process__svg {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    overflow: visible;
+}
+
+/* Original route */
+
+.lp .tp-process__track {
+    fill: none;
+    stroke: #454951;
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Route filled according to scroll */
+
+.lp .tp-process__progress {
+    fill: none;
+    stroke: var(--tp-orange);
+    stroke-width: 2.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ======================================================
+   07. SVG MILESTONES
+====================================================== */
+
+.lp .tp-point__outer {
+    fill: #15181c;
+
+    stroke: #444950;
+    stroke-width: 1.2;
+
+    transition:
+        stroke .3s ease,
+        fill .3s ease;
+}
+
+.lp .tp-point__inner {
+    fill: #20242a;
+
+    stroke: rgba(255,255,255,.08);
+    stroke-width: 1;
+
+    transition:
+        fill .3s ease,
+        stroke .3s ease;
+}
+
+.lp .tp-point__number {
+    fill: #b0b4bb;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 650;
+
+    transition: fill .3s ease;
+}
+
+/* Milestone has been reached */
+
+.lp .tp-point--reached .tp-point__outer {
+    stroke: rgba(255, 106, 0, .65);
+}
+
+.lp .tp-point--reached .tp-point__inner {
+    fill: #362519;
+}
+
+/* Currently active milestone */
+
+.lp .tp-point--active .tp-point__outer {
+    stroke: var(--tp-orange);
+    stroke-width: 1.8;
+}
+
+.lp .tp-point--active .tp-point__inner {
+    fill: #ff6a00;
+}
+
+.lp .tp-point--active .tp-point__number {
+    fill: #08090b;
+}
+
+.lp .tp-process__marker {
+    fill: #ffc092;
+    stroke: var(--tp-orange);
+    stroke-width: 2.5;
+
+    filter: drop-shadow(
+        0 0 5px rgba(255,106,0,.28)
+    );
+
+    pointer-events: none;
+}
+
+/* ======================================================
+   08. PROCESS PANEL FOOTER
+====================================================== */
+
+.lp .tp-process__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+
+    padding-top: 17px;
+    border-top: 1px solid rgba(255,255,255,.09);
+}
+
+.lp .tp-process__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #c2c6cb;
+
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: .075em;
+}
+
+.lp .tp-process__status-dot {
+    flex: 0 0 6px;
+
+    width: 6px;
+    height: 6px;
+
+    background: var(--tp-orange);
+}
+
+.lp .tp-process__hint {
+    color: #777e87;
+
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: .09em;
+}
+
+/* ======================================================
+   09. THREE PROCESS STEPS
+====================================================== */
+
+.lp .tp-steps {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(17px, 3vw, 48px);
+
+    margin-top: 70px;
+    padding-top: 26px;
+
+    border-top: 1px solid rgba(255,255,255,.12);
+}
+
+/* Orange progress across the horizontal divider */
+
+.lp .tp-steps::before {
+    content: "";
+    position: absolute;
+
+    top: -1px;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background: var(--tp-orange);
+
+    transform: scaleX(var(--tp-progress));
+    transform-origin: left center;
+
+    pointer-events: none;
+}
+
+.lp .tp-step {
+    min-width: 0;
+    opacity: .57;
+
+    transition: opacity .35s ease;
+}
+
+.lp .tp-step__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 13px;
+
+    margin-bottom: 13px;
+}
+
+.lp .tp-step__header span {
+    color: #90959c;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.lp .tp-step__header svg {
+    color: #92979f;
+
+    transition:
+        color .3s ease,
+        transform .3s ease;
+}
+
+.lp .tp-step strong {
+    display: block;
+
+    color: #e7e8ea;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(19px, 2vw, 25px);
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -.04em;
+}
+
+.lp .tp-step p {
+    margin: 9px 0 0;
+
+    color: #989da5;
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* Active and completed stages */
+
+.lp .tp-step--reached {
+    opacity: 1;
+}
+
+.lp .tp-step--active .tp-step__header span,
+.lp .tp-step--active .tp-step__header svg {
+    color: var(--tp-orange-light);
+}
+
+.lp .tp-step--active .tp-step__header svg {
+    transform: translateY(-2px);
+}
+
+/* ======================================================
+   10. ENTRANCE ANIMATIONS
+====================================================== */
+
+/* Enhanced only when IntersectionObserver is available */
+
+.lp .tp-motion [data-tp-reveal] {
+    opacity: 0;
+
+    transform: translate3d(0, 23px, 0);
+
+    transition:
+        opacity .7s cubic-bezier(.2,.75,.2,1),
+        transform .82s cubic-bezier(.2,.75,.2,1);
+}
+
+.lp .tp-motion [data-tp-reveal].tp-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.lp .tp-motion .tp-biography {
+    transition-delay: .06s;
+}
+
+.lp .tp-motion .tp-process {
+    transition-delay: .14s;
+}
+
+.lp .tp-motion .tp-steps {
+    transition-delay: .08s;
+}
+
+/* Short line drawing */
+
+.lp .tp-motion .tp-topbar__rule {
+    transform: scaleX(0);
+    transition: transform .8s cubic-bezier(.2,.75,.2,1);
+}
+
+.lp .tp-motion .tp-topbar.tp-visible .tp-topbar__rule {
+    transform: scaleX(1);
+}
+
+/* ======================================================
+   11. TABLET
+====================================================== */
+
+@media (max-width: 900px) {
+    .lp main > section.lp-section.tp-section {
+        padding: 82px 0 90px;
+    }
+
+    .lp .tp-grid {
+        grid-template-columns: 1fr;
+        gap: 43px;
+
+        margin-top: 45px;
+    }
+
+    .lp .tp-heading h2 {
+        font-size: clamp(44px, 6.8vw, 66px);
+    }
+
+    .lp .tp-biography__content {
+        max-width: 720px;
+    }
+
+    .lp .tp-process {
+        width: 100%;
+        max-width: 610px;
+    }
+
+    .lp .tp-steps {
+        margin-top: 60px;
+    }
+}
+
+/* ======================================================
+   12. SMARTPHONE
+====================================================== */
+
+@media (max-width: 600px) {
+    .lp main > section.lp-section.tp-section {
+        padding: 67px 0 72px;
+    }
+
+    /* Section heading */
+
+    .lp .tp-topbar {
+        padding-bottom: 19px;
+    }
+
+    .lp .tp-topbar__identity {
+        gap: 10px;
+        font-size: 9px;
+    }
+
+    .lp .tp-topbar__rule {
+        width: 26px;
+    }
+
+    .lp .tp-topbar__meta {
+        display: none;
+    }
+
+    .lp .tp-heading {
+        padding-top: 37px;
+    }
+
+    .lp .tp-heading__eyebrow {
+        margin-bottom: 16px;
+        font-size: 9px;
+    }
+
+    .lp .tp-heading h2 {
+        font-size: clamp(37px, 10.4vw, 49px);
+        line-height: 1.12;
+        letter-spacing: -.06em;
+    }
+
+    .lp .tp-heading > p {
+        margin-top: 20px;
+
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    /* Biography */
+
+    .lp .tp-grid {
+        gap: 36px;
+        margin-top: 41px;
+    }
+
+    .lp .tp-biography {
+        padding-top: 0;
+    }
+
+    .lp .tp-biography__heading {
+        margin-bottom: 22px;
+        font-size: 9px;
+    }
+
+    .lp .tp-biography__content p {
+        margin-bottom: 18px;
+
+        font-size: 13px;
+        line-height: 1.9;
+    }
+
+    .lp .tp-biography__link {
+        margin-top: 24px;
+    }
+
+    /* Interactive process */
+
+    .lp .tp-process {
+        padding: 20px 16px;
+        border-radius: 3px;
+    }
+
+    .lp .tp-process__eyebrow {
+        font-size: 8px;
+        margin-bottom: 10px;
+    }
+
+    .lp .tp-process__header h3 {
+        font-size: 17px;
+    }
+
+    .lp .tp-process__serial {
+        font-size: 9px;
+    }
+
+    .lp .tp-process__diagram {
+        margin-top: 10px;
+    }
+
+    .lp .tp-process__footer {
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .lp .tp-process__status {
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .lp .tp-process__hint {
+        font-size: 8px;
+    }
+
+    /* Three stages */
+
+    .lp .tp-steps {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+
+        margin-top: 48px;
+        padding-top: 21px;
+    }
+
+    .lp .tp-step__header {
+        margin-bottom: 11px;
+    }
+
+    .lp .tp-step__header span {
+        font-size: 10px;
+    }
+
+    .lp .tp-step__header svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .lp .tp-step strong {
+        font-size: clamp(14px, 4vw, 18px);
+    }
+
+    .lp .tp-step p {
+        font-size: 10px;
+        line-height: 1.55;
+    }
+}
+
+/* ======================================================
+   13. VERY SMALL DEVICES
+====================================================== */
+
+@media (max-width: 380px) {
+    .lp .tp-heading h2 {
+        font-size: 36px;
+    }
+
+    .lp .tp-process {
+        padding: 18px 13px;
+    }
+
+    .lp .tp-steps {
+        gap: 9px;
+    }
+
+    .lp .tp-step strong {
+        font-size: 14px;
+    }
+
+    .lp .tp-step p {
+        font-size: 9.5px;
+    }
+}
+
+/* ======================================================
+   14. REDUCED MOTION
+====================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .lp .tp-motion [data-tp-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .lp .tp-topbar__rule {
+        transform: none !important;
+    }
+
+    .lp .tp-point__outer,
+    .lp .tp-point__inner,
+    .lp .tp-point__number,
+    .lp .tp-step,
+    .lp .tp-step__header svg {
+        transition: none;
+    }
+
+    .lp .tp-process__marker {
+        filter: none;
+    }
+}
+
+/* ==========================================
+   ABOUT — COMPACT REFINEMENT
+   Desktop / Tablet / Mobile
+========================================== */
+
+/* SECTION */
+.lp main > section.lp-section.tp-section {
+    padding-top: 70px;
+    padding-bottom: 75px;
+}
+
+/* TOP LABEL */
+.lp .tp-topbar {
+    padding-bottom: 16px;
+}
+
+/* HEADING */
+.lp .tp-heading {
+    padding-top: 30px;
+    max-width: 850px;
+}
+
+.lp .tp-heading__eyebrow {
+    margin-bottom: 13px;
+}
+
+.lp .tp-heading h2 {
+    font-size: clamp(40px, 4.3vw, 58px);
+    line-height: 1.07;
+}
+
+.lp .tp-heading > p {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* MAIN GRID */
+.lp .tp-grid {
+    margin-top: 32px;
+    gap: clamp(28px, 4vw, 55px);
+}
+
+/* BIOGRAPHY */
+.lp .tp-biography {
+    padding-top: 0;
+}
+
+.lp .tp-biography__heading {
+    margin-bottom: 17px;
+}
+
+.lp .tp-biography__content p {
+    margin-bottom: 13px;
+    font-size: 14px;
+    line-height: 1.78;
+}
+
+.lp .tp-biography__link {
+    margin-top: 20px;
+}
+
+/* PROCESS PANEL */
+.lp .tp-process {
+    padding: 21px 23px;
+}
+
+.lp .tp-process__eyebrow {
+    margin-bottom: 8px;
+}
+
+.lp .tp-process__header h3 {
+    font-size: 18px;
+}
+
+/* Smaller diagram without changing SVG path */
+.lp .tp-process__diagram {
+    width: min(100%, 345px);
+    margin: 9px auto 0;
+}
+
+.lp .tp-process__footer {
+    padding-top: 11px;
+}
+
+/* THREE STEPS */
+.lp .tp-steps {
+    margin-top: 28px;
+    padding-top: 16px;
+    gap: 24px;
+}
+
+.lp .tp-step__header {
+    margin-bottom: 7px;
+}
+
+.lp .tp-step strong {
+    font-size: 19px;
+}
+
+.lp .tp-step p {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 900px) {
+
+    .lp main > section.lp-section.tp-section {
+        padding-top: 60px;
+        padding-bottom: 65px;
+    }
+
+    .lp .tp-grid {
+        margin-top: 30px;
+        gap: 28px;
+    }
+
+    .lp .tp-steps {
+        margin-top: 30px;
+    }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+    .lp main > section.lp-section.tp-section {
+        padding-top: 48px;
+        padding-bottom: 55px;
+    }
+
+    .lp .tp-topbar {
+        padding-bottom: 13px;
+    }
+
+    .lp .tp-heading {
+        padding-top: 23px;
+    }
+
+    .lp .tp-heading__eyebrow {
+        margin-bottom: 10px;
+    }
+
+    .lp .tp-heading h2 {
+        font-size: clamp(34px, 9vw, 41px);
+        line-height: 1.12;
+    }
+
+    .lp .tp-heading > p {
+        margin-top: 12px;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .lp .tp-grid {
+        margin-top: 28px;
+        gap: 25px;
+    }
+
+    .lp .tp-biography__heading {
+        margin-bottom: 15px;
+    }
+
+    .lp .tp-biography__content p {
+        margin-bottom: 11px;
+        font-size: 12.5px;
+        line-height: 1.75;
+    }
+
+    .lp .tp-biography__link {
+        margin-top: 17px;
+    }
+
+    .lp .tp-process {
+        padding: 17px 15px;
+    }
+
+    .lp .tp-process__header h3 {
+        font-size: 16px;
+    }
+
+    .lp .tp-process__diagram {
+        width: min(100%, 290px);
+        margin-top: 5px;
+    }
+
+    .lp .tp-process__footer {
+        padding-top: 8px;
+    }
+
+    .lp .tp-steps {
+        margin-top: 26px;
+        padding-top: 13px;
+        gap: 10px;
+    }
+
+    .lp .tp-step__header {
+        margin-bottom: 6px;
+    }
+
+    .lp .tp-step strong {
+        font-size: 14px;
+    }
+
+    .lp .tp-step p {
+        margin-top: 4px;
+        font-size: 10px;
+    }
+}

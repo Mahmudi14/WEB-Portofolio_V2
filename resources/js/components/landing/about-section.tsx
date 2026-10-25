@@ -1,120 +1,284 @@
 
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+    ArrowUpRight,
+    CheckCheck,
+    Code2,
+    Search,
+} from "lucide-react";
+
 import { useEffect, useRef } from "react";
 
-import "../../../css/about-editorial.css";
+import "../../../css/about-thinking.css";
 
-type Props = {
+type AboutSectionProps = {
     description: string | null;
 };
 
-const keywords = [
-    "RESEARCH",
-    "ENGINEERING",
-    "CREATIVE THINKING",
-    "TECHNOLOGY",
-    "EXPERIMENTATION",
+const fallbackDescription =
+    "Cerita dan latar belakang saya akan ditampilkan setelah ditambahkan melalui dashboard admin.";
+
+const FLOW_PATH =
+    "M 62 188 C 136 188 137 77 225 77 C 314 77 318 188 398 188";
+
+const flowPoints = [
+    { x: 62, y: 188 },
+    { x: 225, y: 77 },
+    { x: 398, y: 188 },
 ];
 
-const fallbackDescription =
-    "Cerita tentang latar belakang, perjalanan, dan ketertarikan saya akan ditampilkan di sini.";
+const steps = [
+    {
+        number: "01",
+        title: "Explore",
+        description: "Memahami masalah",
+        icon: Search,
+    },
+    {
+        number: "02",
+        title: "Build",
+        description: "Membangun solusi",
+        icon: Code2,
+    },
+    {
+        number: "03",
+        title: "Improve",
+        description: "Belajar dari hasil",
+        icon: CheckCheck,
+    },
+];
 
-export default function AboutSection({ description }: Props) {
+const clamp = (value: number) =>
+    Math.min(1, Math.max(0, value));
+
+export default function AboutSection({
+    description,
+}: AboutSectionProps) {
     const sectionRef = useRef<HTMLElement>(null);
+    const diagramRef = useRef<HTMLDivElement>(null);
+    const pathRef = useRef<SVGPathElement>(null);
+    const progressPathRef = useRef<SVGPathElement>(null);
+    const markerRef = useRef<SVGCircleElement>(null);
 
+    // Deskripsi tetap berasal dari database Laravel.
     const paragraphs = (description?.trim() || fallbackDescription)
         .split(/\n\s*\n/)
-        .map((item) => item.trim())
+        .map((paragraph) => paragraph.trim())
         .filter(Boolean);
 
     useEffect(() => {
         const section = sectionRef.current;
-        if (!section) return;
+        const diagram = diagramRef.current;
+        const path = pathRef.current;
+        const progressPath = progressPathRef.current;
+        const marker = markerRef.current;
+
+        if (
+            !section ||
+            !diagram ||
+            !path ||
+            !progressPath ||
+            !marker
+        ) {
+            return;
+        }
 
         const reduceMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
         ).matches;
 
-        let observer: IntersectionObserver | null = null;
+        const pointElements = Array.from(
+            section.querySelectorAll<SVGGElement>(
+                "[data-tp-point]",
+            ),
+        );
 
-        // Reveal once when content enters viewport.
-        if (!reduceMotion && "IntersectionObserver" in window) {
-            section.classList.add("ae-motion");
+        const stepElements = Array.from(
+            section.querySelectorAll<HTMLElement>(
+                "[data-tp-step]",
+            ),
+        );
 
-            observer = new IntersectionObserver(
-                (entries, currentObserver) => {
-                    entries.forEach((entry) => {
-                        if (!entry.isIntersecting) return;
+        const pathLength = path.getTotalLength();
 
-                        entry.target.classList.add("ae-visible");
-                        currentObserver.unobserve(entry.target);
-                    });
-                },
-                {
-                    threshold: 0.08,
-                    rootMargin: "0px 0px -35px 0px",
-                },
+        progressPath.style.strokeDasharray =
+            `${pathLength} ${pathLength}`;
+
+        let animationFrame = 0;
+        let lastActive = -1;
+
+        // ======================================
+        // UPDATE ACTIVE STEP
+        // ======================================
+
+        const updateActiveStep = (progress: number) => {
+            const activeIndex =
+                progress < 0.42
+                    ? 0
+                    : progress < 0.82
+                      ? 1
+                      : 2;
+
+            if (activeIndex === lastActive) return;
+
+            pointElements.forEach((point, index) => {
+                point.classList.toggle(
+                    "tp-point--reached",
+                    index <= activeIndex,
+                );
+
+                point.classList.toggle(
+                    "tp-point--active",
+                    index === activeIndex,
+                );
+            });
+
+            stepElements.forEach((step, index) => {
+                step.classList.toggle(
+                    "tp-step--reached",
+                    index <= activeIndex,
+                );
+
+                step.classList.toggle(
+                    "tp-step--active",
+                    index === activeIndex,
+                );
+            });
+
+            lastActive = activeIndex;
+        };
+
+        // ======================================
+        // MOVE DOT ALONG SVG PATH
+        // ======================================
+
+        const renderProgress = (progress: number) => {
+            const currentLength = pathLength * progress;
+
+            progressPath.style.strokeDashoffset = String(
+                pathLength - currentLength,
             );
 
-            section
-                .querySelectorAll<HTMLElement>("[data-ae-reveal]")
-                .forEach((element) => observer?.observe(element));
-        }
+            const point = path.getPointAtLength(currentLength);
 
-        let frame = 0;
+            marker.setAttribute("cx", point.x.toFixed(2));
+            marker.setAttribute("cy", point.y.toFixed(2));
 
-        // Measure scroll progress without changing React state.
+            section.style.setProperty(
+                "--tp-progress",
+                progress.toFixed(4),
+            );
+
+            updateActiveStep(progress);
+        };
+
+        // ======================================
+        // FOLLOW PAGE SCROLL
+        // ======================================
+
         const update = () => {
-            frame = 0;
+            animationFrame = 0;
 
             if (reduceMotion) {
-                section.style.setProperty("--ae-progress", "1");
+                renderProgress(1);
                 return;
             }
 
-            const rect = section.getBoundingClientRect();
-            const viewport = window.innerHeight;
+            const rect = diagram.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
 
-            const start = viewport * 0.85;
-            const end = viewport * 0.15 - rect.height;
+            const start = viewportHeight * 0.82;
 
-            const progress = Math.max(
-                0,
-                Math.min(
-                    1,
-                    (start - rect.top) / Math.max(1, start - end),
-                ),
+            const end =
+                viewportHeight * 0.24 - rect.height;
+
+            const distance = Math.max(1, start - end);
+
+            const progress = clamp(
+                (start - rect.top) / distance,
             );
 
-            section.style.setProperty(
-                "--ae-progress",
-                progress.toFixed(4),
-            );
+            renderProgress(progress);
         };
 
         const requestUpdate = () => {
-            if (frame !== 0) return;
-            frame = window.requestAnimationFrame(update);
+            if (animationFrame !== 0) return;
+
+            animationFrame =
+                window.requestAnimationFrame(update);
         };
 
         update();
 
         if (!reduceMotion) {
-            window.addEventListener("scroll", requestUpdate, {
-                passive: true,
-            });
-            window.addEventListener("resize", requestUpdate);
+            window.addEventListener(
+                "scroll",
+                requestUpdate,
+                { passive: true },
+            );
+
+            window.addEventListener(
+                "resize",
+                requestUpdate,
+            );
+        }
+
+        // ======================================
+        // ENTRANCE REVEAL
+        // ======================================
+
+        let revealObserver: IntersectionObserver | null = null;
+
+        if (
+            !reduceMotion &&
+            "IntersectionObserver" in window
+        ) {
+            section.classList.add("tp-motion");
+
+            revealObserver = new IntersectionObserver(
+                (entries, observer) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+
+                        entry.target.classList.add(
+                            "tp-visible",
+                        );
+
+                        observer.unobserve(entry.target);
+                    });
+                },
+                {
+                    threshold: 0.08,
+                    rootMargin: "0px 0px -25px 0px",
+                },
+            );
+
+            section
+                .querySelectorAll<HTMLElement>(
+                    "[data-tp-reveal]",
+                )
+                .forEach((element) => {
+                    revealObserver?.observe(element);
+                });
         }
 
         return () => {
-            observer?.disconnect();
+            window.removeEventListener(
+                "scroll",
+                requestUpdate,
+            );
 
-            window.removeEventListener("scroll", requestUpdate);
-            window.removeEventListener("resize", requestUpdate);
+            window.removeEventListener(
+                "resize",
+                requestUpdate,
+            );
 
-            if (frame !== 0) {
-                window.cancelAnimationFrame(frame);
+            if (animationFrame !== 0) {
+                window.cancelAnimationFrame(
+                    animationFrame,
+                );
             }
+
+            revealObserver?.disconnect();
         };
     }, []);
 
@@ -122,146 +286,227 @@ export default function AboutSection({ description }: Props) {
         <section
             id="about"
             ref={sectionRef}
-            className="lp-section ae-section"
-            aria-labelledby="ae-heading"
+            className="lp-section tp-section"
+            aria-labelledby="tp-heading"
         >
             <div className="lp-container">
-                {/* Section identity */}
-                <div className="ae-topline" data-ae-reveal>
-                    <div className="ae-topline__label">
-                        <span className="ae-topline__number">01</span>
-                        <span className="ae-topline__rule" />
+                {/* SECTION INDEX */}
+                <div className="tp-topbar" data-tp-reveal>
+                    <div className="tp-topbar__identity">
+                        <span className="tp-topbar__index">
+                            01
+                        </span>
+
+                        <span className="tp-topbar__rule" />
+
                         <span>TENTANG SAYA</span>
                     </div>
 
-                    <span className="ae-topline__aside">
-                        PERSONAL / PROFILE
+                    <span className="tp-topbar__meta">
+                        BEHIND THE WORK / PROFILE
                     </span>
                 </div>
 
-                <div className="ae-grid">
-                    {/* Left editorial heading */}
-                    <div className="ae-intro" data-ae-reveal>
-                        <span className="ae-intro__overline">
-                            THE PERSON BEHIND THE WORK
+                {/* MAIN HEADING */}
+                <header className="tp-heading" data-tp-reveal>
+                    <span className="tp-heading__eyebrow">
+                        THE THINKING PROCESS
+                    </span>
+
+                    <h2 id="tp-heading">
+                        Berawal dari
+                        <span className="tp-heading__accent">
+                            rasa ingin tahu
+                            <span className="tp-heading__dot">
+                                .
+                            </span>
                         </span>
+                    </h2>
 
-                        <h2 id="ae-heading" className="ae-intro__title">
-                            Lebih dekat
-                            <span>
-                                dengan saya
-                                <span className="ae-dot">.</span>
-                            </span>
-                        </h2>
+                    <p>
+                        Mengenal perjalanan, pemikiran, dan proses
+                        yang membentuk setiap karya saya.
+                    </p>
+                </header>
 
-                        <p className="ae-intro__description">
-                            Sebuah ruang untuk mengenal cerita,
-                            ketertarikan, dan proses di balik
-                            karya yang saya bangun.
-                        </p>
-
-                        <div className="ae-intro__signature">
-                            <span className="ae-intro__signature-line" />
-                            <span>BEYOND THE WORK</span>
-                        </div>
-                    </div>
-
-                    {/* Right biography */}
-                    <article className="ae-profile" data-ae-reveal>
-                        <span
-                            className="ae-profile__traveler"
-                            aria-hidden="true"
-                        />
-
-                        <div className="ae-profile__head">
-                            <div className="ae-profile__identity">
-                                <span className="ae-profile__indicator" />
-                                <span>PERSONAL NOTES</span>
-                            </div>
-                            <span className="ae-profile__folio">
-                                FILE / 001
-                            </span>
-                        </div>
-
-                        <div className="ae-profile__body">
-                            {paragraphs.map((paragraph, index) => (
-                                <p key={index}>{paragraph}</p>
-                            ))}
-                        </div>
-
-                        <div className="ae-profile__bottom">
-                            <span>THE JOURNEY CONTINUES</span>
-
-                            <a
-                                className="ae-profile__link"
-                                href="#experience"
-                            >
-                                Lihat perjalanan saya
-                                <ArrowUpRight size={17} />
-                            </a>
-                        </div>
-                    </article>
-                </div>
-
-                {/* Continuous kinetic typography */}
-                <div
-                    className="ae-marquee"
-                    aria-hidden="true"
-                    data-ae-reveal
-                >
-                    <div className="ae-marquee__topline">
-                        <span>AREAS OF EXPLORATION</span>
-                        <span>IN CONTINUOUS MOTION —</span>
-                    </div>
-
-                    <div className="ae-marquee__viewport">
-                        <div className="ae-marquee__track">
-                            {[0, 1].map((copy) => (
-                                <div
-                                    key={copy}
-                                    className="ae-marquee__group"
-                                >
-                                    {keywords.map((keyword) => (
-                                        <span
-                                            className="ae-marquee__item"
-                                            key={`${copy}-${keyword}`}
-                                        >
-                                            <span className="ae-marquee__square" />
-                                            {keyword}
-                                        </span>
-                                    ))}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* End of section navigation */}
-                <div className="ae-bottom" data-ae-reveal>
-                    <div className="ae-bottom__label">
-                        <span className="ae-bottom__indicator" />
-                        EKSPLORASI LEBIH LANJUT
-                    </div>
-
-                    <nav
-                        className="ae-bottom__links"
-                        aria-label="Jelajahi bagian portofolio"
+                {/* BIOGRAPHY + PROCESS */}
+                <div className="tp-grid">
+                    {/* LEFT — DATABASE CONTENT */}
+                    <div
+                        className="tp-biography"
+                        data-tp-reveal
                     >
-                        {[
-                            { label: "Keahlian", href: "#skills" },
-                            { label: "Pengalaman", href: "#experience" },
-                            { label: "Penelitian", href: "#research" },
-                        ].map((link) => (
-                            <a
-                                key={link.href}
-                                href={link.href}
-                                className="ae-bottom__link"
+                        <div className="tp-biography__heading">
+                            <span className="tp-biography__number">
+                                / 01
+                            </span>
+
+                            <span>CERITA DI BALIK KARYA</span>
+                        </div>
+
+                        <div className="tp-biography__content">
+                            {paragraphs.map((paragraph, index) => (
+                                <p key={index}>
+                                    {paragraph}
+                                </p>
+                            ))}
+                        </div>
+
+                        <a
+                            href="#experience"
+                            className="tp-biography__link"
+                        >
+                            <span>
+                                Lihat perjalanan saya
+                            </span>
+
+                            <ArrowUpRight
+                                size={18}
+                                strokeWidth={1.8}
+                                aria-hidden="true"
+                            />
+                        </a>
+                    </div>
+
+                    {/* RIGHT — INTERACTIVE THINKING PROCESS */}
+                    <div
+                        className="tp-process"
+                        data-tp-reveal
+                    >
+                        <div className="tp-process__header">
+                            <div>
+                                <span className="tp-process__eyebrow">
+                                    MY THINKING PROCESS
+                                </span>
+
+                                <h3>
+                                    Explore. Build. Improve.
+                                </h3>
+                            </div>
+
+                            <span className="tp-process__serial">
+                                01—03
+                            </span>
+                        </div>
+
+                        <div
+                            ref={diagramRef}
+                            className="tp-process__diagram"
+                            aria-hidden="true"
+                        >
+                            <svg
+                                className="tp-process__svg"
+                                viewBox="0 0 460 255"
+                                preserveAspectRatio="xMidYMid meet"
+                                focusable="false"
                             >
-                                {link.label}
-                                <ArrowRight size={15} />
-                            </a>
-                        ))}
-                    </nav>
+                                {/* STATIC TRACK */}
+                                <path
+                                    ref={pathRef}
+                                    d={FLOW_PATH}
+                                    className="tp-process__track"
+                                />
+
+                                {/* SCROLL-DRIVEN ORANGE TRACK */}
+                                <path
+                                    ref={progressPathRef}
+                                    d={FLOW_PATH}
+                                    className="tp-process__progress"
+                                />
+
+                                {/* THREE MILESTONES */}
+                                {flowPoints.map((point, index) => (
+                                    <g
+                                        key={index}
+                                        data-tp-point
+                                        className={
+                                            "tp-point" +
+                                            (index === 0
+                                                ? " tp-point--active tp-point--reached"
+                                                : "")
+                                        }
+                                    >
+                                        <circle
+                                            cx={point.x}
+                                            cy={point.y}
+                                            r="25"
+                                            className="tp-point__outer"
+                                        />
+
+                                        <circle
+                                            cx={point.x}
+                                            cy={point.y}
+                                            r="20"
+                                            className="tp-point__inner"
+                                        />
+
+                                        <text
+                                            x={point.x}
+                                            y={point.y + 4}
+                                            className="tp-point__number"
+                                            textAnchor="middle"
+                                        >
+                                            {String(index + 1).padStart(2, "0")}
+                                        </text>
+                                    </g>
+                                ))}
+
+                                {/* MOVING DOT */}
+                                <circle
+                                    ref={markerRef}
+                                    className="tp-process__marker"
+                                    cx="62"
+                                    cy="188"
+                                    r="6"
+                                />
+                            </svg>
+                        </div>
+
+                        <div className="tp-process__footer">
+                            <span className="tp-process__status">
+                                <span className="tp-process__status-dot" />
+                                A JOURNEY OF CONTINUOUS LEARNING
+                            </span>
+
+                            <span className="tp-process__hint">
+                                SCROLL TO EXPLORE
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* THREE-STEP INDEX */}
+                <div className="tp-steps" data-tp-reveal>
+                    {steps.map((step, index) => {
+                        const Icon = step.icon;
+
+                        return (
+                            <div
+                                key={step.number}
+                                data-tp-step
+                                className={
+                                    "tp-step" +
+                                    (index === 0
+                                        ? " tp-step--active tp-step--reached"
+                                        : "")
+                                }
+                            >
+                                <div className="tp-step__header">
+                                    <span>{step.number}</span>
+
+                                    <Icon
+                                        size={18}
+                                        strokeWidth={1.6}
+                                        aria-hidden="true"
+                                    />
+                                </div>
+
+                                <strong>{step.title}</strong>
+
+                                <p>{step.description}</p>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </section>
