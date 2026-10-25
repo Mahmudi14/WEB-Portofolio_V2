@@ -83,11 +83,6 @@ export default function HeroSection({
                     />
                 </div>
             </div>
-
-            <a className="lp-scroll-hint" href="#about">
-                <ArrowDown size={15} />
-                Scroll untuk menjelajah
-            </a>
         </section>
     );
 }

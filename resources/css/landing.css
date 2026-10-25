@@ -3010,3 +3010,74 @@
         margin-top: -18px;
     }
 }
+
+/* ==========================================
+   FIX SPACING HERO & ABOUT
+========================================== */
+
+/* Kurangi jarak bawah Hero */
+.lp main > .lp-hero {
+    padding-bottom: 35px;
+}
+
+/* Kurangi ruang kosong pada About */
+.lp main > section.ae-section {
+    padding-top: 52px;
+    padding-bottom: 85px;
+}
+
+/* Jarak judul About dengan konten */
+.lp main > section.ae-section .ae-topline {
+    margin-bottom: 42px;
+}
+
+/* Jarak konten About dengan animasi */
+.lp main > section.ae-section .ae-grid {
+    padding-bottom: 60px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .lp main > .lp-hero {
+        padding-bottom: 45px;
+    }
+
+    .lp main > section.ae-section {
+        padding-top: 55px;
+        padding-bottom: 70px;
+    }
+}
+
+/* Smartphone */
+@media (max-width: 600px) {
+    .lp main > .lp-hero {
+        padding-bottom: 35px;
+    }
+
+    .lp main > section.ae-section {
+        padding-top: 45px;
+        padding-bottom: 60px;
+    }
+}
+
+/* ==========================================
+   FIX DESKTOP HERO EMPTY SPACE
+   Mobile tetap seperti sebelumnya
+========================================== */
+
+@media (min-width: 901px) {
+    /* Kurangi tinggi panggung ID card */
+    .lp .lp-hero .lp-id-stage {
+        height: 620px;
+    }
+
+    /* Pertahankan jarak akhir Hero */
+    .lp main > .lp-hero {
+        padding-bottom: 35px;
+    }
+
+    /* About tidak terlalu jauh dari Hero */
+    .lp main > section.ae-section {
+        padding-top: 52px;
+    }
+}

@@ -1429,11 +1429,6 @@ export default function HeroIdCard({ name, photoUrl, logoUrl }: Props) {
                     </div>
                 </div>
             </article>
-
-            <div className="lp-id-drag-hint">
-                <Move size={14} />
-                Geser kartu untuk mengayunkan
-            </div>
         </div>
     );
 }
