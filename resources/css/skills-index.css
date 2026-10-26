@@ -1,4 +1,3 @@
-
 /* ======================================================
    EXPERTISE INDEX — SKILLS & INTERESTS
    Portfolio V2
@@ -16,7 +15,7 @@
     --sx-orange-light: #ff984e;
     --sx-white: #f4f4f2;
     --sx-muted: #a5a9b0;
-    --sx-line: rgba(255, 255, 255, .10);
+    --sx-line: rgba(255, 255, 255, 0.1);
 
     position: relative;
     isolation: isolate;
@@ -52,7 +51,7 @@
 
     font-size: 10px;
     font-weight: 750;
-    letter-spacing: .15em;
+    letter-spacing: 0.15em;
 }
 
 .lp .sx-topbar__number {
@@ -75,7 +74,7 @@
 
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
 }
 
 /* ======================================================
@@ -86,7 +85,7 @@
     display: grid;
 
     grid-template-columns:
-        minmax(0, .75fr)
+        minmax(0, 0.75fr)
         minmax(0, 1.25fr);
 
     align-items: start;
@@ -112,7 +111,7 @@
 
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: .15em;
+    letter-spacing: 0.15em;
 }
 
 .lp .sx-intro h2 {
@@ -124,7 +123,7 @@
     font-size: clamp(41px, 4.2vw, 60px);
     font-weight: 700;
     line-height: 1.08;
-    letter-spacing: -.065em;
+    letter-spacing: -0.065em;
 }
 
 .lp .sx-intro__second {
@@ -171,7 +170,7 @@
     font-size: 26px;
     font-weight: 650;
     line-height: 1.1;
-    letter-spacing: -.055em;
+    letter-spacing: -0.055em;
 
     font-variant-numeric: tabular-nums;
 }
@@ -210,7 +209,7 @@
 
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: .13em;
+    letter-spacing: 0.13em;
 }
 
 .lp .sx-directory__header span:last-child {
@@ -250,7 +249,7 @@
     transform: scaleY(0);
     transform-origin: top;
 
-    transition: transform .32s cubic-bezier(.2,.8,.2,1);
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .lp .sx-item--open::before {
@@ -294,7 +293,7 @@
 }
 
 .lp .sx-item__trigger:hover {
-    background: rgba(255,255,255,.025);
+    background: rgba(255, 255, 255, 0.025);
 }
 
 .lp .sx-item__trigger:focus-visible {
@@ -313,7 +312,7 @@
 
     font-variant-numeric: tabular-nums;
 
-    transition: color .25s ease;
+    transition: color 0.25s ease;
 }
 
 /* Category title */
@@ -327,11 +326,11 @@
     font-size: clamp(16px, 1.6vw, 21px);
     font-weight: 600;
     line-height: 1.35;
-    letter-spacing: -.035em;
+    letter-spacing: -0.035em;
 
     overflow-wrap: break-word;
 
-    transition: color .25s ease;
+    transition: color 0.25s ease;
 }
 
 /* Number of technologies */
@@ -342,7 +341,7 @@
     font-family: Inter, sans-serif;
     font-size: 9px;
     font-weight: 650;
-    letter-spacing: .07em;
+    letter-spacing: 0.07em;
 
     white-space: nowrap;
 }
@@ -362,13 +361,13 @@
     color: #a8adb5;
 
     transition:
-        color .25s ease,
-        background .25s ease,
-        border-color .25s ease;
+        color 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease;
 }
 
 .lp .sx-item__toggle svg {
-    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Active category */
@@ -381,8 +380,8 @@
 .lp .sx-item--open .sx-item__toggle {
     color: var(--sx-orange-light);
 
-    border-color: rgba(255,106,0,.45);
-    background: rgba(255,106,0,.09);
+    border-color: rgba(255, 106, 0, 0.45);
+    background: rgba(255, 106, 0, 0.09);
 }
 
 .lp .sx-item--open .sx-item__toggle svg {
@@ -400,8 +399,8 @@
     opacity: 0;
 
     transition:
-        grid-template-rows .42s cubic-bezier(.2,.8,.2,1),
-        opacity .30s ease;
+        grid-template-rows 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.3s ease;
 }
 
 .lp .sx-item--open .sx-item__reveal {
@@ -448,10 +447,10 @@
     min-height: 28px;
     padding: 6px 10px;
 
-    border: 1px solid rgba(255,255,255,.13);
+    border: 1px solid rgba(255, 255, 255, 0.13);
     border-radius: 5px;
 
-    background: rgba(255,255,255,.025);
+    background: rgba(255, 255, 255, 0.025);
     color: #dadce0;
 
     font-size: 10px;
@@ -459,13 +458,13 @@
     line-height: 1.35;
 
     transition:
-        border-color .25s ease,
-        background .25s ease;
+        border-color 0.25s ease,
+        background 0.25s ease;
 }
 
 .lp .sx-tags li:hover {
-    border-color: rgba(255,106,0,.5);
-    background: rgba(255,106,0,.045);
+    border-color: rgba(255, 106, 0, 0.5);
+    background: rgba(255, 106, 0, 0.045);
 }
 
 .lp .sx-item__empty {
@@ -487,18 +486,18 @@
     margin-top: 23px;
     padding-bottom: 7px;
 
-    border-bottom: 1px solid rgba(255,106,0,.45);
+    border-bottom: 1px solid rgba(255, 106, 0, 0.45);
 
     color: var(--sx-orange-light) !important;
 
     font-size: 12px;
     font-weight: 650;
 
-    transition: border-color .25s ease;
+    transition: border-color 0.25s ease;
 }
 
 .lp .sx-footer-link svg {
-    transition: transform .28s ease;
+    transition: transform 0.28s ease;
 }
 
 .lp .sx-footer-link:hover {
@@ -518,8 +517,8 @@
     transform: translate3d(0, 18px, 0);
 
     transition:
-        opacity .6s cubic-bezier(.2,.75,.2,1),
-        transform .7s cubic-bezier(.2,.75,.2,1);
+        opacity 0.6s cubic-bezier(0.2, 0.75, 0.2, 1),
+        transform 0.7s cubic-bezier(0.2, 0.75, 0.2, 1);
 }
 
 .lp .sx-enhanced [data-sx-reveal].sx-visible {
@@ -687,4 +686,45 @@
     .lp .sx-item::before {
         transition: none;
     }
+}
+
+/* ==========================================
+   FIX — SKILLS DISAPPEARING ON CLICK
+========================================== */
+
+/* Baris kategori harus selalu terlihat */
+.lp .sx-section.sx-enhanced .sx-item {
+    opacity: 1;
+    transform: none;
+}
+
+/* Pertahankan transisi buka/tutup */
+.lp .sx-section .sx-item__reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        grid-template-rows 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.3s ease,
+        visibility 0s linear 0.42s;
+}
+
+/* Detail kategori aktif muncul */
+.lp .sx-section .sx-item--open .sx-item__reveal {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        grid-template-rows 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.3s ease,
+        visibility 0s;
+}
+
+/* Hindari konten keluar dari accordion */
+.lp .sx-section .sx-item__reveal-inner {
+    min-height: 0;
+    overflow: hidden;
 }

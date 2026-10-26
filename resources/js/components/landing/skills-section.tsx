@@ -1,4 +1,3 @@
-
 import { ArrowUpRight, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,9 +11,7 @@ type Props = {
 export default function SkillsSection({ skills }: Props) {
     const sectionRef = useRef<HTMLElement>(null);
 
-    const [openId, setOpenId] = useState<number | null>(
-        skills[0]?.id ?? null,
-    );
+    const [openId, setOpenId] = useState<number | null>(skills[0]?.id ?? null);
 
     const totalItems = skills.reduce(
         (total, category) => total + category.items.length,
@@ -30,10 +27,7 @@ export default function SkillsSection({ skills }: Props) {
             "(prefers-reduced-motion: reduce)",
         ).matches;
 
-        if (
-            reducedMotion ||
-            !("IntersectionObserver" in window)
-        ) {
+        if (reducedMotion || !("IntersectionObserver" in window)) {
             return;
         }
 
@@ -74,9 +68,7 @@ export default function SkillsSection({ skills }: Props) {
                 {/* SECTION TOPBAR */}
                 <div className="sx-topbar" data-sx-reveal>
                     <div className="sx-topbar__identity">
-                        <span className="sx-topbar__number">
-                            02
-                        </span>
+                        <span className="sx-topbar__number">02</span>
 
                         <span className="sx-topbar__line" />
 
@@ -90,10 +82,7 @@ export default function SkillsSection({ skills }: Props) {
 
                 <div className="sx-layout">
                     {/* LEFT — INTRODUCTION */}
-                    <header
-                        className="sx-intro"
-                        data-sx-reveal
-                    >
+                    <header className="sx-intro" data-sx-reveal>
                         <span className="sx-intro__eyebrow">
                             WHAT I WORK WITH
                         </span>
@@ -102,15 +91,13 @@ export default function SkillsSection({ skills }: Props) {
                             Keahlian
                             <span className="sx-intro__second">
                                 &amp; minat
-                                <span className="sx-intro__dot">
-                                    .
-                                </span>
+                                <span className="sx-intro__dot">.</span>
                             </span>
                         </h2>
 
                         <p className="sx-intro__description">
-                            Teknologi yang saya gunakan dan bidang
-                            yang terus saya pelajari serta kembangkan.
+                            Teknologi yang saya gunakan dan bidang yang terus
+                            saya pelajari serta kembangkan.
                         </p>
 
                         <div className="sx-summary">
@@ -139,34 +126,27 @@ export default function SkillsSection({ skills }: Props) {
 
                     {/* RIGHT — CAPABILITIES INDEX */}
                     <div className="sx-directory">
-                        <div
-                            className="sx-directory__header"
-                            data-sx-reveal
-                        >
+                        <div className="sx-directory__header" data-sx-reveal>
                             <span>EXPERTISE INDEX</span>
 
-                            <span>
-                                PILIH KATEGORI
-                            </span>
+                            <span>PILIH KATEGORI</span>
                         </div>
 
                         <div className="sx-list">
                             {skills.map((category, index) => {
-                                const isOpen =
-                                    openId === category.id;
+                                const isOpen = openId === category.id;
 
-                                const number = String(index + 1)
-                                    .padStart(2, "0");
+                                const number = String(index + 1).padStart(
+                                    2,
+                                    "0",
+                                );
 
                                 return (
                                     <article
                                         key={category.id}
-                                        data-sx-reveal
                                         className={
                                             "sx-item" +
-                                            (isOpen
-                                                ? " sx-item--open"
-                                                : "")
+                                            (isOpen ? " sx-item--open" : "")
                                         }
                                     >
                                         <h3 className="sx-item__heading">
@@ -176,13 +156,14 @@ export default function SkillsSection({ skills }: Props) {
                                                 className="sx-item__trigger"
                                                 aria-expanded={isOpen}
                                                 aria-controls={`sx-panel-${category.id}`}
-                                                onClick={() =>
-                                                    setOpenId(
-                                                        isOpen
+                                                onClick={() => {
+                                                    setOpenId((currentId) =>
+                                                        currentId ===
+                                                        category.id
                                                             ? null
                                                             : category.id,
-                                                    )
-                                                }
+                                                    );
+                                                }}
                                             >
                                                 <span className="sx-item__number">
                                                     {number}
@@ -223,24 +204,33 @@ export default function SkillsSection({ skills }: Props) {
                                                 <div className="sx-item__detail">
                                                     {category.description && (
                                                         <p className="sx-item__description">
-                                                            {category.description}
+                                                            {
+                                                                category.description
+                                                            }
                                                         </p>
                                                     )}
 
-                                                    {category.items.length > 0 ? (
+                                                    {category.items.length >
+                                                    0 ? (
                                                         <ul className="sx-tags">
                                                             {category.items.map(
                                                                 (item) => (
-                                                                    <li key={item.id}>
-                                                                        {item.name}
+                                                                    <li
+                                                                        key={
+                                                                            item.id
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            item.name
+                                                                        }
                                                                     </li>
                                                                 ),
                                                             )}
                                                         </ul>
                                                     ) : (
                                                         <p className="sx-item__empty">
-                                                            Rincian keahlian belum
-                                                            ditambahkan.
+                                                            Rincian keahlian
+                                                            belum ditambahkan.
                                                         </p>
                                                     )}
                                                 </div>
@@ -256,9 +246,7 @@ export default function SkillsSection({ skills }: Props) {
                             className="sx-footer-link"
                             data-sx-reveal
                         >
-                            <span>
-                                Lihat penerapannya dalam proyek
-                            </span>
+                            <span>Lihat penerapannya dalam proyek</span>
 
                             <ArrowUpRight
                                 size={17}
