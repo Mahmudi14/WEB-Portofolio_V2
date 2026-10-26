@@ -1,130 +1,475 @@
-/* ======================================================
-   PORTOFOLIO V2 — PREMIUM ACADEMIC JOURNEY
-   Scoped to .lp .at-* so old education CSS stays safe.
-====================================================== */
+/* =====================================================
+   PORTFOLIO V2 — ACADEMIC JOURNEY
+   Alternating Timeline / Scroll Walking Explorer
+   Deep Black #0B0D10 / Orange #FF6A00
+===================================================== */
 
-.lp .at-shell {
-    --at-gold: #d0a877;
-    --at-gold-light: #e9c89b;
-    --at-rail-x: 38px;
+/* SECTION */
+
+.lp main > section.lp-section.ed-section {
+    --ed-orange: #ff6a00;
+    --ed-orange-light: #ff984e;
+    --ed-white: #f4f4f2;
+    --ed-muted: #a5a9b0;
+    --ed-line: rgba(255, 255, 255, 0.1);
 
     position: relative;
-    width: min(100%, 1030px);
-    margin: 0 auto;
-    padding: 28px clamp(20px, 4vw, 44px) 26px;
-    overflow: visible;
-    border: 1px solid rgba(205, 170, 125, .20);
-    border-radius: 22px;
-    background:
-        radial-gradient(ellipse at 8% 0%, rgba(186, 132, 77, .10), transparent 48%),
-        radial-gradient(ellipse at 100% 100%, rgba(43, 60, 72, .16), transparent 42%),
-        #1c1c1e;
-    box-shadow: 0 22px 70px rgba(0, 0, 0, .16), inset 0 1px 0 rgba(255, 255, 255, .035);
+    padding: 66px 0 74px;
+    background: #0b0d10;
+    border-top: 1px solid var(--ed-line);
 }
+
+/* SECTION TOPBAR */
+
+.lp .ed-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    padding-bottom: 17px;
+    border-bottom: 1px solid var(--ed-line);
+}
+
+.lp .ed-topbar__identity {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    color: var(--ed-orange-light);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.lp .ed-topbar__identity span:first-child {
+    color: var(--ed-white);
+    font-size: 13px;
+    letter-spacing: 0;
+}
+
+.lp .ed-topbar__identity i {
+    width: 34px;
+    height: 1px;
+    background: var(--ed-orange);
+}
+
+.lp .ed-topbar__meta {
+    color: #81868e;
+    font-size: 10px;
+    letter-spacing: 0.11em;
+}
+
+/* SECTION HEADING */
+
+.lp .ed-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+
+    padding: 32px 0 35px;
+}
+
+.lp .ed-heading__eyebrow {
+    display: block;
+    margin-bottom: 12px;
+
+    color: #989da5;
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.13em;
+}
+
+.lp .ed-heading h2 {
+    margin: 0;
+
+    color: var(--ed-white);
+    font-size: clamp(36px, 4.3vw, 58px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.06em;
+}
+
+.lp .ed-heading h2 span {
+    color: var(--ed-orange);
+}
+
+.lp .ed-heading p {
+    margin: 13px 0 0;
+
+    color: var(--ed-muted);
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+.lp .ed-heading__count {
+    display: grid;
+    justify-items: end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.lp .ed-heading__count strong {
+    color: var(--ed-orange-light);
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 38px;
+    font-weight: 650;
+    line-height: 1;
+}
+
+.lp .ed-heading__count span {
+    color: #888d95;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+}
+
+/* =====================================================
+   TIMELINE CONTAINER
+===================================================== */
+
+.lp .at-shell {
+    --at-orange: #ff6a00;
+    --at-orange-light: #ff984e;
+    --at-line: rgba(255, 255, 255, 0.1);
+
+    width: 100%;
+    position: relative;
+}
+
+/* TOP STRIP */
 
 .lp .at-shell__top {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-end;
-    gap: 18px;
-    padding-bottom: 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, .075);
+    gap: 20px;
+
+    padding: 17px 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: #171a1e;
 }
 
-.lp .at-eyebrow {
-    color: #d3a676;
-    font-size: 10px;
-    font-weight: 750;
-    letter-spacing: .17em;
+.lp .at-shell__top-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.lp .at-shell__top p {
-    margin: 8px 0 0;
-    color: #dbd3cb;
-    font: 550 clamp(16px, 2vw, 21px)/1.4 'Space Grotesk', Inter, sans-serif;
-    letter-spacing: -.03em;
+.lp .at-shell__eyebrow {
+    color: #969ba3;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.11em;
 }
 
-.lp .at-scroll-tip {
+.lp .at-shell__top strong {
+    color: #f0f0ef;
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.lp .at-shell__scroll-hint {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding-bottom: 2px;
-    color: #b4a18d;
+
+    color: #a5aab1;
     font-size: 11px;
     white-space: nowrap;
 }
 
-/* List rows anchor the timeline nodes in document flow. */
+.lp .at-shell__scroll-hint svg {
+    color: var(--at-orange);
+}
+
+/* =====================================================
+   TIMELINE STRUCTURE
+===================================================== */
+
 .lp .at-timeline {
     position: relative;
     isolation: isolate;
-    margin-top: 25px;
+
+    margin-top: 28px;
 }
 
 .lp .at-items {
     display: grid;
-    gap: 17px;
+    gap: 12px;
+
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
+/* Each row: LEFT / TRACK / RIGHT */
+
 .lp .at-item {
     position: relative;
-    padding-left: 88px;
+
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        76px
+        minmax(0, 1fr);
+
+    align-items: start;
+
+    min-height: 158px;
     min-width: 0;
 }
 
-/* A true absolute position measured from each node's center. */
-.lp .at-node {
+/* Alternate position */
+
+.lp .at-entry {
+    position: relative;
+    grid-row: 1;
+
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+
+    padding: 13px 0 15px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+
+    transition:
+        border-color 0.3s ease,
+        transform 0.55s ease,
+        opacity 0.55s ease;
+}
+
+.lp .at-item--left .at-entry {
+    grid-column: 1;
+    justify-self: end;
+
+    text-align: right;
+    padding-right: 7px;
+}
+
+.lp .at-item--right .at-entry {
+    grid-column: 3;
+    justify-self: start;
+
+    text-align: left;
+    padding-left: 7px;
+}
+
+/* Connection lines toward central milestones */
+
+.lp .at-entry::after {
+    content: "";
     position: absolute;
-    z-index: 3;
-    left: var(--at-rail-x);
-    top: 44px;
+
+    top: 47px;
+    width: 30px;
+    height: 1px;
+
+    background: rgba(255, 106, 0, 0.24);
+
+    transition: background 0.3s ease;
+}
+
+.lp .at-item--left .at-entry::after {
+    right: -30px;
+}
+
+.lp .at-item--right .at-entry::after {
+    left: -30px;
+}
+
+.lp .at-item--reached .at-entry::after {
+    background: rgba(255, 106, 0, 0.7);
+}
+
+/* =====================================================
+   EDUCATION INFORMATION
+===================================================== */
+
+.lp .at-entry__meta {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    margin-bottom: 7px;
+}
+
+.lp .at-item--left .at-entry__meta {
+    justify-content: flex-end;
+}
+
+.lp .at-item--right .at-entry__meta {
+    justify-content: flex-start;
+}
+
+.lp .at-entry__step {
+    color: #858a93;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    font-variant-numeric: tabular-nums;
+}
+
+.lp .at-entry__current {
+    color: var(--at-orange-light);
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.lp .at-entry__year {
+    color: #ff8736;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.055em;
+    font-variant-numeric: tabular-nums;
+}
+
+.lp .at-entry__period {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #a4a9b1;
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.lp .at-entry h3 {
+    margin: 11px 0 0;
+
+    color: #f0f0ef;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(15px, 1.6vw, 19px);
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.03em;
+
+    overflow-wrap: anywhere;
+}
+
+.lp .at-entry__level {
+    margin: 6px 0 0;
+
+    color: #d7a37f;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.55;
+}
+
+.lp .at-entry__major {
+    margin: 4px 0 0;
+
+    color: #a7acb3;
+    font-size: 11px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+/* Highlight current milestone */
+
+.lp .at-item--current .at-entry {
+    border-color: rgba(255, 106, 0, 0.58);
+}
+
+.lp .at-item--current .at-entry h3 {
+    color: #fff;
+}
+
+/* =====================================================
+   CENTRAL MILESTONE NODE
+===================================================== */
+
+.lp .at-node {
+    position: relative;
+    z-index: 4;
+
+    grid-column: 2;
+    grid-row: 1;
+
     display: grid;
     place-items: center;
-    width: 18px;
-    height: 18px;
-    transform: translate(-50%, -50%);
-    border: 1px solid #70583d;
-    border-radius: 50%;
-    background: #302923;
-    box-shadow: 0 0 0 7px #1c1c1e;
-    transition: border-color .25s ease, background .25s ease, box-shadow .25s ease;
+    justify-self: center;
+
+    width: 46px;
+    height: 46px;
+
+    margin-top: 24px;
+
+    border: 1px solid rgba(255, 106, 0, 0.35);
+    border-radius: 9px;
+
+    background: #1d1d1f;
+
+    box-shadow: 0 0 0 7px #0b0d10;
+
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
-.lp .at-node > span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #8d7354;
-    transition: background .25s ease, box-shadow .25s ease;
+.lp .at-node__icon {
+    display: grid;
+    place-items: center;
+
+    width: 32px;
+    height: 32px;
+
+    border-radius: 5px;
+
+    color: #ff984e;
+    background: rgba(255, 106, 0, 0.085);
+
+    transition:
+        color 0.3s ease,
+        background 0.3s ease;
 }
+
+/* Nodes already passed */
 
 .lp .at-item--reached .at-node {
-    border-color: #e4bd89;
-    background: #60402b;
-    box-shadow: 0 0 0 7px #1c1c1e, 0 0 23px rgba(208, 168, 119, .25);
+    border-color: rgba(255, 106, 0, 0.8);
 }
 
-.lp .at-item--reached .at-node > span {
-    background: #ffe1b4;
+.lp .at-item--current .at-node {
+    border-color: #ff6a00;
+    background: #292019;
+    box-shadow: 0 0 0 7px #0b0d10;
 }
 
-.lp .at-item--current .at-node > span {
-    box-shadow: 0 0 0 4px rgba(227, 174, 104, .19);
+.lp .at-item--current .at-node__icon {
+    color: #ffae76;
+    background: rgba(255, 106, 0, 0.16);
 }
 
-/* Rail covers first node center to last node center; JS measures both. */
+/* =====================================================
+   CENTER TRACK
+===================================================== */
+
 .lp .at-rail {
     --at-progress: 0%;
+
     position: absolute;
-    z-index: 4;
-    top: 44px;
-    left: var(--at-rail-x);
+    z-index: 3;
+
+    left: 50%;
+    top: 47px;
+
     width: 2px;
     height: 1px;
+
     transform: translateX(-50%);
     pointer-events: none;
 }
@@ -134,292 +479,459 @@
     position: absolute;
     top: 0;
     left: 0;
+
     width: 100%;
-    border-radius: 100px;
+    border-radius: 99px;
 }
 
 .lp .at-rail__base {
     height: 100%;
-    background: linear-gradient(180deg, #705d46, #383631 50%, #705d46);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .lp .at-rail__fill {
     height: var(--at-progress);
-    background: linear-gradient(180deg, #e3bc85, #c98f56 58%, #efcd99);
-    box-shadow: 0 0 9px rgba(218, 160, 91, .35);
+
+    background: #ff6a00;
+    box-shadow: 0 0 8px rgba(255, 106, 0, 0.18);
 }
 
-/* Walker stays at target viewport Y while rail crosses screen center. */
+/* =====================================================
+   MOVING EXPLORER
+===================================================== */
+
 .lp .at-walker {
     position: absolute;
-    z-index: 6;
+    z-index: 7;
+
     left: 50%;
     top: var(--at-progress);
-    width: 56px;
-    height: 72px;
+
     display: grid;
     place-items: center;
+
+    width: 60px;
+    height: 82px;
+
     transform: translate(-50%, -50%);
-    filter: drop-shadow(0 8px 9px rgba(0, 0, 0, .3));
+
+    filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.35));
+
     will-change: top;
 }
 
 .lp .at-walker__halo {
     position: absolute;
-    inset: 13px 7px 2px;
+    inset: 10px 4px 3px;
+
     border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(218, 160, 92, .16), transparent 72%);
-    filter: blur(5px);
+
+    background: radial-gradient(
+        ellipse,
+        rgba(255, 106, 0, 0.15),
+        transparent 70%
+    );
 }
 
 .lp .at-walker__figure {
     position: relative;
-    width: 52px;
-    height: 70px;
+
+    width: 60px;
+    height: 82px;
+
     overflow: visible;
 }
 
+/* SVG limb pivot points */
+
 .lp .at-walker__body {
-    transform-origin: 26px 43px;
+    transform-origin: 30px 48px;
 }
 
-.lp .at-walker__leg,
+.lp .at-walker__leg {
+    transform-box: view-box;
+    transform-origin: 30px 48px;
+}
+
 .lp .at-walker__arm {
     transform-box: view-box;
-    transform-origin: 25px 42px;
+    transform-origin: 30px 32px;
 }
 
-.lp .at-walker__arm {
-    transform-origin: 25px 29px;
-}
+/* Walk only while scrolling */
 
 .lp .at-timeline--walking .at-walker__body {
-    animation: at-person-bob .48s ease-in-out infinite;
+    animation: at-explorer-bob 0.45s ease-in-out infinite;
 }
 
 .lp .at-timeline--walking .at-walker__leg--front {
-    animation: at-person-step .48s ease-in-out infinite alternate;
+    animation: at-explorer-step 0.45s ease-in-out infinite alternate;
 }
 
 .lp .at-timeline--walking .at-walker__leg--back {
-    animation: at-person-step .48s ease-in-out infinite alternate-reverse;
+    animation: at-explorer-step 0.45s ease-in-out infinite alternate-reverse;
 }
 
 .lp .at-timeline--walking .at-walker__arm--front {
-    animation: at-person-arm .48s ease-in-out infinite alternate-reverse;
+    animation: at-explorer-arm 0.45s ease-in-out infinite alternate-reverse;
 }
 
 .lp .at-timeline--walking .at-walker__arm--back {
-    animation: at-person-arm .48s ease-in-out infinite alternate;
+    animation: at-explorer-arm 0.45s ease-in-out infinite alternate;
 }
 
-@keyframes at-person-step {
-    from { transform: rotate(-16deg); }
-    to { transform: rotate(16deg); }
+@keyframes at-explorer-step {
+    from {
+        transform: rotate(-16deg);
+    }
+    to {
+        transform: rotate(16deg);
+    }
 }
 
-@keyframes at-person-arm {
-    from { transform: rotate(-13deg); }
-    to { transform: rotate(13deg); }
+@keyframes at-explorer-arm {
+    from {
+        transform: rotate(-12deg);
+    }
+    to {
+        transform: rotate(12deg);
+    }
 }
 
-@keyframes at-person-bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-2px); }
+@keyframes at-explorer-bob {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-2px);
+    }
 }
 
-/* Premium compact cards. */
-.lp .at-card {
-    position: relative;
-    padding: clamp(19px, 2.6vw, 27px) clamp(19px, 2.8vw, 30px);
-    border: 1px solid rgba(202, 171, 133, .15);
-    border-radius: 15px;
-    background:
-        linear-gradient(120deg, rgba(255,255,255,.025), transparent 58%),
-        #242326;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025);
-    transition: border-color .3s ease, background .3s ease, transform .4s ease, opacity .4s ease;
+/* =====================================================
+   ENTRANCE REVEAL
+   No opacity:0, so content never disappears.
+===================================================== */
+
+.lp .at-timeline--enhanced .at-item:not(.at-item--visible) .at-entry {
+    opacity: 0.76;
+    transform: translateY(8px);
 }
 
-.lp .at-card::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    bottom: 20px;
-    left: -1px;
-    width: 2px;
-    border-radius: 2px;
-    background: #d2a170;
-    opacity: 0;
-    transition: opacity .3s ease;
+.lp .at-timeline--enhanced .at-item--visible .at-entry {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.lp .at-item--current .at-card {
-    border-color: rgba(214, 170, 116, .53);
-    background: linear-gradient(120deg, #302922, #252427 66%);
-}
-
-.lp .at-item--current .at-card::before { opacity: 1; }
-
-.lp .at-card__top,
-.lp .at-card__bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.lp .at-card__level {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--at-gold-light);
-    font-size: 11px;
-    font-weight: 750;
-    letter-spacing: .075em;
-    text-transform: uppercase;
-}
-
-.lp .at-card__step {
-    color: #ad977f;
-    font: 650 13px/1 'Space Grotesk', Inter, sans-serif;
-    font-variant-numeric: tabular-nums;
-}
-
-.lp .at-card__step span { color: #6e6764; }
-
-.lp .at-card h3 {
-    margin: 13px 0 0;
-    max-width: 690px;
-    color: #f6f0e9;
-    font-size: clamp(17px, 2.1vw, 23px);
-    font-weight: 650;
-    letter-spacing: -.035em;
-    line-height: 1.28;
-}
-
-.lp .at-card__major {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: 7px;
-    margin: 9px 0 0;
-    color: #c5b7a9;
-    font-size: 12px;
-    line-height: 1.55;
-}
-
-.lp .at-card__major svg { flex: 0 0 auto; margin-top: 2px; color: #c39a6a; }
-
-.lp .at-card__bottom {
-    justify-content: flex-start;
-    margin-top: 16px;
-    gap: 12px;
-}
-
-.lp .at-card__period {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
-    color: #d0ae86;
-    border: 1px solid rgba(207, 165, 115, .15);
-    background: rgba(191, 139, 79, .075);
-    border-radius: 7px;
-    font-size: 11px;
-    font-weight: 650;
-    font-variant-numeric: tabular-nums;
-}
-
-.lp .at-card__current {
-    color: #b1c8ac;
-    font-size: 10px;
-    font-weight: 600;
-}
-
-/* Cards reveal once, without changing geometry. */
-.lp .at-timeline--enhanced .at-item:not(.at-item--visible) .at-card {
-    opacity: .48;
-    transform: translateY(12px);
-}
+/* =====================================================
+   BOTTOM CAPTION
+===================================================== */
 
 .lp .at-shell__bottom {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-    margin-top: 26px;
-    color: #867b70;
+    gap: 14px;
+
+    margin-top: 5px;
+
+    color: #888d95;
     font-size: 9px;
-    font-weight: 750;
-    letter-spacing: .2em;
+    font-weight: 700;
+    letter-spacing: 0.17em;
 }
 
-.lp .at-shell__bottom > span:first-child,
-.lp .at-shell__bottom > span:last-child {
-    width: 40px;
+.lp .at-shell__bottom-rule {
+    width: 34px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #74593f);
+    background: rgba(255, 106, 0, 0.35);
 }
 
-.lp .at-shell__bottom > span:last-child {
-    transform: rotate(180deg);
-}
+/* =====================================================
+   TABLET
+===================================================== */
 
-/* Medium viewport: keep rail visually balanced. */
 @media (max-width: 900px) {
-    .lp .at-shell { --at-rail-x: 30px; padding: 24px 20px; }
-    .lp .at-item { padding-left: 74px; }
-    .lp .at-scroll-tip { font-size: 10px; }
-}
-
-/* Mobile: compact cards and smaller figure, still scroll-synced. */
-@media (max-width: 600px) {
-    .lp .at-shell {
-        --at-rail-x: 22px;
-        padding: 19px 13px 19px;
-        border-radius: 15px;
+    .lp main > section.lp-section.ed-section {
+        padding: 59px 0 67px;
     }
-    .lp .at-shell__top { align-items: flex-start; padding-bottom: 17px; }
-    .lp .at-eyebrow { font-size: 9px; }
-    .lp .at-shell__top p { font-size: 15px; line-height: 1.45; }
-    .lp .at-scroll-tip { display: none; }
-    .lp .at-timeline { margin-top: 18px; }
-    .lp .at-items { gap: 12px; }
-    .lp .at-item { padding-left: 54px; }
-    .lp .at-node { width: 14px; height: 14px; top: 35px; box-shadow: 0 0 0 5px #1c1c1e; }
-    .lp .at-item--reached .at-node { box-shadow: 0 0 0 5px #1c1c1e, 0 0 16px rgba(208, 168, 119, .23); }
-    .lp .at-node > span { width: 4px; height: 4px; }
-    .lp .at-walker { width: 42px; height: 56px; }
-    .lp .at-walker__figure { width: 40px; height: 54px; }
-    .lp .at-card { padding: 15px 14px; border-radius: 11px; }
-    .lp .at-card h3 { font-size: 15px; line-height: 1.36; margin-top: 10px; }
-    .lp .at-card__level { font-size: 9.5px; gap: 6px; }
-    .lp .at-card__level svg { width: 12px; height: 12px; }
-    .lp .at-card__step { font-size: 11px; }
-    .lp .at-card__major { font-size: 11px; margin-top: 7px; }
-    .lp .at-card__bottom { margin-top: 12px; }
-    .lp .at-card__period { font-size: 10px; padding: 6px 8px; }
-    .lp .at-shell__bottom { margin-top: 18px; font-size: 8px; }
+
+    .lp .at-item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            64px
+            minmax(0, 1fr);
+
+        min-height: 150px;
+    }
+
+    .lp .at-entry h3 {
+        font-size: 16px;
+    }
 }
 
-@media (max-width: 375px) {
-    .lp .at-shell { padding-inline: 11px; --at-rail-x: 20px; }
-    .lp .at-item { padding-left: 49px; }
-    .lp .at-card { padding: 13px 11px; }
-    .lp .at-card h3 { font-size: 14.5px; }
-    .lp .at-card__level { font-size: 9px; }
+/* =====================================================
+   MOBILE — CENTERED ZIG-ZAG TIMELINE
+===================================================== */
+
+@media (max-width: 600px) {
+    .lp main > section.lp-section.ed-section {
+        padding: 48px 0 56px;
+    }
+
+    .lp .ed-topbar {
+        padding-bottom: 14px;
+    }
+
+    .lp .ed-topbar__identity {
+        gap: 10px;
+        font-size: 9px;
+    }
+
+    .lp .ed-topbar__identity i {
+        width: 25px;
+    }
+
+    .lp .ed-topbar__meta {
+        display: none;
+    }
+
+    .lp .ed-heading {
+        align-items: flex-start;
+        gap: 12px;
+
+        padding: 26px 0 29px;
+    }
+
+    .lp .ed-heading__eyebrow {
+        margin-bottom: 10px;
+        font-size: 9px;
+    }
+
+    .lp .ed-heading h2 {
+        font-size: clamp(32px, 8.5vw, 42px);
+    }
+
+    .lp .ed-heading p {
+        margin-top: 10px;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .lp .ed-heading__count strong {
+        font-size: 26px;
+    }
+
+    .lp .ed-heading__count span {
+        font-size: 8px;
+    }
+
+    /* Timeline header */
+
+    .lp .at-shell__top {
+        padding: 13px 12px;
+    }
+
+    .lp .at-shell__top-left {
+        gap: 8px;
+    }
+
+    .lp .at-shell__eyebrow {
+        display: none;
+    }
+
+    .lp .at-shell__top strong {
+        font-size: 10px;
+    }
+
+    .lp .at-shell__scroll-hint {
+        font-size: 9px;
+    }
+
+    /* Zig-zag stays centered on phone */
+
+    .lp .at-timeline {
+        margin-top: 24px;
+    }
+
+    .lp .at-items {
+        gap: 12px;
+    }
+
+    .lp .at-item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            52px
+            minmax(0, 1fr);
+
+        min-height: 145px;
+    }
+
+    .lp .at-entry {
+        padding: 8px 0 12px;
+    }
+
+    .lp .at-item--left .at-entry {
+        padding-right: 2px;
+    }
+
+    .lp .at-item--right .at-entry {
+        padding-left: 2px;
+    }
+
+    /* Short mobile connectors */
+
+    .lp .at-entry::after {
+        top: 35px;
+        width: 18px;
+    }
+
+    .lp .at-item--left .at-entry::after {
+        right: -18px;
+    }
+
+    .lp .at-item--right .at-entry::after {
+        left: -18px;
+    }
+
+    .lp .at-entry__meta {
+        gap: 5px;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+    }
+
+    .lp .at-entry__step {
+        font-size: 8px;
+    }
+
+    .lp .at-entry__current {
+        font-size: 8px;
+    }
+
+    .lp .at-entry__year {
+        font-size: clamp(23px, 6.5vw, 28px);
+    }
+
+    .lp .at-entry__period {
+        margin-top: 4px;
+        font-size: 9px;
+    }
+
+    .lp .at-entry h3 {
+        margin-top: 8px;
+
+        font-size: 12px;
+        line-height: 1.32;
+        letter-spacing: -0.02em;
+    }
+
+    .lp .at-entry__level {
+        margin-top: 5px;
+
+        font-size: 10px;
+        line-height: 1.45;
+    }
+
+    .lp .at-entry__major {
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    /* Milestone icons */
+
+    .lp .at-node {
+        width: 36px;
+        height: 36px;
+
+        margin-top: 17px;
+
+        border-radius: 7px;
+        box-shadow: 0 0 0 5px #0b0d10;
+    }
+
+    .lp .at-item--current .at-node {
+        box-shadow: 0 0 0 5px #0b0d10;
+    }
+
+    .lp .at-node__icon {
+        width: 27px;
+        height: 27px;
+    }
+
+    .lp .at-node__icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Compact explorer */
+
+    .lp .at-walker {
+        width: 44px;
+        height: 60px;
+    }
+
+    .lp .at-walker__figure {
+        width: 44px;
+        height: 60px;
+    }
+
+    .lp .at-shell__bottom {
+        margin-top: 3px;
+        font-size: 8px;
+    }
 }
+
+/* =====================================================
+   EXTRA SMALL SCREENS
+===================================================== */
+
+@media (max-width: 380px) {
+    .lp .ed-heading h2 {
+        font-size: 31px;
+    }
+
+    .lp .at-item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            46px
+            minmax(0, 1fr);
+
+        min-height: 150px;
+    }
+
+    .lp .at-entry h3 {
+        font-size: 11.5px;
+    }
+
+    .lp .at-entry__level,
+    .lp .at-entry__major {
+        font-size: 9.5px;
+    }
+
+    .lp .at-node {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* =====================================================
+   ACCESSIBILITY
+===================================================== */
 
 @media (prefers-reduced-motion: reduce) {
     .lp .at-walker,
-    .lp .at-node,
-    .lp .at-card,
     .lp .at-walker__body,
     .lp .at-walker__leg,
-    .lp .at-walker__arm { animation: none !important; transition: none !important; }
-    .lp .at-timeline--enhanced .at-item:not(.at-item--visible) .at-card {
-        transform: none;
+    .lp .at-walker__arm,
+    .lp .at-entry,
+    .lp .at-node {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .lp .at-timeline--enhanced .at-item:not(.at-item--visible) .at-entry {
         opacity: 1;
+        transform: none;
     }
 }

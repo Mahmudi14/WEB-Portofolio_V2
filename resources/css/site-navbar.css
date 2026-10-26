@@ -1,0 +1,538 @@
+/* ====================================================
+   PORTFOLIO V2 — CODING BOT NAVBAR
+   Black  : #0B0D10
+   Orange : #FF6A00
+==================================================== */
+
+/* ==========================================
+   NAVBAR BASE
+========================================== */
+
+.lp .nb-header {
+    --nb-orange: #ff6a00;
+    --nb-orange-light: #ff984e;
+    --nb-text: #f4f4f2;
+    --nb-muted: #a3a9b2;
+
+    position: sticky;
+    top: 0;
+    z-index: 90;
+
+    height: 80px;
+
+    background: rgba(11, 13, 16, 0.96);
+    border-bottom: 1px solid rgba(255, 106, 0, 0.24);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.lp .nb-header__inner {
+    position: relative;
+    z-index: 5;
+
+    gap: 20px;
+}
+
+/* ==========================================
+   BRAND
+========================================== */
+
+.lp .nb-brand {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.lp .nb-brand__mark {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+
+    border: 1px solid rgba(255, 106, 0, 0.35);
+    border-radius: 9px;
+
+    background: #1b1e22;
+    color: var(--nb-orange-light);
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease;
+}
+
+.lp .nb-brand--active .nb-brand__mark {
+    background: #251b16;
+    border-color: var(--nb-orange);
+}
+
+.lp .nb-brand__text {
+    max-width: 175px;
+
+    color: var(--nb-text);
+    font-size: 16px;
+}
+
+.lp .nb-brand__text b {
+    color: var(--nb-orange);
+}
+
+/* ==========================================
+   DESKTOP NAV LINKS
+========================================== */
+
+.lp .lp-navigation.nb-nav {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: clamp(11px, 1.25vw, 19px);
+
+    flex: 0 0 auto;
+}
+
+.lp .nb-nav > .nb-nav__link {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 12px 0;
+
+    color: var(--nb-muted);
+    font-size: 11px;
+    font-weight: 550;
+    white-space: nowrap;
+
+    transition: color 0.25s ease;
+}
+
+.lp .nb-nav > .nb-nav__link:hover {
+    color: #f4f4f2;
+}
+
+.lp .nb-nav > .nb-nav__link--active {
+    color: var(--nb-orange-light);
+}
+
+/* ==========================================
+   ACTIVE SECTION UNDERLINE
+========================================== */
+
+.lp .nb-nav__indicator {
+    position: absolute;
+
+    bottom: -19px;
+    left: 0;
+
+    width: 0;
+    height: 2px;
+
+    border-radius: 2px;
+    background: var(--nb-orange);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition:
+        transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.2s ease;
+}
+
+/* ==========================================
+   CONTACT BUTTON
+========================================== */
+
+.lp .nb-nav > .nb-nav__contact.lp-nav-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    min-height: 38px;
+    padding: 9px 13px;
+
+    border: 1px solid rgba(255, 106, 0, 0.5);
+    border-radius: 6px;
+
+    background: rgba(255, 106, 0, 0.05);
+    color: #ffb487;
+
+    font-size: 11px;
+    font-weight: 650;
+    white-space: nowrap;
+
+    transition:
+        color 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
+}
+
+.lp .nb-nav > .nb-nav__contact:hover,
+.lp .nb-nav > .nb-nav__contact--active {
+    border-color: var(--nb-orange);
+    background: rgba(255, 106, 0, 0.12);
+    color: var(--nb-orange-light);
+}
+
+/* ==========================================
+   MOBILE TOGGLE
+========================================== */
+
+.lp .nb-header .nb-menu-toggle {
+    display: none;
+
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid rgba(255, 255, 255, 0.17);
+    border-radius: 7px;
+
+    background: #171a1e;
+    color: #f4f4f2;
+}
+
+/* ==========================================
+   RUNNER PATH
+   Full-width bottom border of navbar
+========================================== */
+
+.lp .nb-runner {
+    position: absolute;
+    z-index: 2;
+
+    left: 0;
+    right: 0;
+    bottom: -1px;
+
+    height: 45px;
+
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* The line the robot walks on */
+
+.lp .nb-runner__track {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 1px;
+    background: rgba(255, 106, 0, 0.32);
+}
+
+/* ==========================================
+   TRAVELING ROBOT
+========================================== */
+
+.lp .nb-runner__traveler {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 48px;
+    height: 44px;
+
+    display: grid;
+    place-items: end center;
+
+    will-change: transform;
+
+    animation: nb-bot-travel 22s linear infinite;
+}
+
+/* Small trailing line behind the robot */
+
+.lp .nb-runner__traveler::before {
+    content: "";
+
+    position: absolute;
+
+    bottom: 2px;
+    right: 100%;
+
+    width: 21px;
+    height: 1px;
+
+    background: linear-gradient(to right, transparent, rgba(255, 106, 0, 0.85));
+}
+
+/* ROBOT SVG */
+
+.lp .nb-bot {
+    display: block;
+
+    width: 43px;
+    height: 41px;
+
+    overflow: visible;
+
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45));
+}
+
+/* ==========================================
+   WALKING ANIMATION
+========================================== */
+
+/*
+   Robot starts outside the left edge,
+   travels across the viewport,
+   then restarts outside the right edge.
+*/
+
+@keyframes nb-bot-travel {
+    from {
+        transform: translate3d(-72px, 0, 0);
+    }
+
+    to {
+        transform: translate3d(calc(100vw + 28px), 0, 0);
+    }
+}
+
+/* SVG groups rotate around their upper joint */
+
+.lp .nb-bot__leg,
+.lp .nb-bot__arm,
+.lp .nb-bot__antenna {
+    transform-box: fill-box;
+    transform-origin: 50% 0%;
+}
+
+.lp .nb-bot__leg--left {
+    animation: nb-step-left 0.42s ease-in-out infinite alternate;
+}
+
+.lp .nb-bot__leg--right {
+    animation: nb-step-right 0.42s ease-in-out infinite alternate;
+}
+
+.lp .nb-bot__arm--left {
+    animation: nb-arm-left 0.42s ease-in-out infinite alternate;
+}
+
+.lp .nb-bot__arm--right {
+    animation: nb-arm-right 0.42s ease-in-out infinite alternate;
+}
+
+.lp .nb-bot__antenna {
+    animation: nb-antenna 0.85s ease-in-out infinite alternate;
+}
+
+/* Legs alternate like a walking cycle */
+
+@keyframes nb-step-left {
+    from {
+        transform: rotate(-17deg);
+    }
+
+    to {
+        transform: rotate(17deg);
+    }
+}
+
+@keyframes nb-step-right {
+    from {
+        transform: rotate(17deg);
+    }
+
+    to {
+        transform: rotate(-17deg);
+    }
+}
+
+/* Arms move opposite to the legs */
+
+@keyframes nb-arm-left {
+    from {
+        transform: rotate(12deg);
+    }
+
+    to {
+        transform: rotate(-12deg);
+    }
+}
+
+@keyframes nb-arm-right {
+    from {
+        transform: rotate(-12deg);
+    }
+
+    to {
+        transform: rotate(12deg);
+    }
+}
+
+/* Antenna has minimal movement */
+
+@keyframes nb-antenna {
+    from {
+        transform: rotate(-5deg);
+    }
+
+    to {
+        transform: rotate(5deg);
+    }
+}
+
+/* Blinking terminal cursor */
+
+.lp .nb-bot__cursor {
+    animation: nb-cursor-blink 1.15s steps(1, end) infinite;
+}
+
+@keyframes nb-cursor-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0.18;
+    }
+}
+
+/* ==========================================
+   TABLET & MOBILE
+========================================== */
+
+@media (max-width: 1180px) {
+    .lp .nb-header {
+        height: 72px;
+    }
+
+    .lp .nb-header .nb-menu-toggle {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+    }
+
+    /* Hide desktop links until hamburger opens */
+
+    .lp .lp-navigation.nb-nav {
+        display: none;
+
+        position: absolute;
+        z-index: 20;
+
+        top: 72px;
+        left: 0;
+        right: 0;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 0;
+
+        max-height: calc(100dvh - 72px);
+        overflow-y: auto;
+
+        padding: 12px 24px 22px;
+
+        border-bottom: 1px solid rgba(255, 106, 0, 0.25);
+
+        background: #101216;
+
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .lp .lp-navigation.nb-nav.lp-navigation--open {
+        display: flex;
+    }
+
+    /* Mobile active section */
+
+    .lp .nb-nav > .nb-nav__link {
+        width: 100%;
+        min-height: 46px;
+
+        padding: 13px 14px;
+
+        border-left: 2px solid transparent;
+
+        color: #b2b7bf;
+        font-size: 12px;
+    }
+
+    .lp .nb-nav > .nb-nav__link--active {
+        border-left-color: #ff6a00;
+
+        background: rgba(255, 106, 0, 0.075);
+        color: #ff984e;
+    }
+
+    .lp .nb-nav > .nb-nav__contact.lp-nav-contact {
+        justify-content: space-between;
+
+        width: 100%;
+        margin-top: 12px;
+
+        padding: 12px 14px;
+
+        font-size: 12px;
+    }
+
+    /* Underline only applies to desktop */
+
+    .lp .nb-nav__indicator {
+        display: none;
+    }
+
+    /* Robot still walks at bottom navbar border */
+
+    .lp .nb-runner__traveler {
+        animation-duration: 18s;
+    }
+}
+
+@media (max-width: 600px) {
+    .lp .nb-brand__text {
+        max-width: 165px;
+        font-size: 15px;
+    }
+
+    .lp .nb-runner {
+        height: 38px;
+    }
+
+    .lp .nb-runner__traveler {
+        width: 40px;
+        height: 38px;
+
+        animation-duration: 12s;
+    }
+
+    .lp .nb-bot {
+        width: 36px;
+        height: 35px;
+    }
+
+    .lp .lp-navigation.nb-nav {
+        padding-inline: 16px;
+    }
+}
+
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .lp .nb-runner__traveler {
+        animation: none !important;
+
+        transform: translate3d(12px, 0, 0);
+        will-change: auto;
+    }
+
+    .lp .nb-bot__leg,
+    .lp .nb-bot__arm,
+    .lp .nb-bot__antenna,
+    .lp .nb-bot__cursor {
+        animation: none !important;
+    }
+
+    .lp .nb-nav__indicator {
+        transition: none !important;
+    }
+}

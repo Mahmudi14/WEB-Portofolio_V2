@@ -1,555 +1,491 @@
-import {
-    ArrowDown,
-    ArrowLeft,
-    ArrowRight,
-    ArrowUpRight,
-    ChevronDown,
-    Code2,
-    Expand,
-    FolderKanban,
-    Image as ImageIcon,
-    Layers3,
-    Monitor,
-    MousePointer2,
-    X,
-} from "lucide-react";
-import {
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import { ArrowLeft, ArrowRight, FolderKanban, ImageOff, X } from "lucide-react";
+
+import { useEffect, useRef, useState } from "react";
+
 import type {
     KeyboardEvent as ReactKeyboardEvent,
-    PointerEvent as ReactPointerEvent,
+    TouchEvent as ReactTouchEvent,
 } from "react";
-import "../../../css/project-showcase.css";
 
-/** Struktur persis seperti props projects dari LandingPageController. */
-export type ShowcaseProject = {
-    id: number;
-    title: string;
-    description: string;
-    technologies: string | null;
-    category: string;
-    images: { id: number; url: string }[];
-};
+import type { Project } from "./landing-types";
+
+const PAGE_SIZE = 12;
 
 type Props = {
-    projects: ShowcaseProject[];
+    projects: Project[];
 };
 
-const twoDigits = (value: number) => String(value).padStart(2, "0");
+type PageSlot = number | "dots";
 
-function isReducedMotion() {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function getPageSlots(total: number, current: number): PageSlot[] {
+    if (total <= 7) {
+        return Array.from({ length: total }, (_, index) => index + 1);
+    }
+
+    const numbers = new Set([
+        1,
+        2,
+        total - 1,
+        total,
+        current - 1,
+        current,
+        current + 1,
+    ]);
+
+    const sorted = Array.from(numbers)
+        .filter((value) => value >= 1 && value <= total)
+        .sort((a, b) => a - b);
+
+    const result: PageSlot[] = [];
+
+    sorted.forEach((value, index) => {
+        const previous = sorted[index - 1];
+
+        if (previous !== undefined && value - previous > 1) {
+            result.push("dots");
+        }
+
+        result.push(value);
+    });
+
+    return result;
 }
 
-/**
- * SELECTED WORK — sebuah galeri proyek bergaya creative studio.
- *
- * - Daftar proyek scroll vertikal dengan tinggi terbatas.
- * - Project yang dipilih tampil sebagai interactive browser showcase.
- * - Filter kategori memanfaatkan field yang sudah ada di database.
- * - Multi-image gallery + lightbox <dialog> native.
- * - Scroll reveal, subtle pointer tilt, pergantian proyek dan image scan.
- * - Tanpa library animasi tambahan atau link demo fiktif.
- */
 export default function ProjectShowcase({ projects }: Props) {
-    const [category, setCategory] = useState("all");
+    const [page, setPage] = useState(1);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [imageIndex, setImageIndex] = useState(0);
-    const shellRef = useRef<HTMLDivElement>(null);
-    const listRef = useRef<HTMLDivElement>(null);
-    const previewRef = useRef<HTMLDivElement>(null);
+
     const dialogRef = useRef<HTMLDialogElement>(null);
-    const buttonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
 
-    const categories = Array.from(
-        new Set(
-            projects.map((project) => project.category?.trim() || "Lainnya"),
-        ),
-    );
+    const touchStart = useRef<{
+        x: number;
+        y: number;
+    } | null>(null);
 
-    const visibleProjects =
-        category === "all"
-            ? projects
-            : projects.filter(
-                  (project) =>
-                      (project.category?.trim() || "Lainnya") === category,
-              );
+    const totalPages = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
 
-    const selectedIndex = Math.max(
-        0,
-        visibleProjects.findIndex((project) => project.id === selectedId),
-    );
-    const selected = visibleProjects[selectedIndex];
+    const currentPage = Math.min(page, totalPages);
+
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+
+    const visibleProjects = projects.slice(startIndex, startIndex + PAGE_SIZE);
+
+    const selected =
+        projects.find((project) => project.id === selectedId) ?? null;
+
     const images = selected?.images ?? [];
-    const shownImageIndex = Math.min(imageIndex, Math.max(0, images.length - 1));
-    const image = images[shownImageIndex];
-    const technologyList = (selected?.technologies || "")
+
+    const currentImageIndex = Math.min(
+        imageIndex,
+        Math.max(0, images.length - 1),
+    );
+
+    const activeImage = images[currentImageIndex];
+
+    const technologies = (selected?.technologies ?? "")
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean);
 
-    // Reveal sekali saat komponen masuk viewport; konten tetap tampil
-    // walaupun IntersectionObserver tidak tersedia.
-    useEffect(() => {
-        const root = shellRef.current;
-        if (!root || isReducedMotion() || !("IntersectionObserver" in window)) {
+    // ==========================================
+    // PAGINATION
+    // ==========================================
+
+    function changePage(nextPage: number) {
+        if (nextPage < 1 || nextPage > totalPages || nextPage === currentPage) {
             return;
         }
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry?.isIntersecting) {
-                    root.classList.add("ps-showcase--visible");
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.08, rootMargin: "0px 0px -5% 0px" },
-        );
+        setPage(nextPage);
 
-        observer.observe(root);
-        return () => observer.disconnect();
-    }, []);
+        const reducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
 
-    // Update progress scrollbar khusus daftar proyek.
-    useEffect(() => {
-        const list = listRef.current;
-        if (!list) return;
+        document.getElementById("projects")?.scrollIntoView({
+            behavior: reducedMotion ? "auto" : "smooth",
+            block: "start",
+        });
+    }
 
-        let frame = 0;
-        const update = () => {
-            frame = 0;
-            const max = Math.max(0, list.scrollHeight - list.clientHeight);
-            const percent = max === 0 ? 100 : (list.scrollTop / max) * 100;
-            list.parentElement?.style.setProperty("--ps-list-progress", `${percent.toFixed(2)}%`);
-        };
-        const schedule = () => {
-            if (!frame) frame = window.requestAnimationFrame(update);
-        };
-        const observer = new ResizeObserver(schedule);
-        observer.observe(list);
-        list.addEventListener("scroll", schedule, { passive: true });
-        window.addEventListener("resize", schedule);
-        update();
-        return () => {
-            if (frame) window.cancelAnimationFrame(frame);
-            observer.disconnect();
-            list.removeEventListener("scroll", schedule);
-            window.removeEventListener("resize", schedule);
-        };
-    }, [category, projects.length]);
+    // ==========================================
+    // OPEN / CLOSE POPUP
+    // ==========================================
 
-    const choose = (projectId: number) => {
+    function openProject(projectId: number) {
         setSelectedId(projectId);
         setImageIndex(0);
-    };
 
-    const changeCategory = (next: string) => {
-        setCategory(next);
-        setSelectedId(null);
-        setImageIndex(0);
-        if (listRef.current) listRef.current.scrollTop = 0;
-    };
+        const dialog = dialogRef.current;
 
-    const changeProject = (nextIndex: number, focus = false) => {
-        if (!visibleProjects.length) return;
-        const normalized =
-            (nextIndex + visibleProjects.length) % visibleProjects.length;
-        const target = visibleProjects[normalized];
-        if (!target) return;
-        choose(target.id);
-
-        // Gulir area daftar saja; jangan menggeser seluruh halaman.
-        const list = listRef.current;
-        const button = buttonRefs.current[target.id];
-        if (list && button) {
-            const parentRect = list.getBoundingClientRect();
-            const childRect = button.getBoundingClientRect();
-            if (childRect.top < parentRect.top + 12) {
-                list.scrollBy({
-                    top: childRect.top - parentRect.top - 12,
-                    behavior: isReducedMotion() ? "auto" : "smooth",
-                });
-            } else if (childRect.bottom > parentRect.bottom - 12) {
-                list.scrollBy({
-                    top: childRect.bottom - parentRect.bottom + 12,
-                    behavior: isReducedMotion() ? "auto" : "smooth",
-                });
-            }
-            if (focus) button.focus({ preventScroll: true });
+        if (dialog && !dialog.open) {
+            dialog.showModal();
         }
-    };
+    }
 
-    const handleListKey = (
-        event: ReactKeyboardEvent<HTMLButtonElement>,
-        index: number,
-    ) => {
-        let next = index;
-        switch (event.key) {
-            case "ArrowDown":
-                next = Math.min(index + 1, visibleProjects.length - 1);
-                break;
-            case "ArrowUp":
-                next = Math.max(index - 1, 0);
-                break;
-            case "Home":
-                next = 0;
-                break;
-            case "End":
-                next = visibleProjects.length - 1;
-                break;
-            default:
-                return;
-        }
-        event.preventDefault();
-        changeProject(next, true);
-    };
-
-    const changeImage = (delta: number) => {
-        if (images.length < 2) return;
-        setImageIndex((current) =>
-            (current + delta + images.length) % images.length,
-        );
-    };
-
-    const openLightbox = () => {
-        if (!image || !dialogRef.current || dialogRef.current.open) return;
-        dialogRef.current.showModal();
-    };
-
-    const closeLightbox = () => {
+    function closeProject() {
         dialogRef.current?.close();
-    };
+    }
 
-    const tiltPreview = (event: ReactPointerEvent<HTMLDivElement>) => {
-        if (event.pointerType === "touch" || isReducedMotion()) return;
-        const bounds = event.currentTarget.getBoundingClientRect();
-        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-        event.currentTarget.style.setProperty("--ps-rot-y", `${(x * 3.5).toFixed(2)}deg`);
-        event.currentTarget.style.setProperty("--ps-rot-x", `${(-y * 3).toFixed(2)}deg`);
-        event.currentTarget.style.setProperty("--ps-mouse-x", `${((x + 0.5) * 100).toFixed(1)}%`);
-        event.currentTarget.style.setProperty("--ps-mouse-y", `${((y + 0.5) * 100).toFixed(1)}%`);
-    };
+    // Lock background scroll while popup is active.
+    useEffect(() => {
+        if (selectedId === null) return;
 
-    const resetTilt = () => {
-        const node = previewRef.current;
-        if (!node) return;
-        node.style.setProperty("--ps-rot-x", "0deg");
-        node.style.setProperty("--ps-rot-y", "0deg");
-    };
+        const previousOverflow = document.body.style.overflow;
+
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [selectedId]);
+
+    // ==========================================
+    // GALLERY NAVIGATION
+    // ==========================================
+
+    function changeImage(direction: number) {
+        if (images.length <= 1) return;
+
+        setImageIndex(
+            (current) => (current + direction + images.length) % images.length,
+        );
+    }
+
+    function handleGalleryKeyboard(
+        event: ReactKeyboardEvent<HTMLDialogElement>,
+    ) {
+        if (images.length <= 1) return;
+
+        if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            changeImage(-1);
+        }
+
+        if (event.key === "ArrowRight") {
+            event.preventDefault();
+            changeImage(1);
+        }
+    }
+
+    // ==========================================
+    // SWIPE MOBILE
+    // ==========================================
+
+    function handleTouchStart(event: ReactTouchEvent<HTMLDivElement>) {
+        const touch = event.touches[0];
+
+        if (!touch) return;
+
+        touchStart.current = {
+            x: touch.clientX,
+            y: touch.clientY,
+        };
+    }
+
+    function handleTouchEnd(event: ReactTouchEvent<HTMLDivElement>) {
+        const start = touchStart.current;
+        const touch = event.changedTouches[0];
+
+        touchStart.current = null;
+
+        if (!start || !touch || images.length <= 1) {
+            return;
+        }
+
+        const deltaX = touch.clientX - start.x;
+        const deltaY = touch.clientY - start.y;
+
+        if (
+            Math.abs(deltaX) < 45 ||
+            Math.abs(deltaX) < Math.abs(deltaY) * 1.2
+        ) {
+            return;
+        }
+
+        changeImage(deltaX < 0 ? 1 : -1);
+    }
+
+    // ==========================================
+    // EMPTY STATE
+    // ==========================================
 
     return (
-        <div className="ps-showcase" ref={shellRef}>
-            <header className="ps-showcase__toolbar">
-                <div className="ps-showcase__eyebrow">
-                    <span className="ps-showcase__signal" />
-                    <span>SELECTED WORK / PROJECT ARCHIVE</span>
+        <div className="pg-gallery">
+            {projects.length === 0 ? (
+                <div className="pg-empty">
+                    <FolderKanban
+                        size={32}
+                        strokeWidth={1.4}
+                        aria-hidden="true"
+                    />
+
+                    <p>Belum ada proyek yang ditampilkan.</p>
                 </div>
-                <div className="ps-showcase__filters" aria-label="Filter kategori proyek">
-                    <button
-                        type="button"
-                        aria-pressed={category === "all"}
-                        className={`ps-showcase__filter${category === "all" ? " ps-showcase__filter--active" : ""}`}
-                        onClick={() => changeCategory("all")}
-                    >
-                        Semua <span>{twoDigits(projects.length)}</span>
-                    </button>
-                    {categories.map((item) => (
-                        <button
-                            key={item}
-                            type="button"
-                            aria-pressed={category === item}
-                            className={`ps-showcase__filter${category === item ? " ps-showcase__filter--active" : ""}`}
-                            onClick={() => changeCategory(item)}
-                        >
-                            {item}
-                        </button>
-                    ))}
-                </div>
-            </header>
+            ) : (
+                <>
+                    {/* PROJECT GRID */}
+                    <div className="pg-grid">
+                        {visibleProjects.map((project) => {
+                            const cover = project.images?.[0];
 
-            {selected ? (
-                <div className="ps-showcase__layout">
-                    <aside className="ps-index">
-                        <div className="ps-index__heading">
-                            <div>
-                                <span className="ps-index__overline">PROJECT INDEX</span>
-                                <p>Jelajahi karya saya</p>
-                            </div>
-                            <ArrowDown size={16} aria-hidden="true" />
-                        </div>
-                        <div
-                            className="ps-index__scroll"
-                            ref={listRef}
-                            tabIndex={0}
-                            role="region"
-                            aria-label="Daftar proyek, scroll vertikal"
-                        >
-                            <div className="ps-index__items">
-                                {visibleProjects.map((project, index) => {
-                                    const active = selected.id === project.id;
-                                    return (
-                                        <button
-                                            key={project.id}
-                                            type="button"
-                                            ref={(node) => {
-                                                buttonRefs.current[project.id] = node;
-                                            }}
-                                            className={`ps-index__item${active ? " ps-index__item--active" : ""}`}
-                                            aria-pressed={active}
-                                            onClick={() => choose(project.id)}
-                                            onKeyDown={(event) => handleListKey(event, index)}
-                                        >
-                                            <span className="ps-index__number">
-                                                {twoDigits(index + 1)}
-                                            </span>
-                                            <span className="ps-index__item-main">
-                                                <span className="ps-index__item-title">{project.title}</span>
-                                                <span className="ps-index__item-category">
-                                                    {project.category || "Proyek"}
-                                                </span>
-                                            </span>
-                                            <ArrowUpRight size={17} aria-hidden="true" />
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                        <div className="ps-index__footer">
-                            <div className="ps-index__track" aria-hidden="true">
-                                <span />
-                            </div>
-                            <span>{twoDigits(visibleProjects.length)} proyek tersedia</span>
-                        </div>
-                    </aside>
-
-                    <section className="ps-feature" aria-label={`Tampilan proyek ${selected.title}`}>
-                        <div key={selected.id} className="ps-feature__entry">
-                            <div className="ps-feature__topline">
-                                <span className="ps-feature__label">
-                                    <span className="ps-feature__mini-square" />
-                                    FEATURED PROJECT
-                                </span>
-                                <span className="ps-feature__index">
-                                    {twoDigits(selectedIndex + 1)} <span>/</span> {twoDigits(visibleProjects.length)}
-                                </span>
-                            </div>
-
-                            <div className="ps-browser-wrap">
-                                <div
-                                    className="ps-browser"
-                                    ref={previewRef}
-                                    onPointerMove={tiltPreview}
-                                    onPointerLeave={resetTilt}
+                            return (
+                                <button
+                                    key={project.id}
+                                    type="button"
+                                    className="pg-card"
+                                    onClick={() => openProject(project.id)}
+                                    aria-label={`Lihat detail proyek ${project.title}`}
                                 >
-                                    <div className="ps-browser__chrome">
-                                        <div className="ps-browser__dots" aria-hidden="true">
-                                            <i /><i /><i />
-                                        </div>
-                                        <span className="ps-browser__file">
-                                            <Code2 size={12} aria-hidden="true" />
-                                            {selected.title}
+                                    <span className="pg-card__image">
+                                        <span className="pg-card__placeholder">
+                                            <ImageOff
+                                                size={25}
+                                                strokeWidth={1.4}
+                                                aria-hidden="true"
+                                            />
                                         </span>
-                                        <Monitor size={14} aria-hidden="true" />
-                                    </div>
-                                    <div className="ps-browser__screen">
-                                        <div className="ps-browser__placeholder" aria-hidden="true">
-                                            <Layers3 size={58} strokeWidth={1.05} />
-                                            <span>PROJECT PREVIEW</span>
-                                        </div>
-                                        {image && (
+
+                                        {cover && (
                                             <img
-                                                key={image.id}
-                                                src={image.url}
-                                                alt={`Preview ${selected.title}, gambar ${shownImageIndex + 1}`}
+                                                src={cover.url}
+                                                alt=""
                                                 loading="lazy"
                                                 onError={(event) => {
-                                                    event.currentTarget.style.display = "none";
+                                                    event.currentTarget.style.display =
+                                                        "none";
                                                 }}
                                             />
                                         )}
-                                        {image && (
-                                            <button
-                                                type="button"
-                                                className="ps-browser__expand"
-                                                onClick={openLightbox}
-                                                aria-label={`Perbesar gambar proyek ${selected.title}`}
-                                            >
-                                                <Expand size={16} />
-                                                <span>Perbesar</span>
-                                            </button>
-                                        )}
-                                        <div className="ps-browser__corner ps-browser__corner--a" />
-                                        <div className="ps-browser__corner ps-browser__corner--b" />
-                                    </div>
-                                </div>
-                            </div>
+                                    </span>
 
-                            <div className="ps-feature__meta-row">
-                                <span className="ps-feature__category">
-                                    <FolderKanban size={13} aria-hidden="true" />
-                                    {selected.category || "Proyek"}
-                                </span>
-                                <span className="ps-feature__frame-count">
-                                    <ImageIcon size={13} aria-hidden="true" />
-                                    {images.length} gambar
-                                </span>
-                            </div>
-                            <h3 className="ps-feature__title">{selected.title}</h3>
-                            <p className="ps-feature__summary">{selected.description}</p>
-
-                            {selected.description.length > 90 && (
-                                <details className="ps-feature__read-more">
-                                    <summary>
-                                        Baca deskripsi lengkap
-                                        <ChevronDown size={15} aria-hidden="true" />
-                                    </summary>
-                                    <p>{selected.description}</p>
-                                </details>
-                            )}
-
-                            {technologyList.length > 0 && (
-                                <div className="ps-feature__tech" aria-label="Teknologi proyek">
-                                    {technologyList.slice(0, 7).map((tech, index) => (
-                                        <span key={`${tech}-${index}`}>{tech}</span>
-                                    ))}
-                                    {technologyList.length > 7 && (
-                                        <span>+{technologyList.length - 7}</span>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-
-                        {images.length > 1 && (
-                            <div className="ps-gallery" aria-label="Galeri gambar proyek">
-                                <div className="ps-gallery__head">
-                                    <span>PROJECT FRAMES</span>
-                                    <span>{twoDigits(shownImageIndex + 1)} / {twoDigits(images.length)}</span>
-                                </div>
-                                <div className="ps-gallery__row">
-                                    <button
-                                        type="button"
-                                        className="ps-gallery__arrow"
-                                        onClick={() => changeImage(-1)}
-                                        aria-label="Gambar sebelumnya"
-                                    >
-                                        <ArrowLeft size={16} />
-                                    </button>
-                                    <div className="ps-gallery__thumbs">
-                                        {images.map((item, index) => (
-                                            <button
-                                                key={item.id}
-                                                type="button"
-                                                className={`ps-gallery__thumb${shownImageIndex === index ? " ps-gallery__thumb--active" : ""}`}
-                                                aria-label={`Tampilkan gambar ${index + 1} dari ${selected.title}`}
-                                                aria-pressed={shownImageIndex === index}
-                                                onClick={() => setImageIndex(index)}
-                                            >
-                                                <img
-                                                    src={item.url}
-                                                    alt=""
-                                                    loading="lazy"
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <button
-                                        type="button"
-                                        className="ps-gallery__arrow"
-                                        onClick={() => changeImage(1)}
-                                        aria-label="Gambar berikutnya"
-                                    >
-                                        <ArrowRight size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="ps-feature__controls">
-                            <span className="ps-feature__hint">
-                                <MousePointer2 size={13} aria-hidden="true" />
-                                Pilih proyek untuk melihat detail
-                            </span>
-                            <div className="ps-feature__nav">
-                                <button
-                                    type="button"
-                                    onClick={() => changeProject(selectedIndex - 1)}
-                                    aria-label="Proyek sebelumnya"
-                                    disabled={visibleProjects.length < 2}
-                                >
-                                    <ArrowLeft size={16} />
+                                    <span className="pg-card__body">
+                                        <span className="pg-card__title">
+                                            {project.title}
+                                        </span>
+                                    </span>
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={() => changeProject(selectedIndex + 1)}
-                                    aria-label="Proyek berikutnya"
-                                    disabled={visibleProjects.length < 2}
-                                >
-                                    <ArrowRight size={16} />
-                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* PAGINATION */}
+                    {totalPages > 1 && (
+                        <nav
+                            className="pg-pagination"
+                            aria-label="Navigasi halaman proyek"
+                        >
+                            <button
+                                type="button"
+                                className="pg-pagination__arrow"
+                                aria-label="Halaman sebelumnya"
+                                disabled={currentPage === 1}
+                                onClick={() => changePage(currentPage - 1)}
+                            >
+                                <ArrowLeft size={17} aria-hidden="true" />
+                            </button>
+
+                            <div className="pg-pagination__pages">
+                                {getPageSlots(totalPages, currentPage).map(
+                                    (slot, index) =>
+                                        slot === "dots" ? (
+                                            <span
+                                                key={`dots-${index}`}
+                                                className="pg-pagination__dots"
+                                                aria-hidden="true"
+                                            >
+                                                ...
+                                            </span>
+                                        ) : (
+                                            <button
+                                                key={slot}
+                                                type="button"
+                                                className={
+                                                    "pg-pagination__page" +
+                                                    (slot === currentPage
+                                                        ? " pg-pagination__page--active"
+                                                        : "")
+                                                }
+                                                aria-label={`Halaman ${slot}`}
+                                                aria-current={
+                                                    slot === currentPage
+                                                        ? "page"
+                                                        : undefined
+                                                }
+                                                onClick={() => changePage(slot)}
+                                            >
+                                                {slot}
+                                            </button>
+                                        ),
+                                )}
                             </div>
-                        </div>
-                    </section>
-                </div>
-            ) : (
-                <div className="ps-showcase__empty">
-                    <FolderKanban size={28} aria-hidden="true" />
-                    <strong>Belum ada proyek</strong>
-                    <p>Proyek yang ditambahkan melalui admin akan muncul di sini.</p>
-                </div>
+
+                            <button
+                                type="button"
+                                className="pg-pagination__arrow"
+                                aria-label="Halaman berikutnya"
+                                disabled={currentPage === totalPages}
+                                onClick={() => changePage(currentPage + 1)}
+                            >
+                                <ArrowRight size={17} aria-hidden="true" />
+                            </button>
+                        </nav>
+                    )}
+
+                    <div className="pg-footer">
+                        <span>
+                            Menampilkan {startIndex + 1}–
+                            {Math.min(startIndex + PAGE_SIZE, projects.length)}{" "}
+                            dari {projects.length} proyek
+                        </span>
+
+                        <span>
+                            {String(currentPage).padStart(2, "0")}
+                            {" / "}
+                            {String(totalPages).padStart(2, "0")}
+                        </span>
+                    </div>
+                </>
             )}
 
-            <div className="ps-showcase__bottom-bar" aria-hidden="true">
-                <span>CRAFTED WITH PURPOSE</span>
-                <span>DESIGN × DEVELOPMENT × INNOVATION</span>
-            </div>
+            {/* ======================================
+                PROJECT DETAIL MODAL
+            ====================================== */}
 
-            {/* Dialog HTML native menjaga fokus & tombol Escape. */}
             <dialog
                 ref={dialogRef}
-                className="ps-lightbox"
-                aria-label={`Galeri gambar ${selected?.title ?? "proyek"}`}
+                className="pg-dialog"
+                aria-labelledby="pg-dialog-title"
+                onClose={() => setSelectedId(null)}
+                onKeyDown={handleGalleryKeyboard}
                 onClick={(event) => {
-                    if (event.target === event.currentTarget) closeLightbox();
+                    if (event.target === event.currentTarget) {
+                        closeProject();
+                    }
                 }}
             >
-                <div className="ps-lightbox__panel">
-                    <div className="ps-lightbox__head">
-                        <span>{selected?.title ?? "Proyek"}</span>
-                        <button type="button" onClick={closeLightbox} aria-label="Tutup galeri">
-                            <X size={20} />
-                        </button>
-                    </div>
-                    {image && (
-                        <img
-                            key={`lightbox-${image.id}`}
-                            src={image.url}
-                            alt={`${selected?.title ?? "Proyek"} — gambar ${shownImageIndex + 1}`}
-                        />
-                    )}
-                    <div className="ps-lightbox__bottom">
+                {selected && (
+                    <div className="pg-dialog__content">
                         <button
                             type="button"
-                            onClick={() => changeImage(-1)}
-                            disabled={images.length < 2}
-                            aria-label="Gambar sebelumnya"
+                            className="pg-dialog__close"
+                            onClick={closeProject}
+                            aria-label="Tutup detail proyek"
                         >
-                            <ArrowLeft size={19} />
+                            <X size={20} strokeWidth={1.8} aria-hidden="true" />
                         </button>
-                        <span>{twoDigits(shownImageIndex + 1)} / {twoDigits(images.length || 1)}</span>
-                        <button
-                            type="button"
-                            onClick={() => changeImage(1)}
-                            disabled={images.length < 2}
-                            aria-label="Gambar berikutnya"
-                        >
-                            <ArrowRight size={19} />
-                        </button>
+
+                        <div className="pg-dialog__layout">
+                            {/* LEFT — IMAGE GALLERY */}
+                            <div className="pg-dialog__visual">
+                                <div
+                                    className="pg-dialog__image-frame"
+                                    onTouchStart={handleTouchStart}
+                                    onTouchEnd={handleTouchEnd}
+                                >
+                                    {activeImage ? (
+                                        <img
+                                            key={activeImage.id}
+                                            src={activeImage.url}
+                                            alt={`${selected.title}, gambar ${currentImageIndex + 1} dari ${images.length}`}
+                                            onError={(event) => {
+                                                event.currentTarget.style.display =
+                                                    "none";
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="pg-dialog__no-image">
+                                            <ImageOff
+                                                size={34}
+                                                strokeWidth={1.4}
+                                                aria-hidden="true"
+                                            />
+
+                                            <span>Gambar belum tersedia</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="pg-dialog__gallery-controls">
+                                    <button
+                                        type="button"
+                                        aria-label="Gambar sebelumnya"
+                                        onClick={() => changeImage(-1)}
+                                        disabled={images.length <= 1}
+                                    >
+                                        <ArrowLeft
+                                            size={18}
+                                            aria-hidden="true"
+                                        />
+                                    </button>
+
+                                    <span
+                                        className="pg-dialog__counter"
+                                        role="status"
+                                        aria-live="polite"
+                                    >
+                                        {images.length > 0
+                                            ? currentImageIndex + 1
+                                            : 0}
+                                        {" / "}
+                                        {images.length}
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        aria-label="Gambar berikutnya"
+                                        onClick={() => changeImage(1)}
+                                        disabled={images.length <= 1}
+                                    >
+                                        <ArrowRight
+                                            size={18}
+                                            aria-hidden="true"
+                                        />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* RIGHT — PROJECT INFORMATION */}
+                            <div className="pg-dialog__info">
+                                <span className="pg-dialog__eyebrow">
+                                    {selected.category || "PROYEK"}
+                                </span>
+
+                                <h3 id="pg-dialog-title">{selected.title}</h3>
+
+                                <div className="pg-dialog__separator" />
+
+                                <div className="pg-dialog__block">
+                                    <h4>TEKNOLOGI</h4>
+
+                                    {technologies.length > 0 ? (
+                                        <ul className="pg-dialog__technologies">
+                                            {technologies.map((tech, index) => (
+                                                <li key={`${tech}-${index}`}>
+                                                    {tech}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="pg-dialog__muted">
+                                            Belum ditambahkan.
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="pg-dialog__block">
+                                    <h4>DESKRIPSI PROYEK</h4>
+
+                                    <p className="pg-dialog__description">
+                                        {selected.description?.trim() ||
+                                            "Deskripsi proyek belum tersedia."}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
             </dialog>
         </div>
     );

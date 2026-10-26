@@ -1,0 +1,528 @@
+/* ====================================================
+   PORTFOLIO V2 — NAVBAR & FOOTER
+   Sliding Active Indicator
+
+   Deep Black : #0B0D10
+   Orange     : #FF6A00
+   Light      : #F4F4F2
+==================================================== */
+
+/* ====================================================
+   NAVBAR FOUNDATION
+==================================================== */
+
+.lp .sc-header {
+    height: 80px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    background: rgba(11, 13, 16, 0.95);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.lp .sc-header__inner {
+    gap: 20px;
+}
+
+/* BRAND */
+
+.lp .sc-header__brand {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.lp .sc-header__brand-mark {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+
+    border: 1px solid rgba(255, 106, 0, 0.3);
+    border-radius: 9px;
+
+    background: #1b1e22;
+    color: #ff984e;
+
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease;
+}
+
+.lp .sc-header__brand--active .sc-header__brand-mark {
+    border-color: #ff6a00;
+    background: #251b16;
+}
+
+.lp .sc-header__brand-text {
+    max-width: 175px;
+
+    color: #f4f4f2;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.lp .sc-header__brand-text b {
+    color: #ff6a00;
+}
+
+/* ====================================================
+   DESKTOP NAVIGATION
+==================================================== */
+
+.lp .lp-navigation.sc-nav {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: clamp(12px, 1.3vw, 19px);
+    flex: 0 0 auto;
+
+    min-width: 0;
+}
+
+/* STANDARD NAV LINKS */
+
+.lp .sc-nav > .sc-nav__link {
+    position: relative;
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+
+    padding: 12px 0;
+
+    color: #a5aab2;
+
+    font-size: 11px;
+    font-weight: 550;
+    line-height: 1.3;
+    white-space: nowrap;
+
+    transition: color 0.25s ease;
+}
+
+.lp .sc-nav > .sc-nav__link:hover {
+    color: #f0f1f2;
+}
+
+.lp .sc-nav > .sc-nav__link--active,
+.lp .sc-nav > .sc-nav__link--active:hover {
+    color: #ff984e;
+}
+
+/* ====================================================
+   SINGLE SLIDING INDICATOR
+==================================================== */
+
+.lp .sc-nav__indicator {
+    --sc-indicator-x: 0px;
+    --sc-indicator-width: 0px;
+
+    position: absolute;
+    z-index: 2;
+
+    top: calc(100% + 15px);
+    left: 0;
+
+    width: var(--sc-indicator-width);
+    height: 2px;
+
+    border-radius: 2px;
+
+    background: #ff6a00;
+
+    opacity: 0;
+
+    transform: translate3d(var(--sc-indicator-x), 0, 0);
+
+    pointer-events: none;
+}
+
+/*
+   Enable movement after first measurement.
+   This prevents the initial line jumping
+   from the left edge when the page loads.
+*/
+
+.lp .sc-nav__indicator--ready {
+    transition:
+        transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.22s ease;
+}
+
+/* ====================================================
+   CONTACT BUTTON
+==================================================== */
+
+.lp .sc-nav > .sc-nav__contact.lp-nav-contact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 38px;
+    padding: 9px 13px;
+
+    border: 1px solid rgba(255, 106, 0, 0.46);
+    border-radius: 6px;
+
+    background: rgba(255, 106, 0, 0.045);
+
+    color: #f1b28a;
+
+    font-size: 11px;
+    font-weight: 650;
+    white-space: nowrap;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
+
+.lp .sc-nav > .sc-nav__contact.lp-nav-contact:hover {
+    border-color: #ff6a00;
+    background: rgba(255, 106, 0, 0.12);
+    color: #ffb785;
+}
+
+.lp .sc-nav > .sc-nav__contact--active.lp-nav-contact {
+    border-color: #ff6a00;
+    background: rgba(255, 106, 0, 0.14);
+    color: #ff984e;
+}
+
+.lp .sc-nav__contact svg {
+    flex-shrink: 0;
+
+    transition: transform 0.25s ease;
+}
+
+.lp .sc-nav__contact:hover svg {
+    transform: translate(2px, -2px);
+}
+
+/* ====================================================
+   MOBILE MENU TOGGLE
+==================================================== */
+
+.lp .sc-header .sc-header__menu-toggle {
+    display: none;
+
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+
+    background: #171a1e;
+    color: #f4f4f2;
+
+    cursor: pointer;
+}
+
+.lp .sc-header .sc-header__menu-toggle:hover {
+    border-color: rgba(255, 106, 0, 0.65);
+    color: #ff984e;
+}
+
+/* ====================================================
+   FOOTER
+==================================================== */
+
+.lp .sc-footer {
+    padding: 27px 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+
+    background: #080a0c;
+}
+
+.lp .sc-footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+/* FOOTER BRAND */
+
+.lp .sc-footer__identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.lp .sc-footer__brand {
+    color: #f4f4f2;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.045em;
+}
+
+.lp .sc-footer__brand span {
+    color: #ff6a00;
+}
+
+.lp .sc-footer__label {
+    color: #838990;
+
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.13em;
+}
+
+/* COPYRIGHT */
+
+.lp .sc-footer__copyright {
+    max-width: 400px;
+    margin: 0;
+
+    color: #9298a1;
+
+    font-size: 11px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+/* BACK TO TOP */
+
+.lp .sc-footer__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+
+    color: #c6cbd1;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    transition: color 0.25s ease;
+}
+
+.lp .sc-footer__back-icon {
+    display: grid;
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
+
+    border: 1px solid rgba(255, 106, 0, 0.4);
+    border-radius: 5px;
+
+    background: rgba(255, 106, 0, 0.055);
+    color: #ff984e;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.lp .sc-footer__back:hover {
+    color: #ff984e;
+}
+
+.lp .sc-footer__back:hover .sc-footer__back-icon {
+    border-color: #ff6a00;
+    background: rgba(255, 106, 0, 0.12);
+    transform: translateY(-3px);
+}
+
+/* ====================================================
+   TABLET & MOBILE NAVIGATION
+   Switch earlier than legacy 900px breakpoint
+   so all section labels fit on desktop.
+==================================================== */
+
+@media (max-width: 1100px) {
+    .lp .sc-header {
+        height: 72px;
+    }
+
+    .lp .sc-header .sc-header__menu-toggle {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+    }
+
+    .lp .lp-navigation.sc-nav {
+        display: none;
+
+        position: absolute;
+        z-index: 30;
+
+        top: 72px;
+        left: 0;
+        right: 0;
+
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+
+        max-height: calc(100dvh - 72px);
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        padding: 13px 24px 20px;
+
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+        background: #101216;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.34);
+    }
+
+    .lp .lp-navigation.sc-nav.lp-navigation--open {
+        display: flex;
+        animation: sc-menu-enter 0.25s ease both;
+    }
+
+    /* NAV LINKS ON MOBILE */
+
+    .lp .sc-nav > .sc-nav__link {
+        width: 100%;
+        min-height: 46px;
+
+        padding: 13px 14px;
+
+        border-left: 2px solid transparent;
+
+        color: #aeb3bb;
+        font-size: 12px;
+        font-weight: 550;
+    }
+
+    .lp .sc-nav > .sc-nav__link--active {
+        border-left-color: #ff6a00;
+
+        background: rgba(255, 106, 0, 0.075);
+        color: #ff984e;
+    }
+
+    .lp .sc-nav > .sc-nav__link:hover {
+        color: #ff984e;
+    }
+
+    /* CONTACT AT BOTTOM */
+
+    .lp .sc-nav > .sc-nav__contact.lp-nav-contact {
+        justify-content: space-between;
+
+        width: 100%;
+        min-height: 44px;
+        margin-top: 12px;
+
+        padding: 11px 14px;
+
+        border-radius: 5px;
+        font-size: 12px;
+    }
+
+    /* Desktop sliding indicator hidden on mobile */
+
+    .lp .sc-nav__indicator {
+        display: none;
+    }
+}
+
+/* ====================================================
+   MOBILE FOOTER
+==================================================== */
+
+@media (max-width: 700px) {
+    .lp .sc-footer {
+        padding: 30px 0;
+    }
+
+    .lp .sc-footer__inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+
+        text-align: center;
+    }
+
+    .lp .sc-footer__identity {
+        align-items: center;
+    }
+
+    .lp .sc-footer__copyright {
+        max-width: 310px;
+        font-size: 10px;
+        line-height: 1.65;
+    }
+
+    .lp .sc-footer__back {
+        font-size: 11px;
+    }
+}
+
+/* VERY SMALL PHONES */
+
+@media (max-width: 380px) {
+    .lp .sc-header__brand-text {
+        max-width: 160px;
+        font-size: 15px;
+    }
+
+    .lp .lp-navigation.sc-nav {
+        padding-inline: 16px;
+    }
+
+    .lp .sc-footer__brand {
+        font-size: 17px;
+    }
+}
+
+/* ====================================================
+   MOTION
+==================================================== */
+
+@keyframes sc-menu-enter {
+    from {
+        opacity: 0.65;
+        transform: translateY(-7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth anchor navigation, scoped to portfolio */
+
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.lp) {
+        scroll-behavior: smooth;
+    }
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+    html:has(.lp) {
+        scroll-behavior: auto;
+    }
+
+    .lp .sc-header *,
+    .lp .sc-header *::before,
+    .lp .sc-header *::after,
+    .lp .sc-footer *,
+    .lp .sc-footer *::before,
+    .lp .sc-footer *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

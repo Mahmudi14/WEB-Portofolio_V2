@@ -1,0 +1,805 @@
+/* ================================================
+   EXPERIENCE — CAREER LEDGER
+   Black / Orange / Responsive / Compact
+================================================ */
+
+/* SECTION */
+
+.lp main > section.lp-section.ex-section {
+    --ex-orange: #ff6a00;
+    --ex-light: #ff984e;
+    --ex-white: #f4f4f2;
+    --ex-muted: #a5a9b0;
+    --ex-line: rgba(255, 255, 255, 0.1);
+
+    padding: 68px 0 76px;
+    background: #0b0d10;
+
+    border-top: 1px solid var(--ex-line);
+}
+
+/* TOPBAR */
+
+.lp .ex-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--ex-line);
+}
+
+.lp .ex-topbar__identity {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    color: var(--ex-light);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+.lp .ex-topbar__number {
+    color: var(--ex-white);
+    font-size: 13px;
+    letter-spacing: 0;
+}
+
+.lp .ex-topbar__rule {
+    width: 35px;
+    height: 1px;
+    background: var(--ex-orange);
+}
+
+.lp .ex-topbar__meta {
+    color: #828790;
+    font-size: 10px;
+    letter-spacing: 0.11em;
+}
+
+/* MAIN HEADING */
+
+.lp .ex-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 35px;
+
+    padding: 39px 0 34px;
+}
+
+.lp .ex-heading__text {
+    min-width: 0;
+}
+
+.lp .ex-heading__eyebrow {
+    display: block;
+    margin-bottom: 13px;
+
+    color: #979ba3;
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.14em;
+}
+
+.lp .ex-heading h2 {
+    margin: 0;
+    color: var(--ex-white);
+
+    font-size: clamp(39px, 4.3vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.06em;
+}
+
+.lp .ex-heading h2 span {
+    color: var(--ex-orange);
+}
+
+.lp .ex-heading p {
+    max-width: 570px;
+    margin: 15px 0 0;
+
+    color: var(--ex-muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.lp .ex-heading__stat {
+    display: grid;
+    justify-items: end;
+    flex-shrink: 0;
+    gap: 7px;
+}
+
+.lp .ex-heading__stat strong {
+    color: var(--ex-light);
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 39px;
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.06em;
+}
+
+.lp .ex-heading__stat span {
+    color: #888d96;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+/* CATEGORY TABS */
+
+.lp .ex-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-bottom: 1px solid var(--ex-line);
+}
+
+.lp .ex-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 29px;
+}
+
+.lp .ex-tab {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 52px;
+    padding: 0 0 13px;
+
+    border: 0;
+    background: transparent;
+
+    color: #9399a1;
+    font-size: 12px;
+    font-weight: 650;
+
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+
+.lp .ex-tab:hover {
+    color: #ebedef;
+}
+
+.lp .ex-tab--active {
+    color: var(--ex-white);
+}
+
+.lp .ex-tab--active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+
+    height: 2px;
+    background: var(--ex-orange);
+}
+
+.lp .ex-tab--active svg {
+    color: var(--ex-orange);
+}
+
+.lp .ex-tab__count {
+    color: #848991;
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.lp .ex-controls__hint {
+    color: #777c85;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.12em;
+}
+
+/* ================================================
+   TIMELINE
+================================================ */
+
+.lp .ex-list {
+    --ex-progress: 0;
+
+    position: relative;
+    border-top: 0;
+}
+
+/* Base timeline rail */
+
+.lp .ex-list::before,
+.lp .ex-list::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+
+    top: 0;
+    bottom: 0;
+    left: 4px;
+
+    width: 1px;
+    pointer-events: none;
+}
+
+.lp .ex-list::before {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.lp .ex-list::after {
+    background: var(--ex-orange);
+
+    transform: scaleY(var(--ex-progress));
+    transform-origin: top;
+}
+
+/* ================================================
+   TIMELINE ITEM
+================================================ */
+
+.lp .ex-entry {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr);
+
+    min-width: 0;
+    border-bottom: 1px solid var(--ex-line);
+}
+
+/* Milestone dot */
+
+.lp .ex-entry::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+
+    top: 35px;
+    left: 0;
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+    border: 2px solid #737780;
+    background: #0b0d10;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease;
+}
+
+.lp .ex-entry--open::before {
+    border-color: var(--ex-orange);
+    background: var(--ex-orange);
+}
+
+/* Year / period */
+
+.lp .ex-entry__rail {
+    min-width: 0;
+    padding: 27px 14px 0 24px;
+}
+
+.lp .ex-entry__period {
+    color: #a1a6af;
+
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+}
+
+.lp .ex-entry--open .ex-entry__period {
+    color: var(--ex-light);
+}
+
+/* Main column */
+
+.lp .ex-entry__main {
+    min-width: 0;
+}
+
+/* Clickable row */
+
+.lp .ex-entry__trigger {
+    display: grid;
+
+    grid-template-columns:
+        46px
+        minmax(0, 1fr)
+        34px;
+
+    align-items: center;
+    gap: 17px;
+
+    width: 100%;
+    min-height: 89px;
+
+    padding: 17px 0;
+
+    border: 0;
+    background: transparent;
+
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.lp .ex-entry__trigger:focus-visible,
+.lp .ex-tab:focus-visible {
+    outline: 2px solid var(--ex-orange);
+    outline-offset: 3px;
+}
+
+/* Logo */
+
+.lp .ex-entry__logo {
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    width: 46px;
+    height: 46px;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 5px;
+
+    background: #1a1d21;
+    color: var(--ex-light);
+}
+
+.lp .ex-entry__logo img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 5px;
+    background: #1a1d21;
+    object-fit: contain;
+}
+
+/* Title and institution */
+
+.lp .ex-entry__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+
+    min-width: 0;
+}
+
+.lp .ex-entry__role {
+    color: #e9eaec;
+
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: clamp(16px, 1.55vw, 20px);
+    font-weight: 650;
+    line-height: 1.35;
+    letter-spacing: -0.03em;
+
+    transition: color 0.25s ease;
+}
+
+.lp .ex-entry__trigger:hover .ex-entry__role,
+.lp .ex-entry--open .ex-entry__role {
+    color: var(--ex-light);
+}
+
+.lp .ex-entry__institution {
+    color: #a4a9b0;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+/* Current status */
+
+.lp .ex-entry__current {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    margin-top: 2px;
+
+    color: #d0b39d;
+    font-size: 10px;
+    font-weight: 550;
+}
+
+.lp .ex-entry__current > span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+
+    background: var(--ex-orange);
+}
+
+/* Expand icon */
+
+.lp .ex-entry__toggle {
+    display: grid;
+    place-items: center;
+
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid #43464d;
+    border-radius: 5px;
+
+    color: #a6abb3;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+.lp .ex-entry__toggle svg {
+    transition: transform 0.32s ease;
+}
+
+.lp .ex-entry--open .ex-entry__toggle {
+    border-color: rgba(255, 106, 0, 0.46);
+    background: rgba(255, 106, 0, 0.08);
+    color: var(--ex-light);
+}
+
+.lp .ex-entry--open .ex-entry__toggle svg {
+    transform: rotate(180deg);
+}
+
+/* ================================================
+   ACCORDION CONTENT
+================================================ */
+
+.lp .ex-entry__details {
+    display: grid;
+    grid-template-rows: 0fr;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        grid-template-rows 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.3s ease,
+        visibility 0s linear 0.4s;
+}
+
+.lp .ex-entry--open .ex-entry__details {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        grid-template-rows 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.3s ease,
+        visibility 0s;
+}
+
+.lp .ex-entry__details-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.lp .ex-entry__description {
+    max-width: 690px;
+    padding: 0 40px 26px 63px;
+}
+
+.lp .ex-entry__detail-label {
+    display: block;
+
+    margin-bottom: 11px;
+
+    color: var(--ex-light);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.lp .ex-entry__description p {
+    margin: 0;
+
+    color: #b4b9c0;
+    font-size: 13px;
+    line-height: 1.85;
+    white-space: pre-line;
+}
+
+/* ================================================
+   FOOTER / EMPTY STATE
+================================================ */
+
+.lp .ex-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding-top: 20px;
+}
+
+.lp .ex-footer__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #a1a6af;
+    font-size: 11px;
+}
+
+.lp .ex-footer__dot {
+    width: 6px;
+    height: 6px;
+
+    background: var(--ex-orange);
+}
+
+.lp .ex-footer__note {
+    color: #777d86;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+}
+
+.lp .ex-empty {
+    padding: 35px 24px;
+    border-bottom: 1px solid var(--ex-line);
+}
+
+.lp .ex-empty p {
+    margin: 0;
+    color: #a1a6ae;
+    font-size: 13px;
+}
+
+/* ================================================
+   ENTRANCE REVEAL
+   Only heading and controls, never list items.
+================================================ */
+
+.lp .ex-motion [data-ex-reveal] {
+    opacity: 0;
+    transform: translateY(17px);
+
+    transition:
+        opacity 0.65s ease,
+        transform 0.75s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+.lp .ex-motion [data-ex-reveal].ex-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ================================================
+   TABLET
+================================================ */
+
+@media (max-width: 900px) {
+    .lp main > section.lp-section.ex-section {
+        padding: 61px 0 67px;
+    }
+
+    .lp .ex-entry {
+        grid-template-columns: 135px minmax(0, 1fr);
+    }
+
+    .lp .ex-entry__trigger {
+        gap: 13px;
+    }
+
+    .lp .ex-heading h2 {
+        font-size: clamp(39px, 5.5vw, 53px);
+    }
+}
+
+/* ================================================
+   MOBILE
+================================================ */
+
+@media (max-width: 600px) {
+    .lp main > section.lp-section.ex-section {
+        padding: 49px 0 56px;
+    }
+
+    .lp .ex-topbar {
+        padding-bottom: 14px;
+    }
+
+    .lp .ex-topbar__identity {
+        gap: 10px;
+        font-size: 9px;
+    }
+
+    .lp .ex-topbar__rule {
+        width: 26px;
+    }
+
+    .lp .ex-topbar__meta {
+        display: none;
+    }
+
+    /* Heading */
+
+    .lp .ex-heading {
+        align-items: flex-start;
+        gap: 15px;
+
+        padding: 27px 0 26px;
+    }
+
+    .lp .ex-heading__eyebrow {
+        font-size: 9px;
+        margin-bottom: 11px;
+    }
+
+    .lp .ex-heading h2 {
+        font-size: clamp(33px, 8.7vw, 42px);
+    }
+
+    .lp .ex-heading p {
+        margin-top: 11px;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .lp .ex-heading__stat strong {
+        font-size: 27px;
+    }
+
+    .lp .ex-heading__stat span {
+        font-size: 8px;
+    }
+
+    /* Tabs */
+
+    .lp .ex-tabs {
+        gap: 19px;
+    }
+
+    .lp .ex-tab {
+        gap: 7px;
+
+        min-height: 47px;
+        padding-bottom: 12px;
+
+        font-size: 11px;
+    }
+
+    .lp .ex-tab svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .lp .ex-controls__hint {
+        display: none;
+    }
+
+    /* Vertical mobile timeline */
+
+    .lp .ex-entry {
+        display: block;
+        padding-left: 19px;
+    }
+
+    .lp .ex-entry::before {
+        top: 23px;
+    }
+
+    .lp .ex-entry__rail {
+        padding: 15px 0 0;
+    }
+
+    .lp .ex-entry__period {
+        font-size: 10px;
+    }
+
+    .lp .ex-entry__trigger {
+        grid-template-columns:
+            40px
+            minmax(0, 1fr)
+            30px;
+
+        gap: 12px;
+
+        min-height: 0;
+        padding: 11px 0 18px;
+    }
+
+    .lp .ex-entry__logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .lp .ex-entry__role {
+        font-size: 15px;
+    }
+
+    .lp .ex-entry__institution {
+        font-size: 11px;
+    }
+
+    .lp .ex-entry__current {
+        font-size: 9px;
+    }
+
+    .lp .ex-entry__toggle {
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Expanded details */
+
+    .lp .ex-entry__description {
+        padding: 0 0 21px;
+    }
+
+    .lp .ex-entry__description p {
+        font-size: 12px;
+        line-height: 1.75;
+    }
+
+    .lp .ex-footer {
+        padding-top: 16px;
+    }
+}
+
+/* ================================================
+   SMALL PHONES
+================================================ */
+
+@media (max-width: 380px) {
+    .lp .ex-heading h2 {
+        font-size: 32px;
+    }
+
+    .lp .ex-heading__stat strong {
+        font-size: 24px;
+    }
+
+    .lp .ex-heading__stat span {
+        font-size: 7px;
+    }
+
+    .lp .ex-entry__role {
+        font-size: 14px;
+    }
+
+    .lp .ex-tab {
+        font-size: 10px;
+    }
+}
+
+/* ================================================
+   REDUCED MOTION
+================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .lp .ex-motion [data-ex-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .lp .ex-entry__details,
+    .lp .ex-entry__toggle svg,
+    .lp .ex-entry__role {
+        transition: none;
+    }
+}

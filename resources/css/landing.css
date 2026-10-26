@@ -3081,3 +3081,99 @@
         padding-top: 52px;
     }
 }
+
+/* ================================================
+   CONTACT SECTION — COLOR REFINEMENT
+   Preserve existing layout & responsive behavior
+   Primary: #FF6A00
+   Background: #0B0D10
+================================================ */
+
+.lp #contact.lp-section {
+    --lp-accent: #ff6a00;
+    --lp-accent-light: #ff984e;
+    --lp-text: #f4f4f2;
+
+    background: #0b0d10;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Eyebrow — MARI TERHUBUNG */
+
+.lp #contact .lp-eyebrow {
+    color: #ff984e;
+}
+
+.lp #contact .lp-pulse {
+    background: #ff6a00;
+    box-shadow: 0 0 0 5px rgba(255, 106, 0, 0.1);
+}
+
+/* Main heading */
+
+.lp #contact .lp-contact h2 {
+    color: #f4f4f2;
+}
+
+.lp #contact .lp-contact h2 em {
+    color: #ff6a00;
+}
+
+/* Description */
+
+.lp #contact .lp-contact > p {
+    color: #a6abb3;
+}
+
+/* Primary button — Email */
+
+.lp #contact .lp-contact__buttons .lp-button--primary {
+    background: #ff6a00;
+    border-color: #ff6a00;
+    color: #0b0d10 !important;
+}
+
+.lp #contact .lp-contact__buttons .lp-button--primary:hover {
+    background: #ff8533;
+    border-color: #ff8533;
+}
+
+/* Secondary button — WhatsApp */
+
+.lp #contact .lp-contact__buttons .lp-button--outline {
+    background: #171a1e;
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #f4f4f2;
+}
+
+.lp #contact .lp-contact__buttons .lp-button--outline:hover {
+    background: #211b17;
+    border-color: #ff6a00;
+    color: #ff984e;
+}
+
+/* Social media links */
+
+.lp #contact .lp-social-links a {
+    background: #15181c;
+    border-color: rgba(255, 255, 255, 0.13);
+    color: #bfc4cb;
+
+    transition:
+        background 0.22s ease,
+        border-color 0.22s ease,
+        color 0.22s ease;
+}
+
+.lp #contact .lp-social-links a:hover {
+    background: rgba(255, 106, 0, 0.07);
+    border-color: rgba(255, 106, 0, 0.55);
+    color: #ff984e;
+}
+
+/* Focus accessibility */
+
+.lp #contact :is(a, button):focus-visible {
+    outline: 2px solid #ff984e;
+    outline-offset: 4px;
+}
