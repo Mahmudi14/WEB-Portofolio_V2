@@ -2993,12 +2993,6 @@
     }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .lp {
-        scroll-behavior: smooth;
-    }
-}
-
 /* ==========================================
    HERO — INITIAL DESKTOP POSITION
    Konten langsung terlihat saat page load
@@ -3176,4 +3170,7 @@
 .lp #contact :is(a, button):focus-visible {
     outline: 2px solid #ff984e;
     outline-offset: 4px;
+}
+html:has(.lp) {
+    scroll-behavior: auto !important;
 }

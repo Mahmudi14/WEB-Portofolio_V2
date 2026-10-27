@@ -1,0 +1,1 @@
+function e(e){return[...e].sort((e,t)=>e.sort_order-t.sort_order||e.id-t.id)}export{e as t};

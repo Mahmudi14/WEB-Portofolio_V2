@@ -1,4 +1,5 @@
 import { Head } from "@inertiajs/react";
+import { useLayoutEffect } from "react";
 
 import AboutSection from "@/components/landing/about-section";
 import AchievementsSection from "@/components/landing/achievements-section";
@@ -31,6 +32,77 @@ export default function Welcome({
     researches,
 }: LandingPageProps) {
     const name = profile.display_name || profile.full_name || "Portofolio";
+
+    useLayoutEffect(() => {
+        const root = document.documentElement;
+
+        const key =
+            "portfolio-scroll:" +
+            window.location.pathname +
+            window.location.search;
+
+        const savePosition = () => {
+            if (root.hasAttribute("data-portfolio-restoring")) {
+                return;
+            }
+
+            try {
+                sessionStorage.setItem(key, String(window.scrollY));
+            } catch {
+                // Storage tidak tersedia.
+            }
+        };
+
+        // Simpan posisi ketika pengunjung scroll.
+        window.addEventListener("scroll", savePosition, {
+            passive: true,
+        });
+
+        window.addEventListener("pagehide", savePosition);
+
+        // Pulihkan sebelum frame React ditampilkan.
+        if (root.hasAttribute("data-portfolio-restoring")) {
+            let target = 0;
+
+            try {
+                target = Number(sessionStorage.getItem(key) || 0);
+            } catch {
+                target = 0;
+            }
+
+            const previousBehavior =
+                root.style.getPropertyValue("scroll-behavior");
+
+            const previousPriority =
+                root.style.getPropertyPriority("scroll-behavior");
+
+            root.style.setProperty("scroll-behavior", "auto", "important");
+
+            window.scrollTo(
+                0,
+                Number.isFinite(target) ? Math.max(0, target) : 0,
+            );
+
+            root.removeAttribute("data-portfolio-restoring");
+
+            if (previousBehavior) {
+                root.style.setProperty(
+                    "scroll-behavior",
+                    previousBehavior,
+                    previousPriority,
+                );
+            } else {
+                root.style.removeProperty("scroll-behavior");
+            }
+
+            history.scrollRestoration = "auto";
+        }
+
+        return () => {
+            window.removeEventListener("scroll", savePosition);
+            window.removeEventListener("pagehide", savePosition);
+        };
+    }, []);
 
     return (
         <div className="lp">
