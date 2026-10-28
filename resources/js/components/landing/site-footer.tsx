@@ -20,7 +20,9 @@ export default function SiteFooter({ name }: Props) {
                         <span>.</span>
                     </a>
 
-                    <span className="sc-footer__label">PERSONAL PORTFOLIO</span>
+                    <span className="sc-footer__label">
+                        PERSONAL PORTOFOLIO
+                    </span>
                 </div>
 
                 <p className="sc-footer__copyright">

@@ -81,9 +81,23 @@
     @endif
 
 
+
+    {{-- Dynamic favicon from uploaded website logo --}}
+    @php
+    $faviconLogo = (($page['component'] ?? '') === 'welcome')
+    ? data_get($page, 'props.profile.logo_url')
+    : null;
+    @endphp
+
+    @if (is_string($faviconLogo) && $faviconLogo !== '')
+    <link rel="icon" href="{{ $faviconLogo }}">
+    @else
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    @endif
+
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
 
     @fonts
 
@@ -106,7 +120,8 @@
     @endif
 
     <x-inertia::head>
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ ($page['component'] ?? '') === 'welcome' ? 'Portofolio Mahmudi' : config('app.name', 'Laravel') }}
+        </title>
     </x-inertia::head>
 </head>
 

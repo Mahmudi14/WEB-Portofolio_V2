@@ -106,7 +106,7 @@ export default function Welcome({
 
     return (
         <div className="lp">
-            <Head title={`Portofolio ${name}`}>
+            <Head title="Portofolio Mahmudi">
                 <meta
                     name="description"
                     content={
@@ -114,6 +114,14 @@ export default function Welcome({
                         `Portofolio ${name}: proyek, keahlian, pengalaman, dan penelitian.`
                     }
                 />
+
+                {profile.logo_url && (
+                    <link
+                        rel="icon"
+                        href={profile.logo_url}
+                        head-key="portfolio-favicon"
+                    />
+                )}
             </Head>
 
             <SiteNavbar name={name} logoUrl={profile.logo_url} />

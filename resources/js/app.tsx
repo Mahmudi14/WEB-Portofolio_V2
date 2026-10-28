@@ -1,34 +1,37 @@
+import { createInertiaApp } from "@inertiajs/react";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { initializeTheme } from "@/hooks/use-appearance";
+import AppLayout from "@/layouts/app-layout";
+import AuthLayout from "@/layouts/auth-layout";
+import SettingsLayout from "@/layouts/settings/layout";
 
-import { createInertiaApp } from '@inertiajs/react';
-import { Toaster } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { initializeTheme } from '@/hooks/use-appearance';
-import AppLayout from '@/layouts/app-layout';
-import AuthLayout from '@/layouts/auth-layout';
-import SettingsLayout from '@/layouts/settings/layout';
-
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 void createInertiaApp({
     title: (title) =>
-        title ? `${title} - ${appName}` : appName,
+        title === "Portofolio Mahmudi"
+            ? title
+            : title
+              ? `${title} - ${appName}`
+              : appName,
 
     layout: (name) => {
         switch (true) {
             // Halaman publik
-            case name === 'welcome':
+            case name === "welcome":
                 return null;
 
             // Semua halaman admin memakai layout sendiri
-            case name.startsWith('Admin/'):
+            case name.startsWith("Admin/"):
                 return null;
 
             // Halaman autentikasi
-            case name.startsWith('auth/'):
+            case name.startsWith("auth/"):
                 return AuthLayout;
 
             // Halaman pengaturan Laravel
-            case name.startsWith('settings/'):
+            case name.startsWith("settings/"):
                 return [AppLayout, SettingsLayout];
 
             // Halaman bawaan Laravel lainnya
@@ -49,7 +52,7 @@ void createInertiaApp({
     },
 
     progress: {
-        color: '#df6a27',
+        color: "#df6a27",
     },
 });
 
