@@ -6,43 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    @if (($page['component'] ?? '') === 'welcome')
-    <script>
-        (() => {
-            const key =
-                'portfolio-scroll:' +
-                location.pathname +
-                location.search;
-
-            const navigation =
-                performance.getEntriesByType('navigation')[0];
-
-            const isReload =
-                navigation?.type === 'reload';
-
-            const saved = Number(
-                sessionStorage.getItem(key)
-            );
-
-            if (isReload && Number.isFinite(saved) && saved > 0) {
-                history.scrollRestoration = 'manual';
-
-                document.documentElement.setAttribute(
-                    'data-portfolio-restoring',
-                    'true'
-                );
-            }
-        })();
-    </script>
-
-    <style>
-        html[data-portfolio-restoring="true"] #app {
-            visibility: hidden;
-        }
-    </style>
-    @endif
-
-
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>
         (function() {
